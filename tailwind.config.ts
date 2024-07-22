@@ -1,4 +1,5 @@
 import type { Config } from "tailwindcss";
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { fontFamily } from "tailwindcss/defaultTheme";
 
 const config = {
@@ -78,6 +79,7 @@ const config = {
       },
     },
   },
+  // eslint-disable-next-line global-require
   plugins: [require("tailwindcss-animate")],
 } satisfies Config;
 
