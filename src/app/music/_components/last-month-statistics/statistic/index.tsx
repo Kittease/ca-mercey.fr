@@ -1,5 +1,4 @@
-import { LucideProps } from "lucide-react";
-import { ForwardRefExoticComponent, RefAttributes } from "react";
+import { LucideIcon } from "lucide-react";
 
 import { cn } from "@/lib/tailwind";
 
@@ -7,9 +6,7 @@ interface StatisticProps {
   label: string;
   stat: string;
   diff: number;
-  Icon: ForwardRefExoticComponent<
-    Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>
-  >;
+  Icon: LucideIcon;
   className?: string;
 }
 
@@ -18,7 +15,7 @@ const Statistic = ({ label, stat, diff, Icon, className }: StatisticProps) => {
     <div
       className={cn("flex flex-row items-center gap-x-4 md:gap-x-6", className)}
     >
-      <Icon className="size-8 stroke-1 md:size-12" />
+      <Icon className="size-8 shrink-0 stroke-1 md:size-12" />
 
       <div className="flex flex-col md:gap-y-2">
         <div className="flex flex-row items-baseline gap-x-2 md:gap-x-4">

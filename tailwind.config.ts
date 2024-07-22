@@ -1,6 +1,26 @@
 import type { Config } from "tailwindcss";
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { fontFamily } from "tailwindcss/defaultTheme";
+// eslint-disable-next-line import/no-extraneous-dependencies
+import plugin from "tailwindcss/plugin";
+import tailwindAnimate from "tailwindcss-animate";
+
+const animation = plugin(({ addUtilities, matchUtilities }) => {
+  addUtilities({
+    ".transition-5": { transition: "0.5s" },
+  });
+  matchUtilities({
+    "animation-delay": (value) => ({
+      "animation-delay": `calc(${value}*-1)`,
+    }),
+    "animation-delay-halved": (value) => ({
+      "animation-delay": `calc(${value}/-2)`,
+    }),
+    "animation-duration-carousel": (value) => ({
+      "animation-duration": `${value}`,
+    }),
+  });
+});
 
 const config = {
   darkMode: ["class"],
@@ -72,15 +92,37 @@ const config = {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
+        "carousel-scroll": {
+          from: { transform: "translateX(100%)" },
+          to: { transform: "translateX(-100%)" },
+        },
+        "carousel-scroll-continuous": {
+          from: { transform: "translateX(0)" },
+          to: { transform: "translateX(-200%)" },
+        },
+        "carousel-scroll-reverse": {
+          from: { transform: "translateX(-100%)" },
+          to: { transform: "translateX(100%)" },
+        },
+        "carousel-scroll-continuous-reverse": {
+          from: { transform: "translateX(-200%)" },
+          to: { transform: "translateX(0)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        "carousel-scroll": "carousel-scroll linear infinite",
+        "carousel-scroll-continuous":
+          "carousel-scroll-continuous linear infinite",
+        "carousel-scroll-reverse": "carousel-scroll-reverse linear infinite",
+        "carousel-scroll-continuous-reverse":
+          "carousel-scroll-continuous-reverse linear infinite",
       },
     },
   },
   // eslint-disable-next-line global-require
-  plugins: [require("tailwindcss-animate")],
+  plugins: [tailwindAnimate, animation],
 } satisfies Config;
 
 export default config;
