@@ -3,8 +3,8 @@ import RecentlyPlayedTracks from "./_components/recently-played-tracks";
 
 const MusicPage = () => {
   return (
-    <div className="flex flex-col gap-y-16 py-24">
-      <h1 className="text-center text-8xl">Musique</h1>
+    <div className="flex w-full flex-col gap-y-8 p-8 md:w-fit md:gap-y-16 md:px-0 md:py-24">
+      <h1 className="my-4 text-center text-4xl md:my-0 md:text-8xl">Musique</h1>
 
       <LastMonthStats />
 
