@@ -1,6 +1,6 @@
 import statsfmFetch from "@/lib/statsfm-client";
 
-import { transformRawRecentTrackToRecentTrack } from "./transform";
+import { transformRawRecentlyPlayedTrackToRecentlyPlayedTrack } from "./transform";
 import { RawRecentlyPlayedTracksResponse, RecentlyPlayedTrack } from "./types";
 
 export const getRecentlyPlayedTracks = async (): Promise<
@@ -10,5 +10,7 @@ export const getRecentlyPlayedTracks = async (): Promise<
     "/streams/recent"
   );
 
-  return items.map((item) => transformRawRecentTrackToRecentTrack(item));
+  return items.map((item) =>
+    transformRawRecentlyPlayedTrackToRecentlyPlayedTrack(item)
+  );
 };
