@@ -7,6 +7,11 @@ const nextConfig = {
         hostname: "is1-ssl.mzstatic.com",
         pathname: "/image/**",
       },
+      {
+        protocol: "https",
+        hostname: "i.scdn.co",
+        pathname: "/image/**",
+      },
     ],
   },
 };
