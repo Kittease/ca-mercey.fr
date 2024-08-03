@@ -1,0 +1,134 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["multiSchema"]
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+  schemas   = ["public", "music"]
+}
+
+model Genres {
+  id   String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name String
+
+  artists  ArtistGenres[]
+  projects ProjectGenres[]
+
+  @@map("genres")
+  @@schema("music")
+}
+
+model Artists {
+  id                String  @id
+  name              String
+  profilePictureUrl String? @map("profile_picture_url")
+
+  genres       ArtistGenres[]
+  projects     ProjectArtists[]
+  TrackArtists TrackArtists[]
+
+  @@map("artists")
+  @@schema("music")
+}
+
+model ArtistGenres {
+  artistId String @map("artist_id")
+  genreId  String @map("genre_id") @db.Uuid
+
+  artist Artists @relation(fields: [artistId], references: [id])
+  genre  Genres  @relation(fields: [genreId], references: [id])
+
+  @@id([artistId, genreId])
+  @@map("artist_genres")
+  @@schema("music")
+}
+
+model Projects {
+  id                   String               @id
+  name                 String
+  type                 ProjectType          @default(ALBUM)
+  coverUrl             String?              @map("cover_url")
+  releaseDate          String               @map("release_date")
+  releaseDatePrecision ReleaseDatePrecision @default(DAY) @map("release_date_precision")
+
+  genres  ProjectGenres[]
+  artists ProjectArtists[]
+  tracks  Tracks[]
+
+  @@map("projects")
+  @@schema("music")
+}
+
+enum ProjectType {
+  ALBUM
+  COMPILATION
+  SINGLE
+
+  @@map("project_type")
+  @@schema("music")
+}
+
+enum ReleaseDatePrecision {
+  DAY
+  MONTH
+  YEAR
+
+  @@map("release_date_precision")
+  @@schema("music")
+}
+
+model ProjectGenres {
+  projectId String @map("project_id")
+  genreId   String @map("genre_id") @db.Uuid
+
+  project Projects @relation(fields: [projectId], references: [id])
+  genre   Genres   @relation(fields: [genreId], references: [id])
+
+  @@id([projectId, genreId])
+  @@map("project_genres")
+  @@schema("music")
+}
+
+model ProjectArtists {
+  projectId String @map("project_id")
+  artistId  String @map("artist_id")
+
+  project Projects @relation(fields: [projectId], references: [id])
+  artist  Artists  @relation(fields: [artistId], references: [id])
+
+  @@id([projectId, artistId])
+  @@map("project_artists")
+  @@schema("music")
+}
+
+model Tracks {
+  id              String  @id
+  name            String
+  duration        Int
+  explicit        Boolean @default(false)
+  projectId       String  @map("project_id")
+  discNumber      Int     @default(1) @map("disc_number")
+  trackNumber     Int     @map("track_number")
+  audioPreviewUrl String? @map("audio_preview_url")
+
+  project Projects       @relation(fields: [projectId], references: [id])
+  artists TrackArtists[]
+
+  @@map("project_tracks")
+  @@schema("music")
+}
+
+model TrackArtists {
+  trackId  String @map("track_id")
+  artistId String @map("artist_id")
+
+  track  Tracks  @relation(fields: [trackId], references: [id])
+  artist Artists @relation(fields: [artistId], references: [id])
+
+  @@id([trackId, artistId])
+  @@map("track_artists")
+  @@schema("music")
+}
