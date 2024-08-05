@@ -12,7 +12,7 @@ datasource db {
 
 model Genres {
   id   String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  name String
+  name String @unique
 
   artists  ArtistGenres[]
   projects ProjectGenres[]
@@ -109,7 +109,7 @@ model Tracks {
   project Projects       @relation(fields: [projectId], references: [id])
   artists TrackArtists[]
 
-  @@map("project_tracks")
+  @@map("tracks")
   @@schema("music")
 }
 

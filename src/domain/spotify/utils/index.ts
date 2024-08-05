@@ -1,16 +1,16 @@
-import { SimplifiedAlbum } from "@/domain/spotify/services/album/types";
+import { RawSimplifiedAlbum } from "@/domain/spotify/services/album/types";
 import { SpotifyImage } from "@/domain/spotify/types";
 
 export const getAlbumReleaseDateObject = (
-  date: SimplifiedAlbum["releaseDate"],
-  datePrecision: SimplifiedAlbum["releaseDatePrecision"]
+  date: RawSimplifiedAlbum["release_date"],
+  datePrecision: RawSimplifiedAlbum["release_date_precision"]
 ) => {
   const parts = date.split("-");
 
   return {
     year: parts[0],
-    month: datePrecision === "month" ? parts[1] : null,
-    day: datePrecision === "day" ? parts[2] : null,
+    month: datePrecision !== "year" ? parts[1] : undefined,
+    day: datePrecision === "day" ? parts[2] : undefined,
   };
 };
 

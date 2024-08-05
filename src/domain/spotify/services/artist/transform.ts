@@ -1,9 +1,29 @@
-import { RawSimplifiedArtist, SimplifiedArtist } from "./types";
+import { transformRawSpotifyBaseObjectToSpotifyBaseObject } from "@/domain/spotify/transform";
+
+import {
+  Artist,
+  RawArtist,
+  RawSimplifiedArtist,
+  SimplifiedArtist,
+} from "./types";
 
 export const transformRawSimplifiedArtistToSimplifiedArtist = ({
-  external_urls,
+  // eslint-disable-next-line unused-imports/no-unused-vars
+  type,
   ...rest
-}: RawSimplifiedArtist): SimplifiedArtist => ({
-  externalUrls: external_urls,
-  ...rest,
+}: RawSimplifiedArtist): SimplifiedArtist =>
+  transformRawSpotifyBaseObjectToSpotifyBaseObject(rest);
+
+export const transformRawArtistToArtist = ({
+  images,
+  genres,
+  // eslint-disable-next-line unused-imports/no-unused-vars
+  popularity,
+  // eslint-disable-next-line unused-imports/no-unused-vars
+  followers,
+  ...rest
+}: RawArtist): Artist => ({
+  images,
+  genres,
+  ...transformRawSimplifiedArtistToSimplifiedArtist(rest),
 });

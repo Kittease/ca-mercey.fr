@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter as FontSans } from "next/font/google";
 
+import { Toaster } from "@/app/_components/ui/toast/toaster";
 import { cn } from "@/lib/tailwind";
 
 import "./globals.css";
@@ -28,6 +29,7 @@ export default function RootLayout({
         )}
       >
         {children}
+        <Toaster />
       </body>
     </html>
   );
