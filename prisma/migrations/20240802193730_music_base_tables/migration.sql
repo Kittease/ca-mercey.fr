@@ -1,6 +1,5 @@
 BEGIN;
 
-
 -- CreateSchema
 CREATE SCHEMA IF NOT EXISTS "music";
 
@@ -111,6 +110,5 @@ ALTER TABLE "music"."track_artists" ADD CONSTRAINT "track_artists_track_id_fkey"
 
 -- AddForeignKey
 ALTER TABLE "music"."track_artists" ADD CONSTRAINT "track_artists_artist_id_fkey" FOREIGN KEY ("artist_id") REFERENCES "music"."artists"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
 
 COMMIT;

@@ -45,9 +45,9 @@ fi
 echo -e "BEGIN;\n\n${downMigration}\n\nCOMMIT;" > "${newMigrationFolder}/down.sql"
 
 {
-  echo -e "BEGIN;\n\n"
+  echo -e "BEGIN;\n"
   cat "${newMigrationFolder}/migration.sql"
-  echo -e "\n\nCOMMIT;"
+  echo -e "\nCOMMIT;"
 } > tmp_up_migration && mv tmp_up_migration "${newMigrationFolder}/migration.sql"
 
 echo -e "\nMigration \`${migrationName}\` generated and applied, you're good to go!"
