@@ -1,11 +1,25 @@
-import {
+import type {
   RawSimplifiedArtist,
   SimplifiedArtist,
 } from "@/domain/spotify/services/artist/types";
-import { SpotifyImage } from "@/domain/spotify/types";
+import type {
+  RawSimplifiedTrack,
+  SimplifiedTrack,
+} from "@/domain/spotify/services/track/types";
+import type {
+  SpotifyImage,
+  SpotifyPaginatedApiResponse,
+  SpotifyAvailableMarkets,
+  SpotifyRestrictions,
+  RawSpotifyBaseObject,
+  SpotifyBaseObject,
+} from "@/domain/spotify/types";
 
-export type RawSimplifiedAlbum = {
-  id: string;
+export type SearchAlbumsResponse = {
+  albums: SpotifyPaginatedApiResponse<RawSimplifiedAlbum>;
+};
+
+export type RawSimplifiedAlbum = RawSpotifyBaseObject & {
   type: "album";
   album_type: "album" | "single" | "compilation";
   name: string;
@@ -14,32 +28,44 @@ export type RawSimplifiedAlbum = {
   total_tracks: number;
   release_date: string;
   release_date_precision: "year" | "month" | "day";
-  available_markets: string[];
-  restrictions: {
-    reasons: string;
-  };
-  href: string;
-  uri: string;
-  external_urls: {
-    spotify: string;
+  available_markets: SpotifyAvailableMarkets;
+  restrictions?: SpotifyRestrictions;
+};
+
+export type SimplifiedAlbum = SpotifyBaseObject & {
+  albumType: "album" | "single" | "compilation";
+  name: string;
+  artists: SimplifiedArtist[];
+  images: SpotifyImage[];
+  totalTracks: number;
+  releaseYear: string;
+  releaseMonth?: string;
+  releaseDay?: string;
+};
+
+export type RawAlbum = RawSimplifiedAlbum & {
+  tracks: SpotifyPaginatedApiResponse<RawSimplifiedTrack>;
+  genres: string[];
+  label: string;
+  popularity: number;
+  copyrights: {
+    type: "C" | "P";
+    text: string;
+  }[];
+  external_ids: {
+    isrc?: string;
+    ean?: string;
+    upc?: string;
   };
 };
 
-export type SimplifiedAlbum = Omit<
-  RawSimplifiedAlbum,
-  | "album_type"
-  | "artists"
-  | "total_tracks"
-  | "release_date"
-  | "release_date_precision"
-  | "available_markets"
-  | "external_urls"
-> & {
-  albumType: RawSimplifiedAlbum["album_type"];
-  artists: SimplifiedArtist[];
-  totalTracks: RawSimplifiedAlbum["total_tracks"];
-  releaseDate: RawSimplifiedAlbum["release_date"];
-  releaseDatePrecision: RawSimplifiedAlbum["release_date_precision"];
-  availableMarkets: RawSimplifiedAlbum["available_markets"];
-  externalUrls: RawSimplifiedAlbum["external_urls"];
+export type Album = SimplifiedAlbum & {
+  tracks: SimplifiedTrack[];
+  genres: string[];
+  label: string;
+};
+
+export type SearchResult = {
+  album: SimplifiedAlbum;
+  isFavorite: boolean;
 };

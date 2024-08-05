@@ -1,25 +1,52 @@
 import { transformRawSimplifiedArtistToSimplifiedArtist } from "@/domain/spotify/services/artist/transform";
+import { transformRawSimplifiedTrackToSimplifiedTrack } from "@/domain/spotify/services/track/transform";
+import { transformRawSpotifyBaseObjectToSpotifyBaseObject } from "@/domain/spotify/transform";
+import { getAlbumReleaseDateObject } from "@/domain/spotify/utils";
 
-import { RawSimplifiedAlbum, SimplifiedAlbum } from "./types";
+import { Album, RawAlbum, RawSimplifiedAlbum, SimplifiedAlbum } from "./types";
 
 export const transformRawSimplifiedAlbumToSimplifiedAlbum = ({
+  // eslint-disable-next-line unused-imports/no-unused-vars, @typescript-eslint/naming-convention
+  type,
   album_type,
   artists,
   total_tracks,
   release_date,
   release_date_precision,
+  // eslint-disable-next-line unused-imports/no-unused-vars, @typescript-eslint/naming-convention
   available_markets,
-  external_urls,
+  // eslint-disable-next-line unused-imports/no-unused-vars, @typescript-eslint/naming-convention
+  restrictions,
   ...rest
-}: RawSimplifiedAlbum): SimplifiedAlbum => ({
-  albumType: album_type,
-  artists: artists.map((artist) =>
-    transformRawSimplifiedArtistToSimplifiedArtist(artist)
+}: RawSimplifiedAlbum): SimplifiedAlbum => {
+  const { year, month, day } = getAlbumReleaseDateObject(
+    release_date,
+    release_date_precision
+  );
+
+  return transformRawSpotifyBaseObjectToSpotifyBaseObject({
+    albumType: album_type,
+    artists: artists.map((artist) =>
+      transformRawSimplifiedArtistToSimplifiedArtist(artist)
+    ),
+    totalTracks: total_tracks,
+    releaseYear: year,
+    releaseMonth: month,
+    releaseDay: day,
+    ...rest,
+  });
+};
+
+export const transformRawAlbumToAlbum = ({
+  tracks,
+  genres,
+  label,
+  ...simplifiedAlbum
+}: RawAlbum): Album => ({
+  tracks: tracks.items.map((track) =>
+    transformRawSimplifiedTrackToSimplifiedTrack(track)
   ),
-  totalTracks: total_tracks,
-  releaseDate: release_date,
-  releaseDatePrecision: release_date_precision,
-  availableMarkets: available_markets,
-  externalUrls: external_urls,
-  ...rest,
+  genres,
+  label,
+  ...transformRawSimplifiedAlbumToSimplifiedAlbum(simplifiedAlbum),
 });

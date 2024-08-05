@@ -63,7 +63,7 @@ CREATE TABLE "music"."project_artists" (
 );
 
 -- CreateTable
-CREATE TABLE "music"."project_tracks" (
+CREATE TABLE "music"."tracks" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "duration" INTEGER NOT NULL,
@@ -73,7 +73,7 @@ CREATE TABLE "music"."project_tracks" (
     "track_number" INTEGER NOT NULL,
     "audio_preview_url" TEXT,
 
-    CONSTRAINT "project_tracks_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "tracks_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -103,10 +103,10 @@ ALTER TABLE "music"."project_artists" ADD CONSTRAINT "project_artists_project_id
 ALTER TABLE "music"."project_artists" ADD CONSTRAINT "project_artists_artist_id_fkey" FOREIGN KEY ("artist_id") REFERENCES "music"."artists"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "music"."project_tracks" ADD CONSTRAINT "project_tracks_project_id_fkey" FOREIGN KEY ("project_id") REFERENCES "music"."projects"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "music"."tracks" ADD CONSTRAINT "tracks_project_id_fkey" FOREIGN KEY ("project_id") REFERENCES "music"."projects"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "music"."track_artists" ADD CONSTRAINT "track_artists_track_id_fkey" FOREIGN KEY ("track_id") REFERENCES "music"."project_tracks"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "music"."track_artists" ADD CONSTRAINT "track_artists_track_id_fkey" FOREIGN KEY ("track_id") REFERENCES "music"."tracks"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "music"."track_artists" ADD CONSTRAINT "track_artists_artist_id_fkey" FOREIGN KEY ("artist_id") REFERENCES "music"."artists"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

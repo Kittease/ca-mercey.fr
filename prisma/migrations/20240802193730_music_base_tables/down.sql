@@ -19,7 +19,7 @@ ALTER TABLE "music"."project_artists" DROP CONSTRAINT "project_artists_project_i
 ALTER TABLE "music"."project_artists" DROP CONSTRAINT "project_artists_artist_id_fkey";
 
 -- DropForeignKey
-ALTER TABLE "music"."project_tracks" DROP CONSTRAINT "project_tracks_project_id_fkey";
+ALTER TABLE "music"."tracks" DROP CONSTRAINT "tracks_project_id_fkey";
 
 -- DropForeignKey
 ALTER TABLE "music"."track_artists" DROP CONSTRAINT "track_artists_track_id_fkey";
@@ -46,7 +46,7 @@ DROP TABLE "music"."project_genres";
 DROP TABLE "music"."project_artists";
 
 -- DropTable
-DROP TABLE "music"."project_tracks";
+DROP TABLE "music"."tracks";
 
 -- DropTable
 DROP TABLE "music"."track_artists";
