@@ -47,12 +47,13 @@ model ArtistGenres {
 }
 
 model Projects {
-  id                   String               @id
-  name                 String
-  type                 ProjectType          @default(ALBUM)
-  coverUrl             String?              @map("cover_url")
-  releaseDate          String               @map("release_date")
-  releaseDatePrecision ReleaseDatePrecision @default(DAY) @map("release_date_precision")
+  id           String      @id
+  name         String
+  type         ProjectType @default(ALBUM)
+  coverUrl     String?     @map("cover_url")
+  releaseYear  String      @map("release_year")
+  releaseMonth String?     @map("release_month")
+  releaseDay   String?     @map("release_day")
 
   genres  ProjectGenres[]
   artists ProjectArtists[]
@@ -68,15 +69,6 @@ enum ProjectType {
   SINGLE
 
   @@map("project_type")
-  @@schema("music")
-}
-
-enum ReleaseDatePrecision {
-  DAY
-  MONTH
-  YEAR
-
-  @@map("release_date_precision")
   @@schema("music")
 }
 
