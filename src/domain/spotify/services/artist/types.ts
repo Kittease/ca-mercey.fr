@@ -1,14 +1,29 @@
-export type RawSimplifiedArtist = {
-  id: string;
+import type {
+  RawSpotifyBaseObject,
+  SpotifyBaseObject,
+  SpotifyImage,
+} from "@/domain/spotify/types";
+
+export type RawSimplifiedArtist = RawSpotifyBaseObject & {
   type: "artist";
   name: string;
-  href: string;
-  uri: string;
-  external_urls: {
-    spotify: string;
+};
+
+export type SimplifiedArtist = SpotifyBaseObject & {
+  name: string;
+};
+
+export type RawArtist = RawSimplifiedArtist & {
+  images: SpotifyImage[];
+  genres: string[];
+  popularity: number;
+  followers: {
+    href: null;
+    total: number;
   };
 };
 
-export type SimplifiedArtist = Omit<RawSimplifiedArtist, "external_urls"> & {
-  externalUrls: RawSimplifiedArtist["external_urls"];
+export type Artist = SimplifiedArtist & {
+  images: SpotifyImage[];
+  genres: string[];
 };

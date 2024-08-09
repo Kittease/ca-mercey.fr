@@ -1,3 +1,5 @@
+import { SpotifyApiResponse } from "./types";
+
 class SpotifyApiClient {
   private clientId: string;
 
@@ -47,25 +49,35 @@ class SpotifyApiClient {
     };
   }
 
-  public async fetch(endpoint: string, options: RequestInit = {}) {
+  public async fetch<T>(
+    endpoint: string,
+    options: RequestInit = {}
+  ): Promise<SpotifyApiResponse<T>> {
     const url = `https://api.spotify.com/v1${endpoint}`;
 
     if (!this.accessToken) {
       await this.authenticate();
     }
 
-    const response = await fetch(url, this.addAuthorizationHeader(options));
+    let response = await fetch(url, this.addAuthorizationHeader(options));
 
-    // If authentificated, return the response
-    if (response.status !== 401) {
-      return response.json();
+    // If not authentificated, try to re-generate the access token and refetch
+    if (response.status === 401) {
+      await this.authenticate();
+      response = await fetch(url, this.addAuthorizationHeader(options));
     }
 
-    // Else, try to re-generate the access token
-    await this.authenticate();
+    if (response.status >= 300) {
+      return {
+        kind: "error",
+        error: (await response.json()).error,
+      };
+    }
 
-    // Then, retry the request
-    return (await fetch(url, this.addAuthorizationHeader(options))).json();
+    return {
+      kind: "success",
+      data: await response.json(),
+    };
   }
 }
 
