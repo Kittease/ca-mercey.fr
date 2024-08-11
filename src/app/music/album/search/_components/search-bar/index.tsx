@@ -1,13 +1,14 @@
 "use client";
 
 import { Search } from "lucide-react";
+import { Route } from "next";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 import { Input } from "@/app/_components/ui/input";
 
 const SearchBar = () => {
   const searchParams = useSearchParams();
-  const pathname = usePathname();
+  const pathname = usePathname() as Route;
   const { replace } = useRouter();
 
   const handleSearch = (term: string) => {
