@@ -7,6 +7,7 @@ export const Routes = {
 
   HOME: "/",
   MUSIC: "/music",
+  FAVORITE_PROJECTS: "/music/favorites",
   ALBUM_SEARCH: "/music/album/search",
 
   API_AUTH_CALLBACK: "/auth/v1/callback",

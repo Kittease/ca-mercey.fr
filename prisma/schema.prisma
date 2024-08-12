@@ -51,13 +51,14 @@ model Projects {
   name         String
   type         ProjectType @default(ALBUM)
   coverUrl     String?     @map("cover_url")
-  releaseYear  String      @map("release_year")
-  releaseMonth String?     @map("release_month")
-  releaseDay   String?     @map("release_day")
+  releaseYear  String      @map("release_year") @db.VarChar(4)
+  releaseMonth String?     @map("release_month") @db.VarChar(2)
+  releaseDay   String?     @map("release_day") @db.VarChar(2)
 
-  genres  ProjectGenres[]
-  artists ProjectArtists[]
-  tracks  Tracks[]
+  genres           ProjectGenres[]
+  artists          ProjectArtists[]
+  tracks           Tracks[]
+  FavoriteProjects FavoriteProjects[]
 
   @@map("projects")
   @@schema("music")
@@ -122,5 +123,15 @@ model TrackArtists {
 
   @@id([trackId, artistId])
   @@map("track_artists")
+  @@schema("music")
+}
+
+model FavoriteProjects {
+  id        String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  projectId String @map("project_id")
+
+  project Projects @relation(fields: [projectId], references: [id])
+
+  @@map("favorite_projects")
   @@schema("music")
 }
