@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [ -z "$1" ]; then
-  echo "You need to provide your migration a name."
+  echo -e "You need to provide your migration a name."
   exit 1
 fi
 
@@ -12,7 +12,7 @@ prismaFolder=$(dirname $(realpath "$0"))
 schemaFile="${prismaFolder}/schema.prisma"
 migrationsFolder="${prismaFolder}/migrations"
 
-echo "Generating migration \`${migrationName}\`..."
+echo -e "Generating migration \`${migrationName}\`..."
 
 echo -e "\nTrying to generate the down migration file..."
 
@@ -20,34 +20,46 @@ downMigration=$(bunx prisma migrate diff --from-schema-datamodel "${schemaFile}"
 exitCode=$?
 
 if [ $exitCode -eq 0 ]; then
-  echo "No difference detected."
+  echo -e "No difference detected."
   exit 0
 elif [ $exitCode -eq 1 ]; then
-  echo "Something went wrong, aborting."
+  echo -e "Something went wrong, aborting."
   exit 1
 elif [ $exitCode -eq 2 ]; then
-  echo "Down migration generated!"
+  echo -e "Down migration generated!"
 fi
 
 echo -e "\nTrying to generate the up migration file..."
 
-upOutput=$(bunx prisma migrate dev --name "${migrationName}")
+upMigration=$(bunx prisma migrate diff --from-schema-datasource "${schemaFile}" --to-schema-datamodel "${schemaFile}" --script --exit-code)
 exitCode=$?
 
-if [[ $exitCode -eq 0 ]] && [[ $upOutput =~ ([0-9]{14}_"${migrationName}") ]]; then
-  newMigrationFolder="${migrationsFolder}/${BASH_REMATCH[1]}"
-  echo "Up migration generated!"
-else
-  echo "Something went wrong, aborting."
+if [ $exitCode -eq 0 ]; then
+  echo -e "No difference detected."
+  exit 0
+elif [ $exitCode -eq 1 ]; then
+  echo -e "Something went wrong, aborting."
   exit 1
+elif [ $exitCode -eq 2 ]; then
+  echo -e "Down migration generated!"
 fi
 
+newMigrationFolder="${migrationsFolder}/$(date +"%Y%m%d%H%M%S")_${migrationName}"
+
+mkdir -p "${newMigrationFolder}"
+
 echo -e "BEGIN;\n\n${downMigration}\n\nCOMMIT;" > "${newMigrationFolder}/down.sql"
+echo -e "BEGIN;\n\n${upMigration}\n\nCOMMIT;" > "${newMigrationFolder}/migration.sql"
 
-{
-  echo -e "BEGIN;\n"
-  cat "${newMigrationFolder}/migration.sql"
-  echo -e "\nCOMMIT;"
-} > tmp_up_migration && mv tmp_up_migration "${newMigrationFolder}/migration.sql"
+echo -e ""
 
-echo -e "\nMigration \`${migrationName}\` generated and applied, you're good to go!"
+bunx prisma migrate deploy
+exitCode=$?
+
+if [ $exitCode -eq 0 ]; then
+  echo -e "\nMigration \`${migrationName}\` generated and applied, you're good to go!"
+  exit 0
+else
+  echo -e "\nMigration \`${migrationName}\` was generated but something went wrong when applying the migrations."
+  exit $exitCode
+fi
