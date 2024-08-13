@@ -29,7 +29,8 @@ const Statistic = ({ label, stat, diff, Icon, className }: StatisticProps) => {
               diff > 0 ? "text-green-600" : "text-red-600"
             )}
           >
-            ({diff}%)
+            ({diff > 0 ? "+" : null}
+            {diff}%)
           </p>
         </div>
 

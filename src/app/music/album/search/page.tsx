@@ -1,5 +1,6 @@
 import { searchAlbums } from "@/domain/spotify/services/album";
-import { SimplifiedAlbum } from "@/domain/spotify/services/album/types";
+import { SearchResult } from "@/domain/spotify/services/album/types";
+import logger from "@/lib/logger";
 
 import Results from "./_components/results";
 import SearchBar from "./_components/search-bar";
@@ -11,12 +12,13 @@ interface AlbumSearchProps {
 }
 
 const AlbumSearch = async ({ searchParams }: AlbumSearchProps) => {
-  let albums: SimplifiedAlbum[] | null = null;
+  let searchResults: SearchResult[] | null = null;
   if (searchParams?.query) {
     try {
-      albums = await searchAlbums(searchParams.query);
+      searchResults = await searchAlbums(searchParams.query);
     } catch (error) {
-      albums = null;
+      logger.error(error);
+      searchResults = null;
     }
   }
 
@@ -24,8 +26,11 @@ const AlbumSearch = async ({ searchParams }: AlbumSearchProps) => {
     <div className="flex w-4/5 flex-col gap-y-16 px-32 py-16">
       <SearchBar />
 
-      {albums !== null ? (
-        <Results albums={albums} searchTerms={searchParams?.query ?? ""} />
+      {searchResults !== null ? (
+        <Results
+          searchResults={searchResults}
+          searchTerms={searchParams?.query ?? ""}
+        />
       ) : null}
     </div>
   );

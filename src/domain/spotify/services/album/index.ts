@@ -1,20 +1,162 @@
+import { ProjectType } from "@prisma/client";
+
+import { createMissingArtists } from "@/domain/spotify/services/artist";
+import { saveGenres } from "@/domain/spotify/services/genre";
+import { getTrack, saveTrack } from "@/domain/spotify/services/track";
+import { getHighestDefinitionSpotifyImage } from "@/domain/spotify/utils";
+import { FetchTags } from "@/lib/cache/types";
+import logger from "@/lib/logger";
+import prisma from "@/lib/prisma";
 import spotifyApiClientInstance from "@/lib/spotify-client";
 
-import { transformRawSimplifiedAlbumToSimplifiedAlbum } from "./transform";
-import { RawSimplifiedAlbum, SimplifiedAlbum } from "./types";
+import {
+  transformRawAlbumToAlbum,
+  transformRawSimplifiedAlbumToSimplifiedAlbum,
+} from "./transform";
+import { Album, RawAlbum, SearchAlbumsResponse, SearchResult } from "./types";
 
-export const searchAlbums = async (
-  search: string
-): Promise<SimplifiedAlbum[]> => {
-  const res = await spotifyApiClientInstance.fetch(
-    `/search?type=album&q=${search}`
+export const searchAlbums = async (search: string): Promise<SearchResult[]> => {
+  const response = await spotifyApiClientInstance.fetch<SearchAlbumsResponse>(
+    `/search?type=album&q=${search}`,
+    { next: { tags: [FetchTags.SpotifyAlbumSearch] } }
   );
 
-  if (res.error) {
-    throw new Error(res.error.message);
+  if (response.kind === "error") {
+    throw new Error(response.error.message);
   }
 
-  return res.albums.items.map((album: RawSimplifiedAlbum) =>
-    transformRawSimplifiedAlbumToSimplifiedAlbum(album)
+  const searchResultAlbumIds = response.data.albums.items.map(({ id }) => id);
+
+  const albumAlreadyFavedIds = (
+    await prisma.favoriteProjects.findMany({
+      where: { projectId: { in: searchResultAlbumIds } },
+      select: { projectId: true },
+    })
+  ).map(({ projectId }) => projectId);
+
+  return response.data.albums.items.map((album) => ({
+    album: transformRawSimplifiedAlbumToSimplifiedAlbum(album),
+    isFavorite: albumAlreadyFavedIds.includes(album.id),
+  }));
+};
+
+export const getAlbum = async (albumId: string): Promise<Album> => {
+  logger.info(`[ALBUM] Getting album with id ${albumId}`);
+
+  const response = await spotifyApiClientInstance.fetch<RawAlbum>(
+    `/albums/${albumId}`
   );
+
+  if (response.kind === "error") {
+    throw new Error(response.error.message);
+  }
+
+  return transformRawAlbumToAlbum(response.data);
+};
+
+export const saveAlbum = async ({
+  id,
+  name,
+  albumType,
+  artists: simplifiedArtists,
+  tracks,
+  images,
+  genres,
+  releaseYear,
+  releaseMonth,
+  releaseDay,
+}: Album) => {
+  logger.info(`[ALBUM] Saving album with id ${id} (${name})`);
+
+  let type: ProjectType;
+  switch (albumType) {
+    case "album":
+      type = "ALBUM";
+      break;
+    case "compilation":
+      type = "COMPILATION";
+      break;
+    case "single":
+      type = "SINGLE";
+      break;
+    default:
+      throw new Error("Unknow album type");
+  }
+
+  const project = await prisma.projects.upsert({
+    where: { id },
+    create: {
+      id,
+      name,
+      type,
+      coverUrl: getHighestDefinitionSpotifyImage(images)?.url,
+      releaseYear,
+      releaseMonth,
+      releaseDay,
+    },
+    update: {},
+  });
+
+  const artistIds = simplifiedArtists.map(({ id: artistId }) => artistId);
+
+  await createMissingArtists(artistIds);
+
+  const existingProjectArtistIds = (
+    await prisma.projectArtists.findMany({
+      where: {
+        projectId: id,
+        artistId: { in: artistIds },
+      },
+      select: { artistId: true },
+    })
+  ).map(({ artistId }) => artistId);
+
+  await prisma.projectArtists.createMany({
+    data: artistIds
+      .filter((artistId) => !existingProjectArtistIds.includes(artistId))
+      .map((artistId) => ({
+        projectId: id,
+        artistId,
+      })),
+  });
+
+  const genreRecords = await saveGenres(genres);
+
+  const existingProjectGenreIds = (
+    await prisma.projectGenres.findMany({
+      where: {
+        projectId: id,
+        genreId: { in: genreRecords.map(({ id: genreId }) => genreId) },
+      },
+      select: { genreId: true },
+    })
+  ).map(({ genreId }) => genreId);
+
+  await prisma.projectGenres.createMany({
+    data: genreRecords
+      .filter(({ id: genreId }) => !existingProjectGenreIds.includes(genreId))
+      .map(({ id: genreId }) => ({
+        projectId: id,
+        genreId,
+      })),
+  });
+
+  const existingTrackIds = (
+    await prisma.tracks.findMany({
+      where: { id: { in: tracks.map(({ id: trackId }) => trackId) } },
+      select: { id: true },
+    })
+  ).map(({ id: trackId }) => trackId);
+
+  const tracksToCreate = tracks.filter(
+    ({ id: trackId }) => !existingTrackIds.includes(trackId)
+  );
+
+  // eslint-disable-next-line no-restricted-syntax
+  for await (const { id: trackId } of tracksToCreate) {
+    const track = await getTrack(trackId);
+    await saveTrack(track);
+  }
+
+  return project;
 };
