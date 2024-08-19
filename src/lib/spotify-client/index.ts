@@ -37,6 +37,7 @@ class SpotifyApiClient {
         client_id: this.clientId,
         client_secret: this.clientSecret,
       }),
+      cache: "no-cache",
     });
 
     this.accessToken = (await response.json()).access_token;
