@@ -13,7 +13,7 @@ const ErrorData = () => {
     });
 
   return (
-    <pre className="max-w-[50%] overflow-x-scroll rounded border bg-slate-800 p-12">
+    <pre className="max-w-[50%] overflow-x-scroll rounded border bg-stone-800 p-12">
       {JSON.stringify(data, null, 2)}
     </pre>
   );
