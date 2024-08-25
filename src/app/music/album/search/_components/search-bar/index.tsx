@@ -28,13 +28,13 @@ const SearchBar = () => {
   return (
     <div className="relative">
       <Input
-        className="h-auto bg-stone-900 px-8 py-4 text-2xl"
+        className="h-auto bg-stone-900 py-4 pl-8 pr-[calc(3*theme(spacing.6))] text-lg md:text-2xl"
         placeholder="Recherchez un album..."
         defaultValue={searchParams.get("query") ?? ""}
         onChange={(e) => handleSearch(e.target.value)}
       />
 
-      <Search className="absolute inset-y-0 right-8 my-auto size-8" />
+      <Search className="absolute inset-y-0 right-6 my-auto size-6" />
     </div>
   );
 };

@@ -1,6 +1,7 @@
 import { searchAlbums } from "@/domain/spotify/services/album";
 import { SearchResult } from "@/domain/spotify/services/album/types";
 import logger from "@/lib/logger";
+import { cn } from "@/lib/tailwind";
 
 import Results from "./_components/results";
 import SearchBar from "./_components/search-bar";
@@ -23,7 +24,13 @@ const AlbumSearch = async ({ searchParams }: AlbumSearchProps) => {
   }
 
   return (
-    <div className="flex w-4/5 flex-col gap-y-16 px-32 py-16">
+    <div
+      className={cn(
+        "flex flex-col",
+        "w-full gap-y-12 p-12",
+        "sm:w-4/5 sm:gap-y-16 sm:px-32 sm:py-16"
+      )}
+    >
       <SearchBar />
 
       {searchResults !== null ? (

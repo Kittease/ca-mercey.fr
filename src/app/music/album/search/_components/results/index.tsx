@@ -1,13 +1,12 @@
 "use client";
 
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { toast } from "sonner";
 
 import AlbumLarge from "@/app/_components/business/album/large";
 import AlbumSmall from "@/app/_components/business/album/small";
 import { AlbumProps } from "@/app/_components/business/album/types";
-import { ToastAction } from "@/app/_components/ui/toast";
-import { useToast } from "@/app/_components/ui/toast/use-toast";
 import {
   removeFavoriteAlbum,
   saveFavoriteAlbum,
@@ -21,7 +20,8 @@ interface ResultsProps {
 }
 
 const Results = ({ searchResults, searchTerms }: ResultsProps) => {
-  const { toast } = useToast();
+  const router = useRouter();
+
   const [actionState, setActionState] = useState<
     NonNullable<AlbumProps["action"]>["state"]
   >({ pending: false });
@@ -41,27 +41,32 @@ const Results = ({ searchResults, searchTerms }: ResultsProps) => {
 
       setActionState({ pending: false });
 
-      toast({
-        title: !isFavorite ? "Favori ajouté" : "Favori supprimé",
-        description: !isFavorite
-          ? "Cet album fait maintenant parti de votre liste de favoris !"
-          : "Cet album ne fait plus parti de votre liste de favoris.",
-        variant: !isFavorite ? "success" : "destructive",
-        action: (
-          <Link href={Routes.FAVORITE_PROJECTS} className="flex">
-            <ToastAction altText="Voir les favoris">
-              Voir les favoris
-            </ToastAction>
-          </Link>
-        ),
-      });
+      if (!isFavorite) {
+        toast.success("Favori ajouté", {
+          description:
+            "Cet album fait maintenant parti de votre liste de favoris !",
+          action: {
+            label: "Voir les favoris",
+            onClick: () => router.push(Routes.FAVORITE_PROJECTS),
+          },
+        });
+      } else {
+        toast.error("Favori supprimé", {
+          description:
+            "Cet album ne fait plus parti de votre liste de favoris.",
+          action: {
+            label: "Voir les favoris",
+            onClick: () => router.push(Routes.FAVORITE_PROJECTS),
+          },
+        });
+      }
     },
     state: actionState,
   });
 
   if (searchResults.length === 0) {
     return (
-      <h1 className="text-4xl font-bold">
+      <h1 className="text-2xl font-bold sm:text-4xl">
         Aucun résultat pour &quot;{searchTerms}&quot;.
       </h1>
     );
@@ -70,7 +75,7 @@ const Results = ({ searchResults, searchTerms }: ResultsProps) => {
   return (
     <div className="flex flex-col gap-y-16">
       <div className="flex flex-col gap-y-4">
-        <h1 className="text-4xl font-bold">Meilleur résultat</h1>
+        <h1 className="text-2xl font-bold sm:text-4xl">Meilleur résultat</h1>
 
         <AlbumLarge
           album={searchResults[0].album}
@@ -83,7 +88,7 @@ const Results = ({ searchResults, searchTerms }: ResultsProps) => {
       </div>
 
       <div className="flex flex-col gap-y-4">
-        <h1 className="text-4xl font-bold">Autres albums</h1>
+        <h1 className="text-2xl font-bold sm:text-4xl">Autres albums</h1>
 
         <div className="flex flex-row gap-x-4 overflow-x-scroll">
           {searchResults.slice(1).map(({ album, isFavorite }) => (

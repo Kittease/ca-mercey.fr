@@ -19,7 +19,7 @@ const AlbumLarge = ({
   return (
     <div
       className={cn(
-        "group/album relative flex w-fit flex-col gap-y-6 rounded-lg bg-stone-900 p-6",
+        "group/album relative flex w-full flex-col gap-y-6 rounded-lg bg-stone-900 p-6 sm:w-fit",
         action ? "pr-28" : "pr-12",
         className
       )}
@@ -36,9 +36,9 @@ const AlbumLarge = ({
       ) : null}
 
       <div className="flex flex-col gap-y-1">
-        <p className="text-4xl font-bold">{album.name}</p>
+        <p className="text-xl font-bold sm:text-4xl">{album.name}</p>
 
-        <p className="flex flex-row gap-x-1 text-xl text-stone-400">
+        <p className="flex flex-row gap-x-1 text-base text-stone-400 sm:text-xl">
           <span>{album.releaseYear}</span>
 
           <span>•</span>
@@ -58,12 +58,12 @@ const AlbumLarge = ({
           onClick={action.handler}
           className={cn(
             "absolute bottom-6 right-6 size-fit rounded-full bg-green-500 p-4 drop-shadow-md transition-all duration-150 disabled:bg-green-600",
-            "pointer-events-none group-hover/album:pointer-events-auto group-hover/album:opacity-100",
+            "sm:pointer-events-none sm:group-hover/album:pointer-events-auto sm:group-hover/album:opacity-100",
             "group/cta m-1 hover:m-0",
             (action.state.pending && action.state.albumId === album.id) ||
               isFavorite
-              ? "opacity-100"
-              : "opacity-0"
+              ? "sm:opacity-100"
+              : "sm:opacity-0"
           )}
         >
           {
