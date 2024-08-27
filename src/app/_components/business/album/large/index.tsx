@@ -43,9 +43,12 @@ const AlbumLarge = ({
 
           <span>•</span>
 
-          <span className="flex flex-row gap-x-2">
-            {album.artists.map(({ id, name }) => (
-              <span key={id}>{name}</span>
+          <span>
+            {album.artists.map(({ id, name }, index) => (
+              <>
+                <span key={id}>{name}</span>
+                {index < album.artists.length - 1 ? <span>, </span> : null}
+              </>
             ))}
           </span>
         </p>

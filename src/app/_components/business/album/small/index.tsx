@@ -74,12 +74,14 @@ const AlbumSmall = ({
 
           <span> • </span>
 
-          {album.artists.map(({ id, name }, index) => (
-            <>
-              <span key={id}>{name}</span>
-              {index < album.artists.length - 1 ? <span>, </span> : null}
-            </>
-          ))}
+          <span>
+            {album.artists.map(({ id, name }, index) => (
+              <>
+                <span key={id}>{name}</span>
+                {index < album.artists.length - 1 ? <span>, </span> : null}
+              </>
+            ))}
+          </span>
         </p>
       </div>
     </div>
