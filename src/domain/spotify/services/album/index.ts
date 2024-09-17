@@ -15,31 +15,6 @@ import {
 } from "./transform";
 import { Album, RawAlbum, SearchAlbumsResponse, SearchResult } from "./types";
 
-export const searchAlbums = async (search: string): Promise<SearchResult[]> => {
-  const response = await spotifyApiClientInstance.fetch<SearchAlbumsResponse>(
-    `/search?type=album&q=${search}`,
-    { next: { tags: [FetchTags.SpotifyAlbumSearch] } }
-  );
-
-  if (response.kind === "error") {
-    throw new Error(response.error.message);
-  }
-
-  const searchResultAlbumIds = response.data.albums.items.map(({ id }) => id);
-
-  const albumAlreadyFavedIds = (
-    await prisma.favoriteProjects.findMany({
-      where: { projectId: { in: searchResultAlbumIds } },
-      select: { projectId: true },
-    })
-  ).map(({ projectId }) => projectId);
-
-  return response.data.albums.items.map((album) => ({
-    album: transformRawSimplifiedAlbumToSimplifiedAlbum(album),
-    isFavorite: albumAlreadyFavedIds.includes(album.id),
-  }));
-};
-
 export const getAlbum = async (albumId: string): Promise<Album> => {
   logger.info(`[ALBUM] Getting album with id ${albumId}`);
 
@@ -159,4 +134,64 @@ export const saveAlbum = async ({
   }
 
   return project;
+};
+
+export const searchAlbums = async (search: string): Promise<SearchResult[]> => {
+  let albumId: string | null = null;
+
+  // Is search term an album link?
+  try {
+    const url = new URL(search);
+
+    if (
+      url.hostname === "open.spotify.com" &&
+      url.pathname.startsWith("/album/")
+    ) {
+      albumId = url.pathname.replace("/album/", "");
+    }
+  } catch {
+    // Search term is not an album URL
+  }
+
+  // Does search term looks like an album ID?
+  if (albumId === null && /^[A-Za-z0-9]{22}$/.test(search)) {
+    albumId = search;
+  }
+
+  if (albumId !== null) {
+    try {
+      const album = await getAlbum(albumId);
+
+      const favorite = await prisma.favoriteProjects.findUnique({
+        where: { projectId: albumId },
+      });
+
+      return [{ album, isFavorite: favorite !== null }];
+    } catch {
+      // Search term was probably not an album ID, return search results instead
+    }
+  }
+
+  const response = await spotifyApiClientInstance.fetch<SearchAlbumsResponse>(
+    `/search?type=album&q=${search}`,
+    { next: { tags: [FetchTags.SpotifyAlbumSearch] } }
+  );
+
+  if (response.kind === "error") {
+    throw new Error(response.error.message);
+  }
+
+  const searchResultAlbumIds = response.data.albums.items.map(({ id }) => id);
+
+  const albumAlreadyFavedIds = (
+    await prisma.favoriteProjects.findMany({
+      where: { projectId: { in: searchResultAlbumIds } },
+      select: { projectId: true },
+    })
+  ).map(({ projectId }) => projectId);
+
+  return response.data.albums.items.map((album) => ({
+    album: transformRawSimplifiedAlbumToSimplifiedAlbum(album),
+    isFavorite: albumAlreadyFavedIds.includes(album.id),
+  }));
 };
