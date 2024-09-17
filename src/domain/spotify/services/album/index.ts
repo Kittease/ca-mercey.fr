@@ -130,6 +130,13 @@ export const saveAlbum = async ({
   // eslint-disable-next-line no-restricted-syntax
   for await (const { id: trackId } of tracksToCreate) {
     const track = await getTrack(trackId);
+
+    // The track can come from another album, make sure it is created before saving the track
+    if (track.albumId !== id) {
+      const trackAlbum = await getAlbum(track.albumId);
+      await saveAlbum(trackAlbum);
+    }
+
     await saveTrack(track);
   }
 
