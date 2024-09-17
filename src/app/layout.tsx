@@ -6,6 +6,7 @@ import { Inter as FontSans } from "next/font/google";
 import { Toaster } from "@/app/_components/ui/sonner";
 import { cn } from "@/lib/tailwind";
 
+import { ThemeProvider } from "./_components/providers/theme";
 import "./globals.css";
 
 const fontSans = FontSans({
@@ -30,8 +31,11 @@ export default function RootLayout({
           fontSans.variable
         )}
       >
-        {children}
-        <Toaster richColors />
+        <ThemeProvider attribute="class" defaultTheme="light">
+          {children}
+          <Toaster richColors />
+        </ThemeProvider>
+
         <Analytics />
         <SpeedInsights />
       </body>
