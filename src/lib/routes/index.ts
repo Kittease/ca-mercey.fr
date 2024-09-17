@@ -6,11 +6,18 @@ export const Routes = {
   LOGOUT: "/auth/logout",
 
   HOME: "/",
+
   MUSIC: "/music",
   FAVORITE_PROJECTS: "/music/favorites",
   ALBUM_SEARCH: "/music/album/search",
 
+  HEALTH: "/health",
+
   API_AUTH_CALLBACK: "/auth/v1/callback",
 } satisfies Record<string, Route>;
 
-export const PROTECTED_ROUTES: Route[] = [Routes.LOGOUT, Routes.ALBUM_SEARCH];
+export const PROTECTED_ROUTES: Route[] = [
+  Routes.LOGOUT,
+  Routes.ALBUM_SEARCH,
+  Routes.HEALTH,
+];
