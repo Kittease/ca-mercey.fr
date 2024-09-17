@@ -29,7 +29,7 @@ const SearchBar = () => {
     <div className="relative">
       <Input
         className="h-auto bg-stone-900 py-4 pl-8 pr-[calc(3*theme(spacing.6))] text-lg md:text-2xl"
-        placeholder="Recherchez un album..."
+        placeholder="Recherchez un album par nom, id, lien de partage..."
         defaultValue={searchParams.get("query") ?? ""}
         onChange={(e) => handleSearch(e.target.value)}
       />
