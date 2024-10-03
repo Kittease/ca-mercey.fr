@@ -12,6 +12,7 @@ import { Routes } from "@/lib/routes";
 import { cn } from "@/lib/tailwind";
 
 import OrderFilter from "./_components/order-filter";
+import RandomProjectSelector from "./_components/random-project-selector";
 
 const ProjectsSkeleton = () => {
   return (
@@ -47,7 +48,7 @@ const FavoritePage = async ({ searchParams }: FavoritePageProps) => {
       <div
         className={cn(
           "fixed z-50 flex h-fit w-full flex-row items-center justify-between bg-stone-950/65 backdrop-blur-xl",
-          "px-16 py-8",
+          "p-8",
           "sm:px-[calc((100%-(theme(spacing.64)*2+theme(spacing.8)))/2)] sm:py-4",
           "lg:px-[calc((100%-(theme(spacing.64)*3+theme(spacing.8)*2))/2)]",
           "xl:px-[calc((100%-(theme(spacing.64)*4+theme(spacing.8)*3))/2)]"
@@ -57,7 +58,10 @@ const FavoritePage = async ({ searchParams }: FavoritePageProps) => {
           <ArrowLeft className="size-7" />
         </Link>
 
-        <OrderFilter />
+        <div className="flex flex-row items-center gap-x-4">
+          <OrderFilter />
+          <RandomProjectSelector projects={projects} />
+        </div>
       </div>
 
       <div className="mt-32 grid size-fit grid-cols-1 justify-center gap-8 sm:mt-24 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
