@@ -1,6 +1,6 @@
 import { Artists, ProjectArtists, Projects, Tracks } from "@prisma/client";
 
-export type FavoriteProjectsOrderBy = "date" | "name" | "artist";
+export type FavoriteProjectsOrderBy = "date" | "name" | "artist" | "duration";
 
 export type FavoriteProjectsOrderDirection = "asc" | "desc";
 

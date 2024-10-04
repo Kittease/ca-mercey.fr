@@ -3,8 +3,9 @@
 import * as SwitchPrimitives from "@radix-ui/react-switch";
 import {
   ArrowDownAZ,
-  ArrowDownUp,
-  ArrowUpZA,
+  ArrowDownNarrowWide,
+  ArrowDownWideNarrow,
+  ArrowDownZA,
   CalendarArrowDown,
   CalendarArrowUp,
 } from "lucide-react";
@@ -38,19 +39,29 @@ const OrderDirectionIcon = forwardRef<
   return (
     <span {...rest} ref={forwardedRef}>
       {(() => {
-        if (direction === undefined) {
-          return <ArrowDownUp />;
-        }
+        switch (orderBy) {
+          case undefined:
+          case "date":
+            return direction === "asc" ? (
+              <CalendarArrowDown />
+            ) : (
+              <CalendarArrowUp />
+            );
 
-        if (orderBy === undefined || orderBy === "date") {
-          return direction === "asc" ? (
-            <CalendarArrowUp />
-          ) : (
-            <CalendarArrowDown />
-          );
-        }
+          case "duration":
+            return direction === "desc" ? (
+              <ArrowDownWideNarrow />
+            ) : (
+              <ArrowDownNarrowWide />
+            );
 
-        return direction === "asc" ? <ArrowDownAZ /> : <ArrowUpZA />;
+          case "name":
+          case "artist":
+            return direction === "desc" ? <ArrowDownZA /> : <ArrowDownAZ />;
+
+          default:
+            throw new Error(`Unreachable orderBy: ${orderBy satisfies never}`);
+        }
       })()}
     </span>
   );
@@ -65,7 +76,8 @@ const OrderFilter = () => {
   if (
     searchParamsOrderBy === "date" ||
     searchParamsOrderBy === "name" ||
-    searchParamsOrderBy === "artist"
+    searchParamsOrderBy === "artist" ||
+    searchParamsOrderBy === "duration"
   ) {
     defaultOrderBy = searchParamsOrderBy;
   }
@@ -118,6 +130,7 @@ const OrderFilter = () => {
           <SelectItem value="date">Date de sortie</SelectItem>
           <SelectItem value="name">Nom du projet</SelectItem>
           <SelectItem value="artist">Nom de l&apos;artiste</SelectItem>
+          <SelectItem value="duration">Durée du projet</SelectItem>
         </SelectContent>
       </Select>
 
