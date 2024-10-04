@@ -23,70 +23,66 @@ export const getFavoriteProjects = async (
   orderBy: FavoriteProjectsOrderBy,
   direction?: FavoriteProjectsOrderDirection
 ): Promise<FavoriteProject[]> => {
-  let prismaOrderBy: NonNullable<
-    Parameters<typeof prisma.projects.findMany>[0]
-  >["orderBy"] = [];
-
-  if (orderBy === "date") {
-    prismaOrderBy = [
-      { releaseYear: direction ?? "desc" },
-      { releaseMonth: direction ?? "desc" },
-      { releaseDay: direction ?? "desc" },
-    ];
-  }
-
   const rawProjects = await prisma.projects.findMany({
     where: { FavoriteProjects: { some: {} } },
     include: {
       artists: { include: { artist: true } },
       tracks: true,
     },
-    orderBy: prismaOrderBy,
+    orderBy:
+      orderBy === "date"
+        ? [
+            { releaseYear: direction ?? "desc" },
+            { releaseMonth: direction ?? "desc" },
+            { releaseDay: direction ?? "desc" },
+          ]
+        : { name: "asc" },
   });
 
   const projects = transformRawFavoriteProjectsToFavoriteProjects(rawProjects);
 
-  if (orderBy === "name") {
-    const sortedProjectIds = (
-      await prisma.$queryRaw<{ id: string }[]>`
-        SELECT projects.id
-        FROM music.favorite_projects
-        LEFT JOIN music.projects ON music.favorite_projects.project_id = music.projects.id
-        ORDER BY music.unaccent(LOWER(projects.name)) ASC;
-      `
-    ).map(({ id }) => id);
-
-    const sortedProjects = sortedProjectIds.map(
-      (projectId) => projects.find(({ id }) => id === projectId)!
-    );
-
-    if (direction === "desc") {
-      return sortedProjects.reverse();
+  switch (orderBy) {
+    case "date": {
+      return projects;
     }
 
-    return sortedProjects;
+    case "name": {
+      return projects.sort(
+        (a, b) =>
+          a.name.localeCompare(b.name, undefined, {
+            sensitivity: "base",
+          }) * (direction === "desc" ? -1 : 1)
+      );
+    }
+
+    case "artist": {
+      return projects.sort(
+        (a, b) =>
+          a.artists[0].name.localeCompare(b.artists[0].name, undefined, {
+            sensitivity: "base",
+          }) * (direction === "desc" ? -1 : 1)
+      );
+    }
+
+    case "duration": {
+      const projectDurations: Record<string, number> = {};
+      projects.forEach((project) => {
+        projectDurations[project.id] = project.tracks.reduce(
+          (acc, track) => acc + track.duration,
+          0
+        );
+      });
+
+      return projects.sort(
+        (a, b) =>
+          (projectDurations[a.id] - projectDurations[b.id]) *
+          (direction === "desc" ? -1 : 1)
+      );
+    }
+
+    default:
+      throw new Error(`Unreachable orderBy: ${orderBy satisfies never}`);
   }
-
-  if (orderBy === "artist") {
-    return projects.sort((a, b) => {
-      if (
-        a.artists[0].name.toLocaleLowerCase() >
-        b.artists[0].name.toLocaleLowerCase()
-      ) {
-        if (direction === "desc") {
-          return -1;
-        }
-        return 1;
-      }
-
-      if (direction === "desc") {
-        return 1;
-      }
-      return -1;
-    });
-  }
-
-  return projects;
 };
 
 export const getRandomCovers = async (count: number) => {
