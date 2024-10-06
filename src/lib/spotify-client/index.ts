@@ -1,3 +1,5 @@
+import { config } from "@/lib/config";
+
 import { SpotifyApiResponse } from "./types";
 
 class SpotifyApiClient {
@@ -88,8 +90,8 @@ class SpotifyApiClient {
 }
 
 const spotifyApiClientInstance = SpotifyApiClient.getInstance(
-  process.env.SPOTIFY_API_CLIENT_ID!,
-  process.env.SPOTIFY_API_CLIENT_SECRET!
+  config.spotifyApi.clientId,
+  config.spotifyApi.clientSecret
 );
 
 export default spotifyApiClientInstance;
