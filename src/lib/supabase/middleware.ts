@@ -1,6 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
+import { publicConfig } from "@/lib/config/client-config";
 import { PROTECTED_ROUTES, Routes } from "@/lib/routes";
 
 export async function updateSession(request: NextRequest) {
@@ -9,8 +10,8 @@ export async function updateSession(request: NextRequest) {
   });
 
   const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    publicConfig.supabase.url,
+    publicConfig.supabase.anonKey,
     {
       cookies: {
         getAll() {

@@ -33,10 +33,24 @@ const Results = ({ searchResults, searchTerms }: ResultsProps) => {
     handler: async () => {
       setActionState({ pending: true, albumId });
 
-      if (!isFavorite) {
-        await saveFavoriteAlbum(albumId);
-      } else {
-        await removeFavoriteAlbum(albumId);
+      try {
+        if (!isFavorite) {
+          await saveFavoriteAlbum(albumId);
+        } else {
+          await removeFavoriteAlbum(albumId);
+        }
+      } catch (error) {
+        if (error instanceof Error && error.message === "Unauthorized") {
+          toast.error(
+            "Vous n'avez pas les permissions nécessaires pour cette action !"
+          );
+        } else {
+          toast.error("Quelque chose s'est mal passé...");
+        }
+
+        setActionState({ pending: false });
+
+        return;
       }
 
       setActionState({ pending: false });
