@@ -67,7 +67,9 @@ const FavoritePage = async ({ searchParams }: FavoritePageProps) => {
       <div className="mt-32 grid size-fit grid-cols-1 justify-center gap-8 sm:mt-24 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         <Suspense fallback={<ProjectsSkeleton />}>
           {projects.map((project) => (
-            <AlbumFancy project={project} key={project.id} />
+            <Link href={`/music/album/${project.id}`} key={project.id}>
+              <AlbumFancy project={project} />
+            </Link>
           ))}
         </Suspense>
       </div>

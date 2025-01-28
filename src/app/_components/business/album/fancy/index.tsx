@@ -1,10 +1,10 @@
 import Image from "next/image";
 
-import { FavoriteProject } from "@/domain/music/services/favorite-projects/types";
+import { Project } from "@/domain/music/services/projects/types";
 import { cn } from "@/lib/tailwind";
 
 interface AlbumFancyProps {
-  project: FavoriteProject;
+  project: Project;
 }
 
 const AlbumFancy = ({ project }: AlbumFancyProps) => {

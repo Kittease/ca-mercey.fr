@@ -5,11 +5,11 @@ import { ShuffleIcon } from "lucide-react";
 import { useState } from "react";
 
 import AlbumFancy from "@/app/_components/business/album/fancy";
-import { FavoriteProject } from "@/domain/music/services/favorite-projects/types";
+import { Project } from "@/domain/music/services/projects/types";
 import { useMediaQuery } from "@/lib/tailwind/hooks";
 
 interface RandomProjectSelectorProps {
-  projects: FavoriteProject[];
+  projects: Project[];
 }
 
 const transition = {
@@ -20,9 +20,9 @@ const transition = {
 const RandomProjectSelector = ({ projects }: RandomProjectSelectorProps) => {
   const isDesktop = useMediaQuery("(min-width: 768px)");
 
-  const [selectedProject, setSelectedProject] = useState<
-    FavoriteProject | undefined
-  >(undefined);
+  const [selectedProject, setSelectedProject] = useState<Project | undefined>(
+    undefined
+  );
 
   const selectRandomProject = () => {
     document.body.style.overflow = "hidden";
