@@ -5,8 +5,10 @@ import { Suspense } from "react";
 import AlbumFancy from "@/app/_components/business/album/fancy";
 import { getFavoriteProjects } from "@/domain/music/services/favorite-projects";
 import {
+  directionOptions,
   FavoriteProjectsOrderBy,
   FavoriteProjectsOrderDirection,
+  orderByOptions,
 } from "@/domain/music/services/favorite-projects/types";
 import { Routes } from "@/lib/routes";
 import { cn } from "@/lib/tailwind";
@@ -35,6 +37,22 @@ interface FavoritePageProps {
     "order-by"?: FavoriteProjectsOrderBy;
     direction?: FavoriteProjectsOrderDirection;
   };
+}
+
+export async function generateStaticParams() {
+  const params = [
+    {},
+    ...orderByOptions.map((orderBy) => ({ "order-by": orderBy })),
+    ...directionOptions.map((direction) => ({ direction })),
+    ...orderByOptions.flatMap((orderBy) =>
+      directionOptions.map((direction) => ({
+        "order-by": orderBy,
+        direction,
+      }))
+    ),
+  ];
+
+  return params;
 }
 
 const FavoritePage = async ({ searchParams }: FavoritePageProps) => {

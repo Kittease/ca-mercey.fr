@@ -1,8 +1,10 @@
 import { Artists, ProjectArtists, Projects, Tracks } from "@prisma/client";
 
-export type FavoriteProjectsOrderBy = "date" | "name" | "artist" | "duration";
+export const orderByOptions = ["date", "name", "artist", "duration"] as const;
+export const directionOptions = ["asc", "desc"] as const;
 
-export type FavoriteProjectsOrderDirection = "asc" | "desc";
+export type FavoriteProjectsOrderBy = (typeof orderByOptions)[number];
+export type FavoriteProjectsOrderDirection = (typeof directionOptions)[number];
 
 export type RawFavoriteProject = Projects & {
   artists: ({
