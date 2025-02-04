@@ -27,6 +27,7 @@ const loadConfig = () => {
       clientId: env.SPOTIFY_API_CLIENT_ID,
       clientSecret: env.SPOTIFY_API_CLIENT_SECRET,
     },
+    spotifyNowPlayingUrl: env.SPOTIFY_NOW_PLAYING_URL,
   };
 };
 
