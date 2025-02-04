@@ -30,6 +30,7 @@ export const serverSideSchema = z.object({
   STATSFM_USER_ID: z.string(),
   SPOTIFY_API_CLIENT_ID: z.string(),
   SPOTIFY_API_CLIENT_SECRET: z.string(),
+  SPOTIFY_NOW_PLAYING_URL: z.string(),
 });
 
 export const clientSideSchema = z.object({
