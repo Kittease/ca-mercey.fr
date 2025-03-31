@@ -1,8 +1,8 @@
+import { transformRawProjectsToProjects } from "@/domain/music/services/projects/transform";
+import { Project } from "@/domain/music/services/projects/types";
 import prisma from "@/lib/prisma";
 
-import { transformRawFavoriteProjectsToFavoriteProjects } from "./transform";
 import {
-  FavoriteProject,
   FavoriteProjectsOrderBy,
   FavoriteProjectsOrderDirection,
 } from "./types";
@@ -22,12 +22,15 @@ export const removeFavoriteProject = async (projectId: string) => {
 export const getFavoriteProjects = async (
   orderBy: FavoriteProjectsOrderBy,
   direction?: FavoriteProjectsOrderDirection
-): Promise<FavoriteProject[]> => {
+): Promise<Project[]> => {
   const rawProjects = await prisma.projects.findMany({
     where: { FavoriteProjects: { some: {} } },
     include: {
       artists: { include: { artist: true } },
-      tracks: true,
+      tracks: {
+        include: { artists: { include: { artist: true } } },
+        orderBy: [{ discNumber: "asc" }, { trackNumber: "asc" }],
+      },
     },
     orderBy:
       orderBy === "date"
@@ -35,11 +38,12 @@ export const getFavoriteProjects = async (
             { releaseYear: direction ?? "desc" },
             { releaseMonth: direction ?? "desc" },
             { releaseDay: direction ?? "desc" },
+            { name: "asc" },
           ]
         : { name: "asc" },
   });
 
-  const projects = transformRawFavoriteProjectsToFavoriteProjects(rawProjects);
+  const projects = transformRawProjectsToProjects(rawProjects);
 
   switch (orderBy) {
     case "date": {
