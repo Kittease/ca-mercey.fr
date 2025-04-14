@@ -23,7 +23,7 @@ const PageButton = ({
     <button
       type="button"
       className={cn(
-        "group relative flex h-fit w-full items-center overflow-hidden rounded-xl border bg-stone-800",
+        "group relative cursor-pointer flex h-fit w-full items-center overflow-hidden rounded-xl border bg-stone-800",
         "border-stone-600 drop-shadow-md transition-all ease-in-out sm:hover:border-stone-500 sm:hover:drop-shadow-lg",
         className
       )}
@@ -34,7 +34,7 @@ const PageButton = ({
       <div
         className={cn(
           "relative z-10 w-full px-16 py-12",
-          "before:absolute before:inset-0 before:z-0 before:bg-gradient-to-tr before:from-stone-950/95 before:to-stone-700/90",
+          "before:absolute before:inset-0 before:z-0 before:bg-linear-to-tr before:from-stone-950/95 before:to-stone-700/90",
           "before:opacity-100 before:transition-all before:ease-in-out sm:hover:before:opacity-95"
         )}
       >

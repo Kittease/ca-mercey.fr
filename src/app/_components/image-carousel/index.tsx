@@ -34,8 +34,8 @@ const ImageCarousel = ({
       className={cn(
         "relative flex shrink-0",
         {
-          running: "sm:group-hover:[&>div]:paused",
-          paused: "[&>div]:paused sm:group-hover:[&>div]:running",
+          running: "sm:[&>div]:group-hover:paused",
+          paused: "[&>div]:paused sm:[&>div]:group-hover:running",
         }[defaultState],
         className
       )}

@@ -49,9 +49,9 @@ const FavoritePage = async ({ searchParams }: FavoritePageProps) => {
         className={cn(
           "fixed z-50 flex h-fit w-full flex-row items-center justify-between bg-stone-950/65 backdrop-blur-xl",
           "p-8",
-          "sm:px-[calc((100%-(theme(spacing.64)*2+theme(spacing.8)))/2)] sm:py-4",
-          "lg:px-[calc((100%-(theme(spacing.64)*3+theme(spacing.8)*2))/2)]",
-          "xl:px-[calc((100%-(theme(spacing.64)*4+theme(spacing.8)*3))/2)]"
+          "sm:px-[calc((100%-(--spacing(64)*2+(--spacing(8))))/2)] sm:py-4",
+          "lg:px-[calc((100%-(--spacing(64)*3+(--spacing(8))*2))/2)]",
+          "xl:px-[calc((100%-(--spacing(64)*4+(--spacing(8))*3))/2)]"
         )}
       >
         <Link href={Routes.MUSIC}>
