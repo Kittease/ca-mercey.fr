@@ -40,7 +40,7 @@ const FavoriteProjectsButton = ({ covers }: FavoriteProjectsButtonProps) => {
               ? {
                   reverse: true,
                   className:
-                    "left-[calc(-1*(theme(spacing.16)+theme(spacing.6))/2)] w-[calc(100%+(theme(spacing.16)+theme(spacing.6))/2)]",
+                    "left-[calc(-1*(--spacing(16)+(--spacing(6)))/2)] w-[calc(100%+(--spacing(16)+(--spacing(6)))/2)]",
                 }
               : {})}
           />
