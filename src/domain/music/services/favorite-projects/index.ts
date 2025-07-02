@@ -6,6 +6,8 @@ import {
   FavoriteProjectsOrderBy,
   FavoriteProjectsOrderDirection,
 } from "./types";
+import { unstable_cache } from "next/cache";
+import { FetchTags } from "@/lib/cache/types";
 
 export const addFavoriteProject = async (projectId: string) => {
   await prisma.favoriteProjects.create({
@@ -19,7 +21,9 @@ export const removeFavoriteProject = async (projectId: string) => {
   });
 };
 
-export const getFavoriteProjects = async (): Promise<FavoriteProject[]> => {
+export const getFavoriteProjects = unstable_cache(async (): Promise<
+  FavoriteProject[]
+> => {
   const rawProjects = await prisma.projects.findMany({
     where: { FavoriteProjects: { some: {} } },
     include: {
@@ -29,7 +33,7 @@ export const getFavoriteProjects = async (): Promise<FavoriteProject[]> => {
   });
 
   return transformRawFavoriteProjectsToFavoriteProjects(rawProjects);
-};
+}, [FetchTags.FavoriteProjects]);
 
 export const getRandomCovers = async (count: number) => {
   const projectCovers = (

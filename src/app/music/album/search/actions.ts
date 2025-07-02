@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath, revalidateTag } from "next/cache";
+import { revalidateTag } from "next/cache";
 
 import {
   addFavoriteProject,
@@ -20,7 +20,7 @@ export const saveFavoriteAlbum = async (albumId: string) => {
   await saveAlbum(album);
   await addFavoriteProject(albumId);
   revalidateTag(FetchTags.SpotifyAlbumSearch);
-  revalidatePath(Routes.FAVORITE_PROJECTS);
+  revalidateTag(FetchTags.FavoriteProjects);
 };
 
 export const removeFavoriteAlbum = async (albumId: string) => {
@@ -30,5 +30,5 @@ export const removeFavoriteAlbum = async (albumId: string) => {
 
   await removeFavoriteProject(albumId);
   revalidateTag(FetchTags.SpotifyAlbumSearch);
-  revalidatePath(Routes.FAVORITE_PROJECTS);
+  revalidateTag(FetchTags.FavoriteProjects);
 };
