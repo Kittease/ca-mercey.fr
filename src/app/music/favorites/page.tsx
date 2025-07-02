@@ -1,8 +1,7 @@
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, ShuffleIcon } from "lucide-react";
 import Link from "next/link";
 import { Suspense } from "react";
 
-import AlbumFancy from "@/app/_components/business/album/fancy";
 import { getFavoriteProjects } from "@/domain/music/services/favorite-projects";
 import {
   FavoriteProjectsOrderBy,
@@ -10,22 +9,46 @@ import {
 } from "@/domain/music/services/favorite-projects/types";
 import { Routes } from "@/lib/routes";
 import { cn } from "@/lib/tailwind";
-
-import OrderFilter from "./_components/order-filter";
-import RandomProjectSelector from "./_components/random-project-selector";
+import OrderFilter from "@/app/music/favorites/_components/order-filter";
+import RandomProjectSelector from "@/app/music/favorites/_components/random-project-selector";
+import AlbumGrid from "@/app/music/favorites/_components/album-grid";
+import ServerSideAwait from "@/app/_components/await/server";
+import { sortAndGroupProjects } from "@/app/music/favorites/sort";
 
 const ProjectsSkeleton = () => {
   return (
     <>
-      {Array(12).map((_, i) => (
-        <div
-          className="flex size-64 animate-pulse flex-col justify-end bg-stone-800"
-          // eslint-disable-next-line react/no-array-index-key
-          key={i}
-        >
-          <div className="h-1/3 animate-pulse bg-stone-700" />
+      <div className="flex flex-col gap-8">
+        <div className="h-8 w-48 animate-pulse rounded bg-stone-100/50" />
+
+        <div className="grid size-fit grid-cols-1 justify-center gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          <div className="flex size-64 animate-pulse flex-col justify-end bg-stone-800">
+            <div className="h-1/3 animate-pulse bg-stone-700" />
+          </div>
+
+          <div className="flex size-64 animate-pulse flex-col justify-end bg-stone-800">
+            <div className="h-1/3 animate-pulse bg-stone-700" />
+          </div>
+
+          <div className="flex size-64 animate-pulse flex-col justify-end bg-stone-800">
+            <div className="h-1/3 animate-pulse bg-stone-700" />
+          </div>
         </div>
-      ))}
+      </div>
+
+      <div className="flex flex-col gap-8">
+        <div className="h-8 w-48 animate-pulse rounded bg-stone-100/50" />
+
+        <div className="grid size-fit grid-cols-1 justify-center gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          <div className="flex size-64 animate-pulse flex-col justify-end bg-stone-800">
+            <div className="h-1/3 animate-pulse bg-stone-700" />
+          </div>
+
+          <div className="flex size-64 animate-pulse flex-col justify-end bg-stone-800">
+            <div className="h-1/3 animate-pulse bg-stone-700" />
+          </div>
+        </div>
+      </div>
     </>
   );
 };
@@ -38,9 +61,14 @@ interface FavoritePageProps {
 }
 
 const FavoritePage = async ({ searchParams }: FavoritePageProps) => {
-  const projects = await getFavoriteProjects(
-    searchParams?.["order-by"] ?? "date",
-    searchParams?.direction
+  const orderBy = searchParams?.["order-by"] ?? "date";
+  const direction =
+    orderBy === "date"
+      ? searchParams?.direction ?? "desc"
+      : searchParams?.direction;
+
+  const groupedProjectsPromise = getFavoriteProjects().then((projects) =>
+    sortAndGroupProjects(projects, orderBy, direction)
   );
 
   return (
@@ -60,16 +88,48 @@ const FavoritePage = async ({ searchParams }: FavoritePageProps) => {
 
         <div className="flex flex-row items-center gap-x-4">
           <OrderFilter />
-          <RandomProjectSelector projects={projects} />
+
+          <Suspense fallback={<ShuffleIcon className="opacity-50" />}>
+            <ServerSideAwait promise={groupedProjectsPromise}>
+              {(groupedProjects) => (
+                <RandomProjectSelector
+                  projects={groupedProjects.flatMap(
+                    (group) => group.sortedProjects
+                  )}
+                />
+              )}
+            </ServerSideAwait>
+          </Suspense>
         </div>
       </div>
 
-      <div className="mt-32 grid size-fit grid-cols-1 justify-center gap-8 sm:mt-24 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        <Suspense fallback={<ProjectsSkeleton />}>
-          {projects.map((project) => (
-            <AlbumFancy project={project} key={project.id} />
-          ))}
-        </Suspense>
+      <div className="mt-32 sm:mt-24">
+        <div className="flex flex-col gap-12">
+          <Suspense fallback={<ProjectsSkeleton />}>
+            <ServerSideAwait promise={groupedProjectsPromise}>
+              {(groupedProjects) =>
+                groupedProjects.length === 1 ? (
+                  <AlbumGrid projects={groupedProjects[0].sortedProjects} />
+                ) : (
+                  <>
+                    {groupedProjects.map((group) => (
+                      <div
+                        key={group.groupTitle}
+                        className="flex flex-col gap-8"
+                      >
+                        <h2 className="text-2xl font-bold text-stone-100">
+                          {group.groupTitle}
+                        </h2>
+
+                        <AlbumGrid projects={group.sortedProjects} />
+                      </div>
+                    ))}
+                  </>
+                )
+              }
+            </ServerSideAwait>
+          </Suspense>
+        </div>
       </div>
     </>
   );

@@ -19,70 +19,16 @@ export const removeFavoriteProject = async (projectId: string) => {
   });
 };
 
-export const getFavoriteProjects = async (
-  orderBy: FavoriteProjectsOrderBy,
-  direction?: FavoriteProjectsOrderDirection
-): Promise<FavoriteProject[]> => {
+export const getFavoriteProjects = async (): Promise<FavoriteProject[]> => {
   const rawProjects = await prisma.projects.findMany({
     where: { FavoriteProjects: { some: {} } },
     include: {
       artists: { include: { artist: true } },
       tracks: true,
     },
-    orderBy:
-      orderBy === "date"
-        ? [
-            { releaseYear: direction ?? "desc" },
-            { releaseMonth: direction ?? "desc" },
-            { releaseDay: direction ?? "desc" },
-          ]
-        : { name: "asc" },
   });
 
-  const projects = transformRawFavoriteProjectsToFavoriteProjects(rawProjects);
-
-  switch (orderBy) {
-    case "date": {
-      return projects;
-    }
-
-    case "name": {
-      return projects.sort(
-        (a, b) =>
-          a.name.localeCompare(b.name, undefined, {
-            sensitivity: "base",
-          }) * (direction === "desc" ? -1 : 1)
-      );
-    }
-
-    case "artist": {
-      return projects.sort(
-        (a, b) =>
-          a.artists[0].name.localeCompare(b.artists[0].name, undefined, {
-            sensitivity: "base",
-          }) * (direction === "desc" ? -1 : 1)
-      );
-    }
-
-    case "duration": {
-      const projectDurations: Record<string, number> = {};
-      projects.forEach((project) => {
-        projectDurations[project.id] = project.tracks.reduce(
-          (acc, track) => acc + track.duration,
-          0
-        );
-      });
-
-      return projects.sort(
-        (a, b) =>
-          (projectDurations[a.id] - projectDurations[b.id]) *
-          (direction === "desc" ? -1 : 1)
-      );
-    }
-
-    default:
-      throw new Error(`Unreachable orderBy: ${orderBy satisfies never}`);
-  }
+  return transformRawFavoriteProjectsToFavoriteProjects(rawProjects);
 };
 
 export const getRandomCovers = async (count: number) => {
