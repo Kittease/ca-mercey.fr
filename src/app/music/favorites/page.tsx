@@ -64,11 +64,11 @@ const FavoritePage = async ({ searchParams }: FavoritePageProps) => {
   const orderBy = searchParams?.["order-by"] ?? "date";
   const direction =
     orderBy === "date"
-      ? searchParams?.direction ?? "desc"
+      ? (searchParams?.direction ?? "desc")
       : searchParams?.direction;
 
   const groupedProjectsPromise = getFavoriteProjects().then((projects) =>
-    sortAndGroupProjects(projects, orderBy, direction)
+    sortAndGroupProjects(projects, orderBy, direction),
   );
 
   return (
@@ -79,7 +79,7 @@ const FavoritePage = async ({ searchParams }: FavoritePageProps) => {
           "p-8",
           "sm:px-[calc((100%-(--spacing(64)*2+(--spacing(8))))/2)] sm:py-4",
           "lg:px-[calc((100%-(--spacing(64)*3+(--spacing(8))*2))/2)]",
-          "xl:px-[calc((100%-(--spacing(64)*4+(--spacing(8))*3))/2)]"
+          "xl:px-[calc((100%-(--spacing(64)*4+(--spacing(8))*3))/2)]",
         )}
       >
         <Link href={Routes.MUSIC}>
@@ -94,7 +94,7 @@ const FavoritePage = async ({ searchParams }: FavoritePageProps) => {
               {(groupedProjects) => (
                 <RandomProjectSelector
                   projects={groupedProjects.flatMap(
-                    (group) => group.sortedProjects
+                    (group) => group.sortedProjects,
                   )}
                 />
               )}

@@ -3,7 +3,7 @@ import { SpotifyImage } from "@/domain/spotify/types";
 
 export const getAlbumReleaseDateObject = (
   date: RawSimplifiedAlbum["release_date"],
-  datePrecision: RawSimplifiedAlbum["release_date_precision"]
+  datePrecision: RawSimplifiedAlbum["release_date_precision"],
 ) => {
   const parts = date.split("-");
 
@@ -21,6 +21,6 @@ export const getHighestDefinitionSpotifyImage = (images: SpotifyImage[]) => {
 
   return images.reduce(
     (acc, val) => (acc.width > val.width ? acc : val),
-    images[0]
+    images[0],
   );
 };

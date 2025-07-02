@@ -5,6 +5,6 @@ import { publicConfig } from "@/lib/config/client-config";
 export function createClient() {
   return createBrowserClient(
     publicConfig.supabase.url,
-    publicConfig.supabase.anonKey
+    publicConfig.supabase.anonKey,
   );
 }

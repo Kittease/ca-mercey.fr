@@ -20,7 +20,7 @@ const AlbumSmall = ({
     <div
       className={cn(
         "group/album flex w-40 flex-col gap-y-2 rounded-lg bg-stone-900 p-2 sm:w-52",
-        className
+        className,
       )}
       {...rest}
     >
@@ -41,13 +41,13 @@ const AlbumSmall = ({
             disabled={action.state.pending}
             onClick={action.handler}
             className={cn(
-              "absolute bottom-4 right-4 rounded-full bg-green-500 p-3 drop-shadow-md transition-all duration-150 disabled:bg-green-600",
+              "absolute right-4 bottom-4 rounded-full bg-green-500 p-3 drop-shadow-md transition-all duration-150 disabled:bg-green-600",
               "sm:pointer-events-none sm:group-hover/album:pointer-events-auto sm:group-hover/album:opacity-100",
               "group/cta m-0.5 hover:m-0",
               (action.state.pending && action.state.albumId === album.id) ||
                 isFavorite
                 ? "sm:opacity-100"
-                : "sm:opacity-0"
+                : "sm:opacity-0",
             )}
           >
             {

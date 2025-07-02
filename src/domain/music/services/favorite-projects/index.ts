@@ -51,7 +51,7 @@ export const getRandomCovers = async (count: number) => {
 
   while (projectCovers.length < count) {
     projectCovers.push(
-      projectCovers[Math.floor(Math.random() * initCovers.length)]
+      projectCovers[Math.floor(Math.random() * initCovers.length)],
     );
   }
 

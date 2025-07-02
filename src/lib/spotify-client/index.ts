@@ -19,7 +19,7 @@ class SpotifyApiClient {
 
   public static getInstance(
     clientId: string,
-    clientSecret: string
+    clientSecret: string,
   ): SpotifyApiClient {
     if (!SpotifyApiClient.instance) {
       SpotifyApiClient.instance = new SpotifyApiClient(clientId, clientSecret);
@@ -57,7 +57,7 @@ class SpotifyApiClient {
 
   public async fetch<T>(
     endpoint: string,
-    options: RequestInit = {}
+    options: RequestInit = {},
   ): Promise<SpotifyApiResponse<T>> {
     const url = `https://api.spotify.com/v1${endpoint}`;
 
@@ -91,7 +91,7 @@ class SpotifyApiClient {
 
 const spotifyApiClientInstance = SpotifyApiClient.getInstance(
   config.spotifyApi.clientId,
-  config.spotifyApi.clientSecret
+  config.spotifyApi.clientSecret,
 );
 
 export default spotifyApiClientInstance;
