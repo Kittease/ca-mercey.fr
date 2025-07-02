@@ -29,7 +29,7 @@ export const transformRawSimplifiedTrackToSimplifiedTrack = ({
     trackNumber: track_number,
     previewUrl: preview_url,
     artists: artists.map((artist) =>
-      transformRawSimplifiedArtistToSimplifiedArtist(artist)
+      transformRawSimplifiedArtistToSimplifiedArtist(artist),
     ),
     ...rest,
   });

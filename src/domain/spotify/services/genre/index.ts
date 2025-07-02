@@ -12,7 +12,7 @@ export const saveGenres = async (genres: string[]) => {
   const newGenreRecords = await prisma.genres.createManyAndReturn({
     data: genres
       .filter(
-        (genre) => !existingGenreRecords.some(({ name }) => name === genre)
+        (genre) => !existingGenreRecords.some(({ name }) => name === genre),
       )
       .map((genre) => ({ name: genre })),
   });

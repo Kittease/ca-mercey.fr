@@ -37,7 +37,7 @@ const ImageCarousel = ({
           running: "sm:[&>div]:group-hover:paused",
           paused: "[&>div]:paused sm:[&>div]:group-hover:running",
         }[defaultState],
-        className
+        className,
       )}
     >
       <div
@@ -46,7 +46,7 @@ const ImageCarousel = ({
           reverse
             ? "animate-carousel-scroll-reverse"
             : "animate-carousel-scroll",
-          "whitespace-nowrap animation-delay-[var(--speed)] animation-duration-carousel-[var(--speed)]"
+          "animation-delay-[var(--speed)] animation-duration-carousel-[var(--speed)] whitespace-nowrap",
         )}
       >
         {imageUrls.map((imageUrl) => (
@@ -67,7 +67,7 @@ const ImageCarousel = ({
           reverse
             ? "animate-carousel-scroll-continuous-reverse"
             : "animate-carousel-scroll-continuous",
-          "whitespace-nowrap animation-delay-halved-[var(--speed)] animation-duration-carousel-[var(--speed)]"
+          "animation-delay-halved-[var(--speed)] animation-duration-carousel-[var(--speed)] whitespace-nowrap",
         )}
       >
         {imageUrls.map((imageUrl) => (

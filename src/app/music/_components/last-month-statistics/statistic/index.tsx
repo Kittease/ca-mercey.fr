@@ -23,7 +23,7 @@ const Statistic = ({ label, stat, diff, Icon, className }: StatisticProps) => {
           <p
             className={cn(
               "text-sm md:text-lg",
-              diff > 0 ? "text-green-600" : "text-red-600"
+              diff > 0 ? "text-green-600" : "text-red-600",
             )}
           >
             ({diff > 0 ? "+" : null}

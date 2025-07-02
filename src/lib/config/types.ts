@@ -22,8 +22,8 @@ export const serverSideSchema = z.object({
         z.object({
           provider: z.string(),
           providerId: z.string(),
-        })
-      )
+        }),
+      ),
     ),
   DATABASE_URL: z.string(),
   DIRECT_URL: z.string(),

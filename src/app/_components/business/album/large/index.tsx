@@ -21,7 +21,7 @@ const AlbumLarge = ({
       className={cn(
         "group/album relative flex w-full flex-col gap-y-6 rounded-lg bg-stone-900 p-6 sm:w-fit",
         action ? "pr-28" : "pr-12",
-        className
+        className,
       )}
       {...rest}
     >
@@ -60,13 +60,13 @@ const AlbumLarge = ({
           disabled={action.state.pending}
           onClick={action.handler}
           className={cn(
-            "absolute bottom-6 right-6 size-fit rounded-full bg-green-500 p-4 drop-shadow-md transition-all duration-150 disabled:bg-green-600",
+            "absolute right-6 bottom-6 size-fit rounded-full bg-green-500 p-4 drop-shadow-md transition-all duration-150 disabled:bg-green-600",
             "sm:pointer-events-none sm:group-hover/album:pointer-events-auto sm:group-hover/album:opacity-100",
             "group/cta m-1 hover:m-0",
             (action.state.pending && action.state.albumId === album.id) ||
               isFavorite
               ? "sm:opacity-100"
-              : "sm:opacity-0"
+              : "sm:opacity-0",
           )}
         >
           {

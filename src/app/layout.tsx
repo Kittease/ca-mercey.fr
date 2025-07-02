@@ -27,7 +27,7 @@ export default function RootLayout({
       <body
         className={cn(
           "flex min-h-screen w-full justify-center bg-stone-950 font-sans text-stone-50 antialiased",
-          fontSans.variable
+          fontSans.variable,
         )}
       >
         {children}

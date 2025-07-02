@@ -18,7 +18,7 @@ export function createClient() {
         setAll(cookiesToSet) {
           try {
             cookiesToSet.forEach(({ name, value, options }) =>
-              cookieStore.set(name, value, options)
+              cookieStore.set(name, value, options),
             );
           } catch {
             // The `setAll` method was called from a Server Component.
@@ -27,7 +27,7 @@ export function createClient() {
           }
         },
       },
-    }
+    },
   );
 }
 
@@ -45,8 +45,8 @@ export async function getAdminUser() {
         (identity) =>
           config.adminIdentities.find(
             ({ provider, providerId }) =>
-              identity.provider === provider && identity.id === providerId
-          ) !== undefined
+              identity.provider === provider && identity.id === providerId,
+          ) !== undefined,
       )
     : false;
 

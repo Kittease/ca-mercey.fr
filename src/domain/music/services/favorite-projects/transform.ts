@@ -1,7 +1,7 @@
 import { RawFavoriteProject } from "./types";
 
 export const transformRawFavoriteProjectsToFavoriteProjects = (
-  rawProjects: RawFavoriteProject[]
+  rawProjects: RawFavoriteProject[],
 ) =>
   rawProjects.map(({ artists, ...projectRest }) => ({
     ...projectRest,

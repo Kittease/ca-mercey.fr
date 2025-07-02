@@ -28,7 +28,7 @@ const Results = ({ searchResults, searchTerms }: ResultsProps) => {
 
   const action: (
     albumId: string,
-    isFavorite: boolean
+    isFavorite: boolean,
   ) => AlbumProps["action"] = (albumId: string, isFavorite: boolean) => ({
     handler: async () => {
       setActionState({ pending: true, albumId });
@@ -42,7 +42,7 @@ const Results = ({ searchResults, searchTerms }: ResultsProps) => {
       } catch (error) {
         if (error instanceof Error && error.message === "Unauthorized") {
           toast.error(
-            "Vous n'avez pas les permissions nécessaires pour cette action !"
+            "Vous n'avez pas les permissions nécessaires pour cette action !",
           );
         } else {
           toast.error("Quelque chose s'est mal passé...");
@@ -96,7 +96,7 @@ const Results = ({ searchResults, searchTerms }: ResultsProps) => {
           isFavorite={searchResults[0].isFavorite}
           action={action(
             searchResults[0].album.id,
-            searchResults[0].isFavorite
+            searchResults[0].isFavorite,
           )}
         />
       </div>

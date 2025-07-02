@@ -10,7 +10,7 @@ const logger = pino();
 const devLogger = pino(
   pretty({
     colorize: true,
-  })
+  }),
 );
 
 export default config.nodeEnv === NodeEnv.development ? devLogger : logger;

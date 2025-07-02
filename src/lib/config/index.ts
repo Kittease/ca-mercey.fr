@@ -5,11 +5,11 @@ const loadConfig = () => {
 
   if (!parseResult.success) {
     const errors = parseResult.error.issues.map(
-      (issue) => ` - ${issue.path.join(".")}: ${issue.message}`
+      (issue) => ` - ${issue.path.join(".")}: ${issue.message}`,
     );
 
     throw new Error(
-      `Missing required env variables:\n\t${errors.join(",\n\t")}`
+      `Missing required env variables:\n\t${errors.join(",\n\t")}`,
     );
   }
 
