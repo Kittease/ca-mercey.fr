@@ -1,6 +1,7 @@
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata } from "next";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { Inter as FontSans } from "next/font/google";
 
 import { Toaster } from "@/app/_components/ui/sonner";
@@ -30,7 +31,7 @@ export default function RootLayout({
           fontSans.variable,
         )}
       >
-        {children}
+        <NuqsAdapter>{children}</NuqsAdapter>
         <Toaster richColors />
         <Analytics />
         <SpeedInsights />

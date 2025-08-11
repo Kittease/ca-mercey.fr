@@ -9,8 +9,8 @@ import {
   CalendarArrowDown,
   CalendarArrowUp,
 } from "lucide-react";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useState, forwardRef } from "react";
+import { useQueryState } from "nuqs";
+import { forwardRef } from "react";
 
 import { Label } from "@/app/_components/ui/label";
 import {
@@ -21,10 +21,11 @@ import {
   SelectValue,
 } from "@/app/_components/ui/select";
 import {
+  favoriteProjectsOrderBy,
   FavoriteProjectsOrderBy,
+  favoriteProjectsOrderDirection,
   FavoriteProjectsOrderDirection,
 } from "@/domain/music/services/favorite-projects/types";
-import { Routes } from "@/lib/routes";
 
 interface OrderDirectionIconProps {
   orderBy?: FavoriteProjectsOrderBy;
@@ -68,40 +69,36 @@ const OrderDirectionIcon = forwardRef<
 });
 
 const OrderFilter = () => {
-  const router = useRouter();
-  const searchParams = useSearchParams();
+  const [orderBy, setOrderBy] = useQueryState<FavoriteProjectsOrderBy>(
+    "order-by",
+    {
+      shallow: true,
+      parse: (value) =>
+        favoriteProjectsOrderBy.includes(value as FavoriteProjectsOrderBy)
+          ? (value as FavoriteProjectsOrderBy)
+          : null,
+    },
+  );
 
-  let defaultOrderBy: FavoriteProjectsOrderBy | undefined;
-  const searchParamsOrderBy = searchParams.get("order-by");
-  if (
-    searchParamsOrderBy === "date" ||
-    searchParamsOrderBy === "name" ||
-    searchParamsOrderBy === "artist" ||
-    searchParamsOrderBy === "duration"
-  ) {
-    defaultOrderBy = searchParamsOrderBy;
-  }
-  const [orderBy, setOrderBy] = useState(defaultOrderBy);
+  const [direction, setDirection] =
+    useQueryState<FavoriteProjectsOrderDirection>("direction", {
+      shallow: true,
+      parse: (value) =>
+        favoriteProjectsOrderDirection.includes(
+          value as FavoriteProjectsOrderDirection,
+        )
+          ? (value as FavoriteProjectsOrderDirection)
+          : null,
+    });
 
   const handleOrderByChange = (value: NonNullable<typeof orderBy>) => {
     setOrderBy(value);
-
-    const params = new URLSearchParams(searchParams.toString());
-    params.set("order-by", value);
-    router.replace(`${Routes.FAVORITE_PROJECTS}?${params.toString()}`);
   };
-
-  let defaultDirection: FavoriteProjectsOrderDirection | undefined;
-  const searchParamsDirection = searchParams.get("direction");
-  if (searchParamsDirection === "asc" || searchParamsDirection === "desc") {
-    defaultDirection = searchParamsDirection;
-  }
-  const [direction, setDirection] = useState(defaultDirection);
 
   const handleDirectionChange = (checked: boolean) => {
     let newDirection: "asc" | "desc" = checked ? "asc" : "desc";
 
-    if (direction === undefined && orderBy !== undefined) {
+    if (direction === null && orderBy !== null) {
       if (orderBy === "date") {
         newDirection = "asc";
       } else {
@@ -110,17 +107,13 @@ const OrderFilter = () => {
     }
 
     setDirection(newDirection);
-
-    const params = new URLSearchParams(searchParams.toString());
-    params.set("direction", newDirection);
-    router.replace(`${Routes.FAVORITE_PROJECTS}?${params.toString()}`);
   };
 
   return (
     <div className="flex flex-row items-center gap-x-4">
       <Select
         name="orderBy"
-        value={orderBy}
+        value={orderBy ?? ""}
         onValueChange={handleOrderByChange}
       >
         <SelectTrigger className="w-[160px] bg-stone-950/25">
@@ -144,7 +137,10 @@ const OrderFilter = () => {
         onCheckedChange={handleDirectionChange}
       >
         <SwitchPrimitives.Thumb asChild>
-          <OrderDirectionIcon orderBy={orderBy} direction={direction} />
+          <OrderDirectionIcon
+            orderBy={orderBy ?? undefined}
+            direction={direction ?? undefined}
+          />
         </SwitchPrimitives.Thumb>
       </SwitchPrimitives.Root>
     </div>

@@ -3,73 +3,17 @@ import Link from "next/link";
 import { Suspense } from "react";
 
 import { getFavoriteProjects } from "@/domain/music/services/favorite-projects";
-import {
-  FavoriteProjectsOrderBy,
-  FavoriteProjectsOrderDirection,
-} from "@/domain/music/services/favorite-projects/types";
 import { Routes } from "@/lib/routes";
 import { cn } from "@/lib/tailwind";
 import OrderFilter from "@/app/music/favorites/_components/order-filter";
 import RandomProjectSelector from "@/app/music/favorites/_components/random-project-selector";
-import AlbumGrid from "@/app/music/favorites/_components/album-grid";
 import ServerSideAwait from "@/app/_components/await/server";
-import { sortAndGroupProjects } from "@/app/music/favorites/sort";
+import ClientPage from "@/app/music/favorites/_components/client-page";
+import OrderFilterSkeleton from "@/app/music/favorites/_components/order-filter/skeleton";
+import ProjectsSkeleton from "@/app/music/favorites/_components/client-page/skeleton";
 
-const ProjectsSkeleton = () => {
-  return (
-    <>
-      <div className="flex flex-col gap-8">
-        <div className="h-8 w-48 animate-pulse rounded bg-stone-100/50" />
-
-        <div className="grid size-fit grid-cols-1 justify-center gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          <div className="flex size-64 animate-pulse flex-col justify-end bg-stone-800">
-            <div className="h-1/3 animate-pulse bg-stone-700" />
-          </div>
-
-          <div className="flex size-64 animate-pulse flex-col justify-end bg-stone-800">
-            <div className="h-1/3 animate-pulse bg-stone-700" />
-          </div>
-
-          <div className="flex size-64 animate-pulse flex-col justify-end bg-stone-800">
-            <div className="h-1/3 animate-pulse bg-stone-700" />
-          </div>
-        </div>
-      </div>
-
-      <div className="flex flex-col gap-8">
-        <div className="h-8 w-48 animate-pulse rounded bg-stone-100/50" />
-
-        <div className="grid size-fit grid-cols-1 justify-center gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          <div className="flex size-64 animate-pulse flex-col justify-end bg-stone-800">
-            <div className="h-1/3 animate-pulse bg-stone-700" />
-          </div>
-
-          <div className="flex size-64 animate-pulse flex-col justify-end bg-stone-800">
-            <div className="h-1/3 animate-pulse bg-stone-700" />
-          </div>
-        </div>
-      </div>
-    </>
-  );
-};
-
-interface FavoritePageProps {
-  searchParams?: {
-    "order-by"?: FavoriteProjectsOrderBy;
-    direction?: FavoriteProjectsOrderDirection;
-  };
-}
-
-const FavoritePage = async ({ searchParams }: FavoritePageProps) => {
-  const orderBy = searchParams?.["order-by"] ?? "date";
-  const direction =
-    orderBy === "date"
-      ? (searchParams?.direction ?? "desc")
-      : searchParams?.direction;
-
-  const groupedProjectsPromise = getFavoriteProjects().then((projects) =>
-    sortAndGroupProjects(projects, orderBy, direction),
-  );
+const FavoritePage = async () => {
+  const favoriteProjectsPromise = getFavoriteProjects();
 
   return (
     <>
@@ -87,16 +31,14 @@ const FavoritePage = async ({ searchParams }: FavoritePageProps) => {
         </Link>
 
         <div className="flex flex-row items-center gap-x-4">
-          <OrderFilter />
+          <Suspense fallback={<OrderFilterSkeleton />}>
+            <OrderFilter />
+          </Suspense>
 
           <Suspense fallback={<ShuffleIcon className="opacity-50" />}>
-            <ServerSideAwait promise={groupedProjectsPromise}>
-              {(groupedProjects) => (
-                <RandomProjectSelector
-                  projects={groupedProjects.flatMap(
-                    (group) => group.sortedProjects,
-                  )}
-                />
+            <ServerSideAwait promise={favoriteProjectsPromise}>
+              {(favoriteProjects) => (
+                <RandomProjectSelector projects={favoriteProjects} />
               )}
             </ServerSideAwait>
           </Suspense>
@@ -106,27 +48,10 @@ const FavoritePage = async ({ searchParams }: FavoritePageProps) => {
       <div className="mt-32 sm:mt-24">
         <div className="flex flex-col gap-12">
           <Suspense fallback={<ProjectsSkeleton />}>
-            <ServerSideAwait promise={groupedProjectsPromise}>
-              {(groupedProjects) =>
-                groupedProjects.length === 1 ? (
-                  <AlbumGrid projects={groupedProjects[0].sortedProjects} />
-                ) : (
-                  <>
-                    {groupedProjects.map((group) => (
-                      <div
-                        key={group.groupTitle}
-                        className="flex flex-col gap-8"
-                      >
-                        <h2 className="text-2xl font-bold text-stone-100">
-                          {group.groupTitle}
-                        </h2>
-
-                        <AlbumGrid projects={group.sortedProjects} />
-                      </div>
-                    ))}
-                  </>
-                )
-              }
+            <ServerSideAwait promise={favoriteProjectsPromise}>
+              {(favoriteProjects) => (
+                <ClientPage favoriteProjects={favoriteProjects} />
+              )}
             </ServerSideAwait>
           </Suspense>
         </div>
