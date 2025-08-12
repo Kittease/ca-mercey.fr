@@ -21,9 +21,7 @@ export const removeFavoriteProject = async (projectId: string) => {
   });
 };
 
-export const getFavoriteProjects = unstable_cache(async (): Promise<
-  FavoriteProject[]
-> => {
+export const getFavoriteProjects = async (): Promise<FavoriteProject[]> => {
   const rawProjects = await prisma.projects.findMany({
     where: { FavoriteProjects: { some: {} } },
     include: {
@@ -33,7 +31,7 @@ export const getFavoriteProjects = unstable_cache(async (): Promise<
   });
 
   return transformRawFavoriteProjectsToFavoriteProjects(rawProjects);
-}, [FetchTags.FavoriteProjects]);
+};
 
 export const getRandomCovers = async (count: number) => {
   const projectCovers = (
