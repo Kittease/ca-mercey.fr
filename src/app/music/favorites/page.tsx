@@ -2,17 +2,17 @@ import { ArrowLeft, ShuffleIcon } from "lucide-react";
 import Link from "next/link";
 import { Suspense } from "react";
 
+import ServerSideAwait from "@/app/_components/await/server";
+import ClientPage from "@/app/music/favorites/_components/client-page";
+import ProjectsSkeleton from "@/app/music/favorites/_components/client-page/skeleton";
+import OrderFilter from "@/app/music/favorites/_components/order-filter";
+import OrderFilterSkeleton from "@/app/music/favorites/_components/order-filter/skeleton";
+import RandomProjectSelector from "@/app/music/favorites/_components/random-project-selector";
 import { getFavoriteProjects } from "@/domain/music/services/favorite-projects";
 import { Routes } from "@/lib/routes";
 import { cn } from "@/lib/tailwind";
-import OrderFilter from "@/app/music/favorites/_components/order-filter";
-import RandomProjectSelector from "@/app/music/favorites/_components/random-project-selector";
-import ServerSideAwait from "@/app/_components/await/server";
-import ClientPage from "@/app/music/favorites/_components/client-page";
-import OrderFilterSkeleton from "@/app/music/favorites/_components/order-filter/skeleton";
-import ProjectsSkeleton from "@/app/music/favorites/_components/client-page/skeleton";
 
-const FavoritePage = async () => {
+const FavoritePage = () => {
   const favoriteProjectsPromise = getFavoriteProjects();
 
   return (
@@ -23,7 +23,7 @@ const FavoritePage = async () => {
           "p-8",
           "sm:px-[calc((100%-(--spacing(64)*2+(--spacing(8))))/2)] sm:py-4",
           "lg:px-[calc((100%-(--spacing(64)*3+(--spacing(8))*2))/2)]",
-          "xl:px-[calc((100%-(--spacing(64)*4+(--spacing(8))*3))/2)]",
+          "xl:px-[calc((100%-(--spacing(64)*4+(--spacing(8))*3))/2)]"
         )}
       >
         <Link href={Routes.MUSIC}>

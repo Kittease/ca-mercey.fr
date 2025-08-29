@@ -7,12 +7,13 @@ import Results from "./_components/results";
 import SearchBar from "./_components/search-bar";
 
 interface AlbumSearchProps {
-  searchParams?: {
+  searchParams?: Promise<{
     query?: string;
-  };
+  }>;
 }
 
-const AlbumSearch = async ({ searchParams }: AlbumSearchProps) => {
+const AlbumSearch = async (props: AlbumSearchProps) => {
+  const searchParams = await props.searchParams;
   let searchResults: SearchResult[] | null = null;
   if (searchParams?.query) {
     try {
@@ -28,7 +29,7 @@ const AlbumSearch = async ({ searchParams }: AlbumSearchProps) => {
       className={cn(
         "flex flex-col",
         "w-full gap-y-12 p-12",
-        "sm:w-4/5 sm:gap-y-16 sm:px-32 sm:py-16",
+        "sm:w-4/5 sm:gap-y-16 sm:px-32 sm:py-16"
       )}
     >
       <SearchBar />

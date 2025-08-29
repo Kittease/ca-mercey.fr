@@ -30,6 +30,7 @@ const SelectTrigger = React.forwardRef<
     {...props}
   >
     {children}
+
     <SelectPrimitive.Icon asChild>
       <CaretSortIcon className="size-4 opacity-50" />
     </SelectPrimitive.Icon>
@@ -89,6 +90,7 @@ const SelectContent = React.forwardRef<
       {...props}
     >
       <SelectScrollUpButton />
+
       <SelectPrimitive.Viewport
         className={cn(
           "p-1",
@@ -98,6 +100,7 @@ const SelectContent = React.forwardRef<
       >
         {children}
       </SelectPrimitive.Viewport>
+
       <SelectScrollDownButton />
     </SelectPrimitive.Content>
   </SelectPrimitive.Portal>
@@ -133,6 +136,7 @@ const SelectItem = React.forwardRef<
         <CheckIcon className="size-4" />
       </SelectPrimitive.ItemIndicator>
     </span>
+
     <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>
   </SelectPrimitive.Item>
 ));

@@ -1,13 +1,7 @@
 import prisma from "@/lib/prisma";
 
 import { transformRawFavoriteProjectsToFavoriteProjects } from "./transform";
-import {
-  FavoriteProject,
-  FavoriteProjectsOrderBy,
-  FavoriteProjectsOrderDirection,
-} from "./types";
-import { unstable_cache } from "next/cache";
-import { FetchTags } from "@/lib/cache/types";
+import { FavoriteProject } from "./types";
 
 export const addFavoriteProject = async (projectId: string) => {
   await prisma.favoriteProjects.create({
@@ -53,7 +47,7 @@ export const getRandomCovers = async (count: number) => {
 
   while (projectCovers.length < count) {
     projectCovers.push(
-      projectCovers[Math.floor(Math.random() * initCovers.length)],
+      projectCovers[Math.floor(Math.random() * initCovers.length)]
     );
   }
 

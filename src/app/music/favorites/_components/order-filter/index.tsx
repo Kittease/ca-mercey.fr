@@ -26,6 +26,7 @@ import {
   favoriteProjectsOrderDirection,
   FavoriteProjectsOrderDirection,
 } from "@/domain/music/services/favorite-projects/types";
+import exhaustiveSwitchCheck from "@/lib/exhaustive-check";
 
 interface OrderDirectionIconProps {
   orderBy?: FavoriteProjectsOrderBy;
@@ -61,7 +62,7 @@ const OrderDirectionIcon = forwardRef<
             return direction === "desc" ? <ArrowDownZA /> : <ArrowDownAZ />;
 
           default:
-            throw new Error(`Unreachable orderBy: ${orderBy satisfies never}`);
+            return exhaustiveSwitchCheck(orderBy);
         }
       })()}
     </span>
@@ -77,7 +78,7 @@ const OrderFilter = () => {
         favoriteProjectsOrderBy.includes(value as FavoriteProjectsOrderBy)
           ? (value as FavoriteProjectsOrderBy)
           : null,
-    },
+    }
   );
 
   const [direction, setDirection] =
@@ -85,14 +86,14 @@ const OrderFilter = () => {
       shallow: true,
       parse: (value) =>
         favoriteProjectsOrderDirection.includes(
-          value as FavoriteProjectsOrderDirection,
+          value as FavoriteProjectsOrderDirection
         )
           ? (value as FavoriteProjectsOrderDirection)
           : null,
     });
 
   const handleOrderByChange = (value: NonNullable<typeof orderBy>) => {
-    setOrderBy(value);
+    void setOrderBy(value);
   };
 
   const handleDirectionChange = (checked: boolean) => {
@@ -106,7 +107,7 @@ const OrderFilter = () => {
       }
     }
 
-    setDirection(newDirection);
+    void setDirection(newDirection);
   };
 
   return (
@@ -119,10 +120,14 @@ const OrderFilter = () => {
         <SelectTrigger className="w-[160px] bg-stone-950/25">
           <SelectValue placeholder="Trier par" />
         </SelectTrigger>
+
         <SelectContent align="end">
           <SelectItem value="date">Date de sortie</SelectItem>
+
           <SelectItem value="name">Nom du projet</SelectItem>
+
           <SelectItem value="artist">Nom de l&apos;artiste</SelectItem>
+
           <SelectItem value="duration">Durée du projet</SelectItem>
         </SelectContent>
       </Select>
@@ -130,6 +135,7 @@ const OrderFilter = () => {
       <Label display="hidden" htmlFor="direction">
         Sens du tri
       </Label>
+
       <SwitchPrimitives.Root
         id="direction"
         name="direction"

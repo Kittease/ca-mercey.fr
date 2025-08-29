@@ -20,14 +20,14 @@ const Statistic = ({ label, stat, diff, Icon, className }: StatisticProps) => {
       <div className="flex flex-col md:gap-y-2">
         <div className="flex flex-row items-baseline gap-x-2 md:gap-x-4">
           <p className="text-lg font-bold md:text-2xl">{stat}</p>
+
           <p
             className={cn(
               "text-sm md:text-lg",
-              diff > 0 ? "text-green-600" : "text-red-600",
+              diff > 0 ? "text-green-600" : "text-red-600"
             )}
           >
-            ({diff > 0 ? "+" : null}
-            {diff}%)
+            {`${diff > 0 ? "+" : ""}${diff}%`}
           </p>
         </div>
 

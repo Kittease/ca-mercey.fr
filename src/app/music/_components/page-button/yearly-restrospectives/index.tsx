@@ -8,7 +8,6 @@ const YearlyRestrospectivesButton = () => {
   return (
     <PageButton
       onClick={() =>
-        // eslint-disable-next-line no-alert
         alert("La page des rétrospectives annuelles arrive très bientôt !")
       }
       Icon={CalendarHeart}

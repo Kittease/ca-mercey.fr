@@ -19,7 +19,7 @@ export const getAlbum = async (albumId: string): Promise<Album> => {
   logger.info(`[ALBUM] Getting album with id ${albumId}`);
 
   const response = await spotifyApiClientInstance.fetch<RawAlbum>(
-    `/albums/${albumId}`,
+    `/albums/${albumId}`
   );
 
   if (response.kind === "error") {
@@ -124,11 +124,10 @@ export const saveAlbum = async ({
   ).map(({ id: trackId }) => trackId);
 
   const tracksToCreate = tracks.filter(
-    ({ id: trackId }) => !existingTrackIds.includes(trackId),
+    ({ id: trackId }) => !existingTrackIds.includes(trackId)
   );
 
-  // eslint-disable-next-line no-restricted-syntax
-  for await (const { id: trackId } of tracksToCreate) {
+  for (const { id: trackId } of tracksToCreate) {
     const track = await getTrack(trackId);
 
     // The track can come from another album, make sure it is created before saving the track
@@ -181,7 +180,7 @@ export const searchAlbums = async (search: string): Promise<SearchResult[]> => {
 
   const response = await spotifyApiClientInstance.fetch<SearchAlbumsResponse>(
     `/search?type=album&q=${search}`,
-    { next: { tags: [FetchTags.SpotifyAlbumSearch] } },
+    { next: { tags: [FetchTags.SpotifyAlbumSearch] } }
   );
 
   if (response.kind === "error") {

@@ -7,7 +7,7 @@ export enum NodeEnv {
 }
 
 export const serverSideSchema = z.object({
-  NODE_ENV: z.nativeEnum(NodeEnv),
+  NODE_ENV: z.enum(NodeEnv),
   ADMIN_IDENTITIES: z
     .string()
     .transform((val): unknown => {
@@ -22,8 +22,8 @@ export const serverSideSchema = z.object({
         z.object({
           provider: z.string(),
           providerId: z.string(),
-        }),
-      ),
+        })
+      )
     ),
   DATABASE_URL: z.string(),
   DIRECT_URL: z.string(),

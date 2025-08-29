@@ -30,7 +30,6 @@ const FavoriteProjectsButton = ({ covers }: FavoriteProjectsButtonProps) => {
       <div className="flex origin-center -rotate-12 flex-col gap-y-4">
         {rows.map((coverUrls, i) => (
           <ImageCarousel
-            // eslint-disable-next-line react/no-array-index-key
             key={i}
             imageUrls={coverUrls}
             imageProps={{ width: 64, height: 64 }}

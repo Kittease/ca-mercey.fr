@@ -1,13 +1,13 @@
-import type { Config } from "tailwindcss";
-// eslint-disable-next-line import/no-extraneous-dependencies
 import plugin from "tailwindcss/plugin";
 import tailwindAnimate from "tailwindcss-animate";
 
-const animation = plugin(({ addUtilities, matchUtilities }) => {
-  addUtilities({
+import type { Config } from "tailwindcss";
+
+const animation = plugin((pluginApi) => {
+  pluginApi.addUtilities({
     ".transition-5": { transition: "0.5s" },
   });
-  matchUtilities({
+  pluginApi.matchUtilities({
     "animation-delay": (value) => ({
       "animation-delay": `calc(${value}*-1)`,
     }),
@@ -75,7 +75,6 @@ const config = {
       },
     },
   },
-  // eslint-disable-next-line global-require
   plugins: [tailwindAnimate, animation],
 } satisfies Config;
 
