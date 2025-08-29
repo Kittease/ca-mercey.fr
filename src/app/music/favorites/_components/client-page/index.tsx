@@ -1,5 +1,8 @@
 "use client";
 
+import { useQueryState } from "nuqs";
+import { useMemo } from "react";
+
 import AlbumGrid from "@/app/music/favorites/_components/album-grid";
 import { sortAndGroupProjects } from "@/app/music/favorites/sort";
 import {
@@ -9,8 +12,6 @@ import {
   favoriteProjectsOrderDirection,
   FavoriteProjectsOrderDirection,
 } from "@/domain/music/services/favorite-projects/types";
-import { useQueryState } from "nuqs";
-import { useMemo } from "react";
 
 interface ClientPageProps {
   favoriteProjects: FavoriteProject[];
@@ -29,7 +30,7 @@ const ClientPage = ({ favoriteProjects }: ClientPageProps) => {
     useQueryState("direction", {
       parse: (value) =>
         favoriteProjectsOrderDirection.includes(
-          value as FavoriteProjectsOrderDirection,
+          value as FavoriteProjectsOrderDirection
         )
           ? (value as FavoriteProjectsOrderDirection)
           : null,

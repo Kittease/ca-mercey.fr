@@ -25,13 +25,16 @@ const RecentlyPlayedTrack = ({ track }: RecentlyPlayedTrackProps) => {
 
           <p className="flex flex-row gap-x-1 truncate text-sm text-stone-400 md:gap-x-2 md:text-lg">
             <span>{track.artist}</span>
+
             <span>-</span>
+
             <span>{track.album}</span>
           </p>
         </div>
 
         <span className="hidden flex-col items-end text-lg text-stone-400 md:flex">
           <p>{formatRelativeTime(track.playEndTime)}</p>
+
           <p>{formatDuration(millisecondsToSeconds(track.duration))}</p>
         </span>
       </div>

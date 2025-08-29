@@ -1,3 +1,4 @@
+import { ReactNode } from "react";
 import "server-only";
 
 const ServerSideAwait = async <T,>({
@@ -5,7 +6,7 @@ const ServerSideAwait = async <T,>({
   children,
 }: {
   promise: Promise<T>;
-  children: (result: T) => JSX.Element;
+  children: (result: T) => ReactNode;
 }) => {
   try {
     const result = await promise;

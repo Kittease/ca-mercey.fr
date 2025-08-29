@@ -1,5 +1,5 @@
-import { CalendarArrowUp } from "lucide-react";
 import * as SwitchPrimitives from "@radix-ui/react-switch";
+import { CalendarArrowUp } from "lucide-react";
 
 import { Label } from "@/app/_components/ui/label";
 import {
@@ -20,6 +20,7 @@ const OrderFilterSkeleton = () => {
       <Label display="hidden" htmlFor="direction-skeleton">
         Sens du tri
       </Label>
+
       <SwitchPrimitives.Root
         id="direction-skeleton"
         disabled

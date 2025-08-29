@@ -1,7 +1,6 @@
 "use client";
-
-import { AnimatePresence, motion } from "framer-motion";
 import { ShuffleIcon } from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
 import { useState } from "react";
 
 import AlbumFancy from "@/app/_components/business/album/fancy";
@@ -13,7 +12,7 @@ interface RandomProjectSelectorProps {
 }
 
 const transition = {
-  type: "spring",
+  type: "spring" as const,
   duration: 0.6,
 };
 

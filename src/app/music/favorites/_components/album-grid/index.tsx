@@ -1,5 +1,5 @@
-import { FavoriteProject } from "@/domain/music/services/favorite-projects/types";
 import AlbumFancy from "@/app/_components/business/album/fancy";
+import { FavoriteProject } from "@/domain/music/services/favorite-projects/types";
 
 interface AlbumGridProps {
   projects: FavoriteProject[];

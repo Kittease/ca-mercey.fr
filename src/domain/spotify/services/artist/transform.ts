@@ -8,7 +8,7 @@ import {
 } from "./types";
 
 export const transformRawSimplifiedArtistToSimplifiedArtist = ({
-  // eslint-disable-next-line unused-imports/no-unused-vars
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   type,
   ...rest
 }: RawSimplifiedArtist): SimplifiedArtist =>
@@ -17,9 +17,9 @@ export const transformRawSimplifiedArtistToSimplifiedArtist = ({
 export const transformRawArtistToArtist = ({
   images,
   genres,
-  // eslint-disable-next-line unused-imports/no-unused-vars
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   popularity,
-  // eslint-disable-next-line unused-imports/no-unused-vars
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   followers,
   ...rest
 }: RawArtist): Artist => ({

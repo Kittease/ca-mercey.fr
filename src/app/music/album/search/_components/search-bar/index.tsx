@@ -9,7 +9,7 @@ import { Input } from "@/app/_components/ui/input";
 const SearchBar = () => {
   const searchParams = useSearchParams();
   const pathname = usePathname() as Route;
-  const { replace } = useRouter();
+  const router = useRouter();
 
   const handleSearch = (term: string) => {
     const trimmedTerm = term.trim();
@@ -22,7 +22,7 @@ const SearchBar = () => {
       params.delete("query");
     }
 
-    replace(`${pathname}?${params.toString()}`);
+    router.replace(`${pathname}?${params.toString()}`);
   };
 
   return (

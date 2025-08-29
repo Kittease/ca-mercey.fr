@@ -22,11 +22,11 @@ export const getStatistics = async (): Promise<Statistics> => {
       cardinality: { tracks, artists, albums },
     },
   } = await statsfmFetch<RawStatisticsResponse>(
-    `/streams/stats?after=${aMonthAgo.getTime()}&before=${now.getTime()}`,
+    `/streams/stats?after=${aMonthAgo.getTime()}&before=${now.getTime()}`
   );
 
   const lastYearStatistics = await statsfmFetch<RawStatisticsResponse>(
-    `/streams/stats?after=${aYearAgo.getTime()}&before=${now.getTime()}`,
+    `/streams/stats?after=${aYearAgo.getTime()}&before=${now.getTime()}`
   );
 
   return {
@@ -46,7 +46,7 @@ export const getStatistics = async (): Promise<Statistics> => {
       value: artists,
       diff: getDifference(
         artists,
-        lastYearStatistics.items.cardinality.artists,
+        lastYearStatistics.items.cardinality.artists
       ),
     },
     albums: {

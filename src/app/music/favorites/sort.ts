@@ -1,12 +1,12 @@
 import { format, parse } from "date-fns";
 import { fr } from "date-fns/locale";
 
+import { ProjectGroup } from "@/app/music/favorites/types";
 import {
   FavoriteProject,
   FavoriteProjectsOrderBy,
   FavoriteProjectsOrderDirection,
 } from "@/domain/music/services/favorite-projects/types";
-import { ProjectGroup } from "@/app/music/favorites/types";
 import exhaustiveSwitchCheck from "@/lib/exhaustive-check";
 
 const getDateValue = (project: FavoriteProject) => {
