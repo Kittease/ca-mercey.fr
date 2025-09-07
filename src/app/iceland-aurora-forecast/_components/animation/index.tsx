@@ -5,12 +5,14 @@ import { useEffect, useRef, useState } from "react";
 
 import ForecastImage from "@/app/iceland-aurora-forecast/_components/frame";
 import { ForecastFrame } from "@/app/iceland-aurora-forecast/types";
+import { cn } from "@/lib/tailwind";
 
 type AuroraAnimationProps = {
   frames: ForecastFrame[];
+  className?: string;
 };
 
-const AuroraAnimation = ({ frames }: AuroraAnimationProps) => {
+const AuroraAnimation = ({ frames, className }: AuroraAnimationProps) => {
   const frameCount = frames.length;
   const frameIntervalMs = 150;
 
@@ -34,7 +36,7 @@ const AuroraAnimation = ({ frames }: AuroraAnimationProps) => {
   }, []);
 
   return (
-    <div className="flex flex-col gap-y-4">
+    <div className={cn("flex flex-col gap-y-4", className)}>
       <ForecastImage frame={frames[currentIndex]} />
 
       <h2 className="text-center font-semibold">
