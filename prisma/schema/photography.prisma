@@ -1,0 +1,58 @@
+model Pictures {
+  id      String @id
+  shortId String @unique @map("short_id")
+  name    String
+
+  PictureMetadata PictureMetadata?
+  Albums          Albums[]
+  AlbumPictures   AlbumPictures[]
+
+  @@map("pictures")
+  @@schema("photography")
+}
+
+model PictureMetadata {
+  pictureId   String    @id @map("picture_id")
+  date        DateTime?
+  width       Int
+  height      Int
+  camera      String?
+  lens        String?
+  focalLength Float?    @map("focal_length")
+  aperture    String?
+  exposure    String?
+  iso         Int?
+  location    String?
+
+  picture Pictures @relation(fields: [pictureId], references: [id], onDelete: Cascade)
+
+  @@map("picture_metadata")
+  @@schema("photography")
+}
+
+model Albums {
+  id             String  @id
+  shortId        String  @unique @map("short_id")
+  name           String
+  description    String?
+  coverPictureId String? @map("cover_picture_id")
+  isPublic       Boolean @default(false)
+
+  coverPicture  Pictures?       @relation(fields: [coverPictureId], references: [id], onDelete: SetNull)
+  AlbumPictures AlbumPictures[]
+
+  @@map("albums")
+  @@schema("photography")
+}
+
+model AlbumPictures {
+  albumId   String @map("album_id")
+  pictureId String @map("picture_id")
+
+  album   Albums   @relation(fields: [albumId], references: [id], onDelete: Cascade)
+  picture Pictures @relation(fields: [pictureId], references: [id], onDelete: Cascade)
+
+  @@id([albumId, pictureId])
+  @@map("album_pictures")
+  @@schema("photography")
+}
