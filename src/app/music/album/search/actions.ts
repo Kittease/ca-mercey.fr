@@ -20,7 +20,7 @@ export const saveFavoriteAlbum = async (albumId: string) => {
   await saveAlbum(album);
   await addFavoriteProject(albumId);
 
-  revalidateTag(FetchTags.SpotifyAlbumSearch);
+  revalidateTag(FetchTags.SpotifyAlbumSearch, "default");
   revalidatePath(Routes.FAVORITE_PROJECTS);
 };
 
@@ -31,6 +31,6 @@ export const removeFavoriteAlbum = async (albumId: string) => {
 
   await removeFavoriteProject(albumId);
 
-  revalidateTag(FetchTags.SpotifyAlbumSearch);
+  revalidateTag(FetchTags.SpotifyAlbumSearch, "default");
   revalidatePath(Routes.FAVORITE_PROJECTS);
 };

@@ -3,7 +3,8 @@ import { createClient } from "@/lib/supabase/server";
 import LogoutButton from "./_components/logout-button";
 
 const LogoutPage = async () => {
-  const user = await createClient().auth.getUser();
+  const supabase = await createClient();
+  const user = await supabase.auth.getUser();
 
   return (
     <div className="flex min-h-full flex-col justify-center gap-y-8">
