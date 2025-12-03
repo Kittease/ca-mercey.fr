@@ -1,11 +1,11 @@
 import { createServerClient } from "@supabase/ssr";
-import { cookies, type UnsafeUnwrappedCookies } from "next/headers";
+import { cookies } from "next/headers";
 
 import { config } from "@/lib/config";
 import { publicConfig } from "@/lib/config/client-config";
 
-export function createClient() {
-  const cookieStore = (cookies() as unknown as UnsafeUnwrappedCookies);
+export async function createClient() {
+  const cookieStore = await cookies();
 
   return createServerClient(
     publicConfig.supabase.url,
@@ -18,7 +18,7 @@ export function createClient() {
         setAll(cookiesToSet) {
           try {
             cookiesToSet.forEach(({ name, value, options }) =>
-              cookieStore.set(name, value, options),
+              cookieStore.set(name, value, options)
             );
           } catch {
             // The `setAll` method was called from a Server Component.
@@ -27,14 +27,15 @@ export function createClient() {
           }
         },
       },
-    },
+    }
   );
 }
 
 export async function getAdminUser() {
+  const supabase = await createClient();
   const {
     data: { user },
-  } = await createClient().auth.getUser();
+  } = await supabase.auth.getUser();
 
   if (!user) {
     return null;
@@ -45,8 +46,8 @@ export async function getAdminUser() {
         (identity) =>
           config.adminIdentities.find(
             ({ provider, providerId }) =>
-              identity.provider === provider && identity.id === providerId,
-          ) !== undefined,
+              identity.provider === provider && identity.id === providerId
+          ) !== undefined
       )
     : false;
 

@@ -1,6 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  serverExternalPackages: ["tesseract.js"],
+  serverExternalPackages: [
+    "tesseract.js",
+    "pino",
+    "pino-pretty",
+    "thread-stream",
+  ],
   outputFileTracingIncludes: {
     "/**/*": ["./node_modules/**/*.wasm", "./node_modules/**/*.proto"],
   },
