@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import { config } from "@/lib/config";
 import { NodeEnv } from "@/lib/config/types";
 import { Routes } from "@/lib/routes";
-import { createClient } from "@/lib/supabase/server";
+import { createSupabaseClient } from "@/lib/supabase/server";
 
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
@@ -12,7 +12,7 @@ export async function GET(request: Request) {
   const next = searchParams.get("next") ?? Routes.HOME;
 
   if (code) {
-    const supabase = await createClient();
+    const supabase = await createSupabaseClient();
     const { error } = await supabase.auth.exchangeCodeForSession(code);
     if (!error) {
       const forwardedHost = request.headers.get("x-forwarded-host"); // original origin before load balancer

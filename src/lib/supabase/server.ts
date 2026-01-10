@@ -4,7 +4,7 @@ import { cookies } from "next/headers";
 import { config } from "@/lib/config";
 import { publicConfig } from "@/lib/config/client-config";
 
-export async function createClient() {
+export async function createSupabaseClient() {
   const cookieStore = await cookies();
 
   return createServerClient(
@@ -32,7 +32,8 @@ export async function createClient() {
 }
 
 export async function getAdminUser() {
-  const supabase = await createClient();
+  const supabase = await createSupabaseClient();
+
   const {
     data: { user },
   } = await supabase.auth.getUser();

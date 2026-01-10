@@ -27,6 +27,8 @@ export const serverSideSchema = z.object({
     ),
   DATABASE_URL: z.string(),
   DIRECT_URL: z.string(),
+  FILEN_EMAIL: z.string(),
+  FILEN_PASSWORD: z.string(),
   STATSFM_USER_ID: z.string(),
   SPOTIFY_API_CLIENT_ID: z.string(),
   SPOTIFY_API_CLIENT_SECRET: z.string(),

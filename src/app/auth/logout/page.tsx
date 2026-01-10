@@ -1,9 +1,9 @@
-import { createClient } from "@/lib/supabase/server";
+import { createSupabaseClient } from "@/lib/supabase/server";
 
 import LogoutButton from "./_components/logout-button";
 
 const LogoutPage = async () => {
-  const supabase = await createClient();
+  const supabase = await createSupabaseClient();
   const user = await supabase.auth.getUser();
 
   return (
