@@ -7,9 +7,7 @@ import Results from "./_components/results";
 import SearchBar from "./_components/search-bar";
 
 interface AlbumSearchProps {
-  searchParams?: Promise<{
-    query?: string;
-  }>;
+  searchParams?: Promise<{ query?: string }>;
 }
 
 const AlbumSearch = async (props: AlbumSearchProps) => {

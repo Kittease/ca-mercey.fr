@@ -5,11 +5,11 @@ const loadConfig = () => {
 
   if (!parseResult.success) {
     const errors = parseResult.error.issues.map(
-      (issue) => ` - ${issue.path.join(".")}: ${issue.message}`,
+      (issue) => ` - ${issue.path.join(".")}: ${issue.message}`
     );
 
     throw new Error(
-      `Missing required env variables:\n\t${errors.join(",\n\t")}`,
+      `Missing required env variables:\n\t${errors.join(",\n\t")}`
     );
   }
 
@@ -21,6 +21,10 @@ const loadConfig = () => {
     database: {
       url: env.DATABASE_URL,
       directUrl: env.DIRECT_URL,
+    },
+    filen: {
+      email: env.FILEN_EMAIL,
+      password: env.FILEN_PASSWORD,
     },
     statsfmUserId: env.STATSFM_USER_ID,
     spotifyApi: {

@@ -10,6 +10,7 @@ const nextConfig = {
     "/**/*": ["./node_modules/**/*.wasm", "./node_modules/**/*.proto"],
   },
   typedRoutes: true,
+  cacheComponents: true,
   images: {
     unoptimized: true,
     remotePatterns: [
