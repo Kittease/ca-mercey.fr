@@ -10,6 +10,8 @@ export const Routes = {
   FAVORITE_PROJECTS: "/music/favorites",
   ALBUM_SEARCH: "/music/album/search",
 
+  AURORA: "/aurora",
+
   API_AUTH_CALLBACK: "/auth/v1/callback",
 } satisfies Record<string, Route>;
 

@@ -1,15 +1,19 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  serverExternalPackages: [
-    "tesseract.js",
-    "pino",
-    "pino-pretty",
-    "thread-stream",
-  ],
+  serverExternalPackages: ["pino", "pino-pretty", "thread-stream"],
   outputFileTracingIncludes: {
     "/**/*": ["./node_modules/**/*.wasm", "./node_modules/**/*.proto"],
   },
   typedRoutes: true,
+  async redirects() {
+    return [
+      {
+        source: "/iceland-aurora-forecast",
+        destination: "/aurora",
+        permanent: true,
+      },
+    ];
+  },
   images: {
     unoptimized: true,
     remotePatterns: [
