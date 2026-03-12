@@ -28,15 +28,17 @@ const LocationBar = ({ lat, lon, loading, error, onRetry, onManualCoords }: Prop
   };
 
   return (
-    <div className="flex flex-col gap-2 rounded-xl border border-neutral-800 bg-neutral-900/30 p-3">
+    <div className="aurora-glass relative flex flex-col gap-3 overflow-hidden rounded-xl px-4 py-3">
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <MapPin size={16} className="text-green-400" />
+        <div className="flex items-center gap-2.5">
+          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-emerald-400/10">
+            <MapPin size={14} className="text-emerald-400" />
+          </div>
 
           {loading ? (
-            <span className="text-sm text-neutral-500">Locating...</span>
+            <span className="aurora-data text-sm text-white/30">Locating...</span>
           ) : (
-            <span className="text-sm text-neutral-300">
+            <span className="aurora-data text-sm text-white/60">
               {`${lat.toFixed(2)}°N, ${lon.toFixed(2)}°E`}
             </span>
           )}
@@ -46,16 +48,16 @@ const LocationBar = ({ lat, lon, loading, error, onRetry, onManualCoords }: Prop
           {error && (
             <button
               onClick={onRetry}
-              className="flex items-center gap-1 rounded-md bg-neutral-800 px-2 py-1 text-xs text-neutral-300 hover:bg-neutral-700"
+              className="flex items-center gap-1.5 rounded-lg bg-white/[0.04] px-3 py-1.5 text-xs text-white/50 transition-colors hover:bg-white/[0.08] hover:text-white/70"
             >
-              <RotateCw size={12} />
+              <RotateCw size={11} />
               Use my location
             </button>
           )}
 
           <button
             onClick={() => setExpanded(!expanded)}
-            className="rounded-md bg-neutral-800 px-2 py-1 text-xs text-neutral-400 hover:bg-neutral-700"
+            className="aurora-label rounded-lg bg-white/[0.04] px-3 py-1.5 text-[10px] text-white/35 transition-colors hover:bg-white/[0.08] hover:text-white/55"
           >
             {expanded ? "Cancel" : "Manual"}
           </button>
@@ -63,14 +65,15 @@ const LocationBar = ({ lat, lon, loading, error, onRetry, onManualCoords }: Prop
       </div>
 
       {error && (
-        <p className="text-xs text-orange-400">{error}</p>
+        <p className="text-xs text-amber-400/70">{error}</p>
       )}
 
       {expanded && (
-        <form onSubmit={handleSubmit} className="flex items-end gap-2">
+        <form onSubmit={handleSubmit} className="flex items-end gap-2.5">
           <div className="flex-1">
-            <label htmlFor="aurora-lat" className="mb-1 block text-xs text-neutral-500">Latitude</label>
-
+            <label htmlFor="aurora-lat" className="aurora-label mb-1.5 block text-[10px] text-white/25">
+              Latitude
+            </label>
             <input
               id="aurora-lat"
               type="number"
@@ -78,13 +81,14 @@ const LocationBar = ({ lat, lon, loading, error, onRetry, onManualCoords }: Prop
               value={inputLat}
               onChange={(e) => setInputLat(e.target.value)}
               placeholder="64.15"
-              className="w-full rounded-md border border-neutral-700 bg-neutral-800 px-2 py-1.5 text-sm text-neutral-200 placeholder:text-neutral-600 focus:border-green-500 focus:outline-none"
+              className="aurora-data w-full rounded-lg border border-white/[0.06] bg-white/[0.03] px-3 py-2 text-sm text-white/80 placeholder:text-white/15 focus:border-emerald-400/30 focus:outline-none focus:ring-1 focus:ring-emerald-400/10"
             />
           </div>
 
           <div className="flex-1">
-            <label htmlFor="aurora-lon" className="mb-1 block text-xs text-neutral-500">Longitude</label>
-
+            <label htmlFor="aurora-lon" className="aurora-label mb-1.5 block text-[10px] text-white/25">
+              Longitude
+            </label>
             <input
               id="aurora-lon"
               type="number"
@@ -92,13 +96,13 @@ const LocationBar = ({ lat, lon, loading, error, onRetry, onManualCoords }: Prop
               value={inputLon}
               onChange={(e) => setInputLon(e.target.value)}
               placeholder="-21.94"
-              className="w-full rounded-md border border-neutral-700 bg-neutral-800 px-2 py-1.5 text-sm text-neutral-200 placeholder:text-neutral-600 focus:border-green-500 focus:outline-none"
+              className="aurora-data w-full rounded-lg border border-white/[0.06] bg-white/[0.03] px-3 py-2 text-sm text-white/80 placeholder:text-white/15 focus:border-emerald-400/30 focus:outline-none focus:ring-1 focus:ring-emerald-400/10"
             />
           </div>
 
           <button
             type="submit"
-            className="rounded-md bg-green-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-green-500"
+            className="rounded-lg bg-emerald-500/20 px-4 py-2 text-sm font-medium text-emerald-300 transition-colors hover:bg-emerald-500/30"
           >
             Go
           </button>

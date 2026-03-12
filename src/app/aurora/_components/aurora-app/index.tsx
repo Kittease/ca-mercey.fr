@@ -37,7 +37,28 @@ const AuroraApp = () => {
   const isLoading = aurora.loading && weather.loading;
 
   return (
-    <div className="mx-auto flex min-h-screen flex-col gap-4 p-4 md:p-6">
+    <div className="relative mx-auto flex w-full max-w-[1600px] flex-col gap-5 px-4 py-6 md:px-8 md:py-8">
+      {/* Header */}
+      <header className="flex items-end justify-between">
+        <div>
+          <h1
+            className="text-2xl font-bold tracking-tight text-white/90 md:text-3xl"
+            style={{ fontFamily: "var(--font-aurora-display)" }}
+          >
+            Aurora Forecast
+          </h1>
+          <p className="mt-1 text-sm text-white/30">
+            Real-time aurora borealis viewing probability
+          </p>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <span className="aurora-live-dot inline-block h-1.5 w-1.5 rounded-full bg-emerald-400" />
+          <span className="aurora-data text-xs text-white/30">LIVE</span>
+        </div>
+      </header>
+
+      {/* Location */}
       <LocationBar
         lat={lat}
         lon={lon}
@@ -47,12 +68,20 @@ const AuroraApp = () => {
         onManualCoords={setManualCoords}
       />
 
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-        <div className="flex flex-col gap-4 md:col-span-2">
-          <div className="relative aspect-square w-full overflow-hidden rounded-xl border border-neutral-800 md:aspect-video">
+      {/* Main grid */}
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-12">
+        {/* Globe + Forecast (left/main area) */}
+        <div className="flex flex-col gap-5 lg:col-span-8">
+          {/* Globe */}
+          <div className="aurora-glass relative aspect-square w-full overflow-hidden rounded-2xl md:aspect-[16/9]">
             {isLoading ? (
-              <div className="flex h-full items-center justify-center bg-neutral-900">
-                <div className="h-8 w-8 animate-spin rounded-full border-2 border-neutral-600 border-t-green-400" />
+              <div className="flex h-full items-center justify-center">
+                <div className="flex flex-col items-center gap-3">
+                  <div className="h-8 w-8 animate-spin rounded-full border-2 border-white/10 border-t-emerald-400" />
+                  <span className="aurora-label text-[10px] text-white/30">
+                    Loading data
+                  </span>
+                </div>
               </div>
             ) : (
               <Globe
@@ -63,6 +92,7 @@ const AuroraApp = () => {
             )}
           </div>
 
+          {/* Forecast */}
           <ForecastTimeline
             hourlyProjections={probability.hourlyProjections}
             kpForecast={aurora.kpForecast}
@@ -70,7 +100,8 @@ const AuroraApp = () => {
           />
         </div>
 
-        <div className="flex flex-col gap-4">
+        {/* Sidebar (right) */}
+        <div className="flex flex-col gap-5 lg:col-span-4">
           <ProbabilityDisplay
             probability={probability.probability}
             factors={probability.factors}

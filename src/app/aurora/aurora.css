@@ -1,0 +1,239 @@
+/* ── Aurora Page Styles ── */
+
+.aurora-page {
+  --aurora-green: #4ade80;
+  --aurora-cyan: #22d3ee;
+  --aurora-violet: #a78bfa;
+  --aurora-rose: #fb7185;
+  --aurora-amber: #fbbf24;
+
+  --glass-bg: rgba(12, 22, 48, 0.75);
+  --glass-border: rgba(120, 180, 255, 0.14);
+  --glass-highlight: rgba(120, 190, 255, 0.06);
+}
+
+/* Deep space gradient background — kept very dark for card contrast */
+.aurora-bg {
+  background: radial-gradient(
+      ellipse 120% 80% at 50% 0%,
+      rgba(6, 20, 50, 0.3) 0%,
+      transparent 60%
+    ),
+    radial-gradient(
+      ellipse 80% 60% at 80% 100%,
+      rgba(25, 6, 40, 0.15) 0%,
+      transparent 50%
+    ),
+    #020408;
+}
+
+/* Starfield using pseudo-elements with radial gradients */
+.aurora-stars {
+  background-image: radial-gradient(
+      1px 1px at 10% 20%,
+      rgba(255, 255, 255, 0.4),
+      transparent
+    ),
+    radial-gradient(
+      1px 1px at 30% 60%,
+      rgba(255, 255, 255, 0.3),
+      transparent
+    ),
+    radial-gradient(
+      1px 1px at 50% 10%,
+      rgba(255, 255, 255, 0.5),
+      transparent
+    ),
+    radial-gradient(
+      1px 1px at 70% 40%,
+      rgba(255, 255, 255, 0.2),
+      transparent
+    ),
+    radial-gradient(
+      1px 1px at 90% 80%,
+      rgba(255, 255, 255, 0.35),
+      transparent
+    ),
+    radial-gradient(
+      1px 1px at 15% 85%,
+      rgba(255, 255, 255, 0.25),
+      transparent
+    ),
+    radial-gradient(
+      1px 1px at 45% 45%,
+      rgba(255, 255, 255, 0.15),
+      transparent
+    ),
+    radial-gradient(
+      1.5px 1.5px at 60% 75%,
+      rgba(200, 220, 255, 0.4),
+      transparent
+    ),
+    radial-gradient(
+      1px 1px at 80% 15%,
+      rgba(255, 255, 255, 0.3),
+      transparent
+    ),
+    radial-gradient(
+      1px 1px at 25% 35%,
+      rgba(255, 255, 255, 0.2),
+      transparent
+    );
+}
+
+/* Glass panel */
+.aurora-glass {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(16px) saturate(1.2);
+  -webkit-backdrop-filter: blur(16px) saturate(1.2);
+}
+
+.aurora-glass-subtle {
+  background: rgba(10, 20, 44, 0.6);
+  border: 1px solid rgba(120, 180, 255, 0.1);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* Inner glow on glass panels */
+.aurora-glass::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(
+    180deg,
+    var(--glass-highlight) 0%,
+    transparent 50%
+  );
+  pointer-events: none;
+}
+
+/* Glow effects for status colors */
+.glow-green {
+  text-shadow: 0 0 20px rgba(74, 222, 128, 0.4),
+    0 0 40px rgba(74, 222, 128, 0.15);
+}
+
+.glow-cyan {
+  text-shadow: 0 0 20px rgba(34, 211, 238, 0.4),
+    0 0 40px rgba(34, 211, 238, 0.15);
+}
+
+.glow-amber {
+  text-shadow: 0 0 20px rgba(251, 191, 36, 0.4),
+    0 0 40px rgba(251, 191, 36, 0.15);
+}
+
+.glow-rose {
+  text-shadow: 0 0 20px rgba(251, 113, 133, 0.4),
+    0 0 40px rgba(251, 113, 133, 0.15);
+}
+
+/* Circular gauge */
+.aurora-gauge-ring {
+  filter: drop-shadow(0 0 8px rgba(74, 222, 128, 0.3));
+}
+
+/* Subtle pulse for live indicator */
+@keyframes aurora-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+}
+
+.aurora-live-dot {
+  animation: aurora-pulse 2s ease-in-out infinite;
+}
+
+/* Forecast bar gradient */
+.aurora-bar-green {
+  background: linear-gradient(180deg, #4ade80, #22c55e);
+}
+.aurora-bar-yellow {
+  background: linear-gradient(180deg, #fbbf24, #f59e0b);
+}
+.aurora-bar-orange {
+  background: linear-gradient(180deg, #fb923c, #f97316);
+}
+.aurora-bar-red {
+  background: linear-gradient(180deg, #fb7185, #ef4444);
+}
+.aurora-bar-none {
+  background: rgba(100, 160, 255, 0.08);
+}
+
+/* Kp card glow borders */
+.kp-glow-green {
+  box-shadow: inset 0 0 16px rgba(74, 222, 128, 0.1),
+    0 0 1px rgba(74, 222, 128, 0.4);
+}
+.kp-glow-yellow {
+  box-shadow: inset 0 0 16px rgba(251, 191, 36, 0.1),
+    0 0 1px rgba(251, 191, 36, 0.4);
+}
+.kp-glow-orange {
+  box-shadow: inset 0 0 16px rgba(251, 146, 60, 0.1),
+    0 0 1px rgba(251, 146, 60, 0.4);
+}
+.kp-glow-red {
+  box-shadow: inset 0 0 16px rgba(251, 113, 133, 0.1),
+    0 0 1px rgba(251, 113, 133, 0.4);
+}
+
+/* Data label styling */
+.aurora-label {
+  font-family: var(--font-aurora-display), system-ui, sans-serif;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+.aurora-data {
+  font-family: var(--font-aurora-mono), monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Scrollbar for forecast */
+.aurora-page ::-webkit-scrollbar {
+  height: 3px;
+}
+.aurora-page ::-webkit-scrollbar-track {
+  background: rgba(100, 160, 255, 0.04);
+  border-radius: 3px;
+}
+.aurora-page ::-webkit-scrollbar-thumb {
+  background: rgba(100, 160, 255, 0.15);
+  border-radius: 3px;
+}
+
+/* MapLibre overrides for glass feel */
+.aurora-page .maplibregl-ctrl-group {
+  background: rgba(8, 16, 36, 0.7) !important;
+  border: 1px solid rgba(100, 160, 255, 0.1) !important;
+  backdrop-filter: blur(8px) !important;
+  border-radius: 8px !important;
+  overflow: hidden;
+}
+
+.aurora-page .maplibregl-ctrl-group button {
+  background: transparent !important;
+  border-color: rgba(100, 160, 255, 0.08) !important;
+}
+
+.aurora-page .maplibregl-ctrl-group button + button {
+  border-top: 1px solid rgba(100, 160, 255, 0.08) !important;
+}
+
+.aurora-page .maplibregl-ctrl-group button:hover {
+  background: rgba(100, 160, 255, 0.08) !important;
+}
+
+.aurora-page .maplibregl-ctrl-group button span {
+  filter: invert(1) brightness(0.8);
+}

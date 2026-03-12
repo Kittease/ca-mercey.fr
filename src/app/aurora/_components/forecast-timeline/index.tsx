@@ -10,25 +10,21 @@ type Props = {
   lat: number;
 };
 
-function barColor(p: number): string {
-  if (p >= 40) {return "bg-green-400";}
-  if (p >= 20) {return "bg-yellow-400";}
-  if (p >= 5) {return "bg-orange-400";}
-  if (p > 0) {return "bg-red-400";}
-  return "bg-neutral-700";
+function barClass(p: number): string {
+  if (p >= 40) return "aurora-bar-green";
+  if (p >= 20) return "aurora-bar-yellow";
+  if (p >= 5) return "aurora-bar-orange";
+  if (p > 0) return "aurora-bar-red";
+  return "aurora-bar-none";
 }
 
-function kpColor(kp: number): string {
-  if (kp >= 7) {return "border-red-500 bg-red-500/10 text-red-400";}
-  if (kp >= 5) {return "border-orange-500 bg-orange-500/10 text-orange-400";}
-  if (kp >= 3) {return "border-yellow-500 bg-yellow-500/10 text-yellow-400";}
-  return "border-green-500 bg-green-500/10 text-green-400";
+function kpColorClass(kp: number): string {
+  if (kp >= 7) return "text-rose-400 border-rose-400/20 kp-glow-red";
+  if (kp >= 5) return "text-orange-400 border-orange-400/20 kp-glow-orange";
+  if (kp >= 3) return "text-amber-300 border-amber-300/20 kp-glow-yellow";
+  return "text-emerald-400 border-emerald-400/20 kp-glow-green";
 }
 
-/**
- * Rough estimate: Kp → approximate auroral boundary latitude
- * Based on empirical relationship
- */
 function kpToAuroralLat(kp: number): number {
   return 67 - (kp - 1) * 2.5;
 }
@@ -36,60 +32,80 @@ function kpToAuroralLat(kp: number): number {
 const ForecastTimeline = ({ hourlyProjections, kpForecast, lat }: Props) => {
   const maxP = Math.max(1, ...hourlyProjections.map((h) => h.probability));
 
-  // Find best viewing windows (dark + low cloud + >0 probability)
   const bestWindows = hourlyProjections.filter(
     (h) => h.factors.fDark >= 0.5 && h.factors.fCloud >= 0.5 && h.probability > 0,
   );
 
-  // Parse Kp forecast entries
+  const now = new Date();
   const kpEntries = kpForecast
     .map((entry) => {
       const time = entry[0];
       const kp = parseFloat(entry[1]);
-      if (isNaN(kp)) {return null;}
+      if (isNaN(kp)) return null;
       return { time, kp };
     })
-    .filter((e): e is { time: string; kp: number } => e !== null)
-    .slice(0, 9); // ~3 days of 8h intervals
+    .filter((e): e is { time: string; kp: number } => e !== null && new Date(e.time) >= now)
+    .slice(0, 9);
 
   return (
-    <div className="flex flex-col gap-4 rounded-xl border border-neutral-800 bg-neutral-900/30 p-4">
+    <div className="aurora-glass relative flex flex-col gap-6 overflow-hidden rounded-2xl p-5">
+      {/* Top accent */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-violet-400/15 to-transparent" />
+
       {/* Hourly timeline */}
       <div>
-        <h3 className="mb-3 text-xs font-medium tracking-wider text-neutral-400 uppercase">
-          Hourly Forecast
-        </h3>
+        <div className="mb-4 flex items-baseline justify-between">
+          <h3
+            className="aurora-label text-[11px] text-white/40"
+            style={{ fontFamily: "var(--font-aurora-display)" }}
+          >
+            Hourly Forecast
+          </h3>
 
-        {bestWindows.length > 0 && (
-          <p className="mb-2 text-xs text-green-400">
-            {`${bestWindows.length} good viewing window${bestWindows.length > 1 ? "s" : ""} in the next ${hourlyProjections.length}h`}
-          </p>
-        )}
+          {bestWindows.length > 0 && (
+            <span className="aurora-data text-[11px] text-emerald-400/70">
+              {bestWindows.length} viewing window{bestWindows.length > 1 ? "s" : ""}
+            </span>
+          )}
+        </div>
 
-        <div className="flex gap-px overflow-x-auto pb-2">
+        <div className="flex gap-[2px] overflow-x-auto pb-2">
           {hourlyProjections.slice(0, 24).map((h, i) => {
-            const height = maxP > 0 ? Math.max(2, (h.probability / maxP) * 64) : 2;
+            const height = maxP > 0 ? Math.max(3, (h.probability / maxP) * 56) : 3;
             const isDark = h.factors.fDark >= 0.5;
-            const isBestWindow =
-              isDark && h.factors.fCloud >= 0.5 && h.probability > 0;
+            const isBestWindow = isDark && h.factors.fCloud >= 0.5 && h.probability > 0;
 
             return (
               <div
                 key={i}
-                className="flex min-w-[20px] flex-1 flex-col items-center gap-1"
+                className="group flex min-w-[18px] flex-1 flex-col items-center gap-1.5"
               >
+                {/* Probability label on hover */}
+                <div className="aurora-data invisible text-[9px] text-white/40 group-hover:visible">
+                  {h.probability > 0 ? `${h.probability}%` : ""}
+                </div>
+
+                {/* Bar */}
                 <div
-                  className="relative flex h-16 w-full items-end justify-center"
+                  className="relative flex h-14 w-full items-end justify-center"
                   title={`${format(h.time, "HH:mm")} — ${h.probability}%`}
                 >
                   <div
-                    className={`w-full rounded-t ${barColor(h.probability)} ${isBestWindow ? "ring-1 ring-green-300/50" : ""}`}
-                    style={{ height: `${height}px` }}
+                    className={`w-full rounded-sm ${barClass(h.probability)} transition-all group-hover:brightness-125 ${
+                      isBestWindow ? "ring-1 ring-emerald-300/30 ring-offset-1 ring-offset-transparent" : ""
+                    }`}
+                    style={{
+                      height: `${height}px`,
+                      opacity: isDark ? 1 : 0.4,
+                    }}
                   />
                 </div>
 
+                {/* Time */}
                 <span
-                  className={`text-[9px] tabular-nums ${isDark ? "text-neutral-400" : "text-neutral-600"}`}
+                  className={`aurora-data text-[9px] ${
+                    isDark ? "text-white/35" : "text-white/15"
+                  }`}
                 >
                   {format(h.time, "HH")}
                 </span>
@@ -98,24 +114,22 @@ const ForecastTimeline = ({ hourlyProjections, kpForecast, lat }: Props) => {
           })}
         </div>
 
-        <div className="mt-1 flex items-center gap-3 text-[10px] text-neutral-600">
-          <span className="flex items-center gap-1">
-            <span className="inline-block h-2 w-2 rounded-full bg-green-400" />
+        {/* Legend */}
+        <div className="mt-2 flex items-center gap-4 text-[10px] text-white/25">
+          <span className="flex items-center gap-1.5">
+            <span className="aurora-bar-green inline-block h-2 w-2 rounded-full" />
             Good
           </span>
-
-          <span className="flex items-center gap-1">
-            <span className="inline-block h-2 w-2 rounded-full bg-yellow-400" />
+          <span className="flex items-center gap-1.5">
+            <span className="aurora-bar-yellow inline-block h-2 w-2 rounded-full" />
             Fair
           </span>
-
-          <span className="flex items-center gap-1">
-            <span className="inline-block h-2 w-2 rounded-full bg-orange-400" />
+          <span className="flex items-center gap-1.5">
+            <span className="aurora-bar-orange inline-block h-2 w-2 rounded-full" />
             Low
           </span>
-
-          <span className="flex items-center gap-1">
-            <span className="inline-block h-2 w-2 rounded-full bg-neutral-700" />
+          <span className="flex items-center gap-1.5">
+            <span className="aurora-bar-none inline-block h-2 w-2 rounded-full" />
             None
           </span>
         </div>
@@ -124,11 +138,16 @@ const ForecastTimeline = ({ hourlyProjections, kpForecast, lat }: Props) => {
       {/* Kp 3-day forecast */}
       {kpEntries.length > 0 && (
         <div>
-          <h3 className="mb-3 text-xs font-medium tracking-wider text-neutral-400 uppercase">
+          <div className="h-px bg-white/[0.04]" />
+
+          <h3
+            className="aurora-label mb-3 mt-5 text-[11px] text-white/40"
+            style={{ fontFamily: "var(--font-aurora-display)" }}
+          >
             Kp 3-Day Forecast
           </h3>
 
-          <div className="grid grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6">
+          <div className="grid grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-3 xl:grid-cols-5">
             {kpEntries.map((entry, i) => {
               const auroralLat = kpToAuroralLat(entry.kp);
               const absLat = Math.abs(lat);
@@ -137,16 +156,18 @@ const ForecastTimeline = ({ hourlyProjections, kpForecast, lat }: Props) => {
               return (
                 <div
                   key={i}
-                  className={`rounded-lg border p-2 text-center ${kpColor(entry.kp)}`}
+                  className={`aurora-glass-subtle flex flex-col items-center gap-0.5 rounded-xl border p-2.5 ${kpColorClass(entry.kp)}`}
                 >
-                  <p className="text-[10px] opacity-70">
+                  <p className="aurora-data text-[9px] opacity-50">
                     {format(new Date(entry.time), "MMM d HH:mm")}
                   </p>
 
-                  <p className="text-lg font-bold">{entry.kp.toFixed(1)}</p>
+                  <p className="aurora-data text-xl font-semibold leading-tight">
+                    {entry.kp.toFixed(1)}
+                  </p>
 
                   {inRange && (
-                    <p className="text-[10px] font-medium">In range</p>
+                    <p className="aurora-label text-[9px] opacity-70">In range</p>
                   )}
                 </div>
               );
