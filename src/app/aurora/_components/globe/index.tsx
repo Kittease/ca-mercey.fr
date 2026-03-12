@@ -9,7 +9,7 @@ import { CARTO_DARK_STYLE } from "../../_lib/constants";
 
 import { renderOvationToCanvas } from "./aurora-overlay";
 import { addCloudLayer } from "./cloud-layer";
-import { computeTerminator } from "./terminator";
+import { renderTerminatorToCanvas } from "./terminator";
 
 import type { OvationData } from "../../_lib/types";
 
@@ -19,6 +19,7 @@ type Props = {
   ovation: OvationData | null;
 };
 
+const MAX_MERCATOR_LAT = 85.051129;
 const AURORA_SOURCE_ID = "ovation-aurora";
 const AURORA_LAYER_ID = "ovation-aurora-layer";
 const TERMINATOR_SOURCE_ID = "terminator";
@@ -73,20 +74,26 @@ const Globe = ({ lat, lon, ovation }: Props) => {
         },
       });
 
-      // Terminator
-      const terminator = computeTerminator(new Date());
+      // Terminator (raster overlay to avoid polygon artifacts on globe)
+      const terminatorCanvas = renderTerminatorToCanvas(new Date());
       map.addSource(TERMINATOR_SOURCE_ID, {
-        type: "geojson",
-        data: terminator,
+        type: "image",
+        url: terminatorCanvas.toDataURL(),
+        coordinates: [
+          [-180, MAX_MERCATOR_LAT],
+          [180, MAX_MERCATOR_LAT],
+          [180, -MAX_MERCATOR_LAT],
+          [-180, -MAX_MERCATOR_LAT],
+        ],
       });
 
       map.addLayer({
         id: TERMINATOR_LAYER_ID,
-        type: "fill",
+        type: "raster",
         source: TERMINATOR_SOURCE_ID,
         paint: {
-          "fill-color": "#000000",
-          "fill-opacity": 0.3,
+          "raster-opacity": 1,
+          "raster-fade-duration": 0,
         },
       });
 
@@ -100,10 +107,10 @@ const Globe = ({ lat, lon, ovation }: Props) => {
           type: "image",
           url: canvas.toDataURL(),
           coordinates: [
-            [-180, 90],
-            [180, 90],
-            [180, -90],
-            [-180, -90],
+            [-180, MAX_MERCATOR_LAT],
+            [180, MAX_MERCATOR_LAT],
+            [180, -MAX_MERCATOR_LAT],
+            [-180, -MAX_MERCATOR_LAT],
           ],
         });
 
@@ -156,10 +163,10 @@ const Globe = ({ lat, lon, ovation }: Props) => {
 
     const canvas = renderOvationToCanvas(ovation);
     const imgCoords: [[number, number], [number, number], [number, number], [number, number]] = [
-      [-180, 90],
-      [180, 90],
-      [180, -90],
-      [-180, -90],
+      [-180, MAX_MERCATOR_LAT],
+      [180, MAX_MERCATOR_LAT],
+      [180, -MAX_MERCATOR_LAT],
+      [-180, -MAX_MERCATOR_LAT],
     ];
     const source = map.getSource(AURORA_SOURCE_ID);
 
@@ -193,10 +200,17 @@ const Globe = ({ lat, lon, ovation }: Props) => {
       if (!map || !map.isStyleLoaded()) {return;}
 
       const source = map.getSource(TERMINATOR_SOURCE_ID);
-      if (source && "setData" in source) {
-        (source as maplibregl.GeoJSONSource).setData(
-          computeTerminator(new Date()),
-        );
+      if (source && "updateImage" in source) {
+        const terminatorCanvas = renderTerminatorToCanvas(new Date());
+        (source as maplibregl.ImageSource).updateImage({
+          url: terminatorCanvas.toDataURL(),
+          coordinates: [
+            [-180, MAX_MERCATOR_LAT],
+            [180, MAX_MERCATOR_LAT],
+            [180, -MAX_MERCATOR_LAT],
+            [-180, -MAX_MERCATOR_LAT],
+          ],
+        });
       }
     }, 60000);
 

@@ -1,76 +1,68 @@
-import SunCalc from "suncalc";
-
-import type { Feature, Polygon } from "geojson";
-
 /**
- * Computes a GeoJSON polygon representing the dark side of the Earth.
- * Samples the terminator line at 1° longitude intervals.
+ * Renders the night side of the Earth to a canvas image.
+ * Uses the same equirectangular projection as the aurora overlay
+ * to avoid polygon rendering artifacts on MapLibre globe projection.
  */
-export function computeTerminator(date: Date): Feature<Polygon> {
-  const points: [number, number][] = [];
+export function renderTerminatorToCanvas(date: Date): HTMLCanvasElement {
+  const DEG = Math.PI / 180;
+  const width = 360;
+  const height = 181;
 
-  // Sample terminator at each longitude
-  for (let lon = -180; lon <= 180; lon += 2) {
-    // Binary search for the latitude where solar elevation ≈ 0
-    let lo = -90;
-    let hi = 90;
+  const canvas = document.createElement("canvas");
+  canvas.width = width;
+  canvas.height = height;
 
-    for (let iter = 0; iter < 20; iter++) {
-      const mid = (lo + hi) / 2;
-      const pos = SunCalc.getPosition(date, mid, lon);
-      const elev = pos.altitude * (180 / Math.PI);
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return canvas;
 
-      if (elev > 0) {
-        // Sun is up at mid, so dark side is further south (or north depending on season)
-        // Need to check which hemisphere the sun is in
-        const posN = SunCalc.getPosition(date, 89, lon);
-        if (posN.altitude > 0) {
-          // Sun is in northern sky, dark is south
-          hi = mid;
-        } else {
-          lo = mid;
-        }
-      } else {
-        const posN = SunCalc.getPosition(date, 89, lon);
-        if (posN.altitude > 0) {
-          lo = mid;
-        } else {
-          hi = mid;
-        }
+  const dayOfYear = getDayOfYear(date);
+  const hours =
+    date.getUTCHours() +
+    date.getUTCMinutes() / 60 +
+    date.getUTCSeconds() / 3600;
+
+  // Solar declination
+  const declination = -23.44 * Math.cos(((360 / 365) * (dayOfYear + 10)) * DEG);
+  const decRad = declination * DEG;
+
+  // Sub-solar longitude
+  const subSolarLon = -((hours / 24) * 360 - 180);
+
+  const imageData = ctx.createImageData(width, height);
+
+  for (let y = 0; y < height; y++) {
+    // Canvas y=0 is 90°N, y=180 is 90°S
+    const lat = (90 - y) * DEG;
+
+    for (let x = 0; x < width; x++) {
+      // Canvas x=0 is 0°E, we need to map to -180..180
+      const lon = x - 180;
+      const hourAngle = (lon - subSolarLon) * DEG;
+
+      // Solar elevation: sin(alt) = sin(lat)*sin(dec) + cos(lat)*cos(dec)*cos(h)
+      const sinAlt =
+        Math.sin(lat) * Math.sin(decRad) +
+        Math.cos(lat) * Math.cos(decRad) * Math.cos(hourAngle);
+
+      if (sinAlt < 0) {
+        // Night side — black with some transparency
+        // Smooth transition near the terminator (civil twilight ≈ -6°)
+        const idx = (y * width + x) * 4;
+        const t = Math.min(-sinAlt / Math.sin(6 * DEG), 1);
+        imageData.data[idx] = 0;
+        imageData.data[idx + 1] = 0;
+        imageData.data[idx + 2] = 0;
+        imageData.data[idx + 3] = Math.round(t * 180);
       }
     }
-
-    points.push([lon, (lo + hi) / 2]);
   }
 
-  // Determine which pole is dark
-  const northPolePos = SunCalc.getPosition(date, 89, 0);
-  const northIsDark = northPolePos.altitude < 0;
+  ctx.putImageData(imageData, 0, 0);
+  return canvas;
+}
 
-  // Build polygon: terminator line + sweep to dark pole
-  const darkPole: [number, number][] = northIsDark
-    ? [
-        [180, 90],
-        [-180, 90],
-      ]
-    : [
-        [180, -90],
-        [-180, -90],
-      ];
-
-  const ring: [number, number][] = northIsDark
-    ? [...points.reverse(), ...darkPole]
-    : [...points, ...darkPole];
-
-  // Close the ring
-  ring.push(ring[0]);
-
-  return {
-    type: "Feature",
-    properties: {},
-    geometry: {
-      type: "Polygon",
-      coordinates: [ring],
-    },
-  };
+function getDayOfYear(date: Date): number {
+  const start = new Date(date.getFullYear(), 0, 0);
+  const diff = date.getTime() - start.getTime();
+  return Math.floor(diff / (1000 * 60 * 60 * 24));
 }
