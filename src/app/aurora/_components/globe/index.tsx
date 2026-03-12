@@ -43,14 +43,13 @@ const Globe = ({ lat, lon, ovation }: Props) => {
       attributionControl: false,
     });
 
-    map.setProjection({ type: "globe" });
-
     map.addControl(
       new maplibregl.NavigationControl({ showCompass: true }),
       "top-right",
     );
 
     map.on("load", () => {
+      map.setProjection({ type: "globe" });
       // User location marker
       map.addSource(MARKER_SOURCE_ID, {
         type: "geojson",
