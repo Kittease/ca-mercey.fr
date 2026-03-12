@@ -156,17 +156,33 @@ const Globe = ({ lat, lon, ovation }: Props) => {
     if (!map || !map.isStyleLoaded() || !ovation) {return;}
 
     const canvas = renderOvationToCanvas(ovation);
+    const imgCoords: [[number, number], [number, number], [number, number], [number, number]] = [
+      [-180, 90],
+      [180, 90],
+      [180, -90],
+      [-180, -90],
+    ];
     const source = map.getSource(AURORA_SOURCE_ID);
 
     if (source && "updateImage" in source) {
       (source as maplibregl.ImageSource).updateImage({
         url: canvas.toDataURL(),
-        coordinates: [
-          [-180, 90],
-          [180, 90],
-          [180, -90],
-          [-180, -90],
-        ],
+        coordinates: imgCoords,
+      });
+    } else if (!source) {
+      map.addSource(AURORA_SOURCE_ID, {
+        type: "image",
+        url: canvas.toDataURL(),
+        coordinates: imgCoords,
+      });
+      map.addLayer({
+        id: AURORA_LAYER_ID,
+        type: "raster",
+        source: AURORA_SOURCE_ID,
+        paint: {
+          "raster-opacity": 0.6,
+          "raster-fade-duration": 0,
+        },
       });
     }
   }, [ovation]);
