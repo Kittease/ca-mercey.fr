@@ -9,14 +9,14 @@ migrationName=$1
 
 prismaFolder=$(dirname $(realpath "$0"))
 
-schemaFile="${prismaFolder}/schema.prisma"
+schemaFile="${prismaFolder}/schema"
 migrationsFolder="${prismaFolder}/migrations"
 
 echo -e "Generating migration \`${migrationName}\`..."
 
 echo -e "\nTrying to generate the down migration file..."
 
-downMigration=$(bunx prisma migrate diff --from-schema-datamodel "${schemaFile}" --to-schema-datasource "${schemaFile}" --script --exit-code)
+downMigration=$(bunx prisma migrate diff --from-schema "${schemaFile}" --to-config-datasource --script --exit-code)
 exitCode=$?
 
 if [ $exitCode -eq 0 ]; then
@@ -31,7 +31,7 @@ fi
 
 echo -e "\nTrying to generate the up migration file..."
 
-upMigration=$(bunx prisma migrate diff --from-schema-datasource "${schemaFile}" --to-schema-datamodel "${schemaFile}" --script --exit-code)
+upMigration=$(bunx prisma migrate diff --from-config-datasource --to-schema "${schemaFile}" --script --exit-code)
 exitCode=$?
 
 if [ $exitCode -eq 0 ]; then
