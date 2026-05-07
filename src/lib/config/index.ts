@@ -17,10 +17,17 @@ const loadConfig = () => {
 
   return {
     nodeEnv: env.NODE_ENV,
-    adminIdentities: env.ADMIN_IDENTITIES,
     database: {
       url: env.DATABASE_URL,
       directUrl: env.DIRECT_URL,
+    },
+    auth: {
+      secret: env.BETTER_AUTH_SECRET,
+      url: env.BETTER_AUTH_URL,
+      google: {
+        clientId: env.GOOGLE_CLIENT_ID,
+        clientSecret: env.GOOGLE_CLIENT_SECRET,
+      },
     },
     statsfmUserId: env.STATSFM_USER_ID,
     spotifyApi: {

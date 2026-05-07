@@ -1,4 +1,4 @@
-import { ArrowLeft, ShuffleIcon } from "lucide-react";
+import { ArrowLeft, HeartPlusIcon, ShuffleIcon } from "lucide-react";
 import Link from "next/link";
 import { Suspense } from "react";
 
@@ -11,6 +11,7 @@ import RandomProjectSelector from "@/app/music/favorites/_components/random-proj
 import { getFavoriteProjects } from "@/domain/music/services/favorite-projects";
 import { Routes } from "@/lib/routes";
 import { cn } from "@/lib/tailwind";
+import { getAdminUser } from "@/lib/auth/admin";
 
 const FavoritePage = () => {
   const favoriteProjectsPromise = getFavoriteProjects();
@@ -23,7 +24,7 @@ const FavoritePage = () => {
           "p-8",
           "sm:px-[calc((100%-(--spacing(64)*2+(--spacing(8))))/2)] sm:py-4",
           "lg:px-[calc((100%-(--spacing(64)*3+(--spacing(8))*2))/2)]",
-          "xl:px-[calc((100%-(--spacing(64)*4+(--spacing(8))*3))/2)]"
+          "xl:px-[calc((100%-(--spacing(64)*4+(--spacing(8))*3))/2)]",
         )}
       >
         <Link href={Routes.MUSIC}>
@@ -40,6 +41,18 @@ const FavoritePage = () => {
               {(favoriteProjects) => (
                 <RandomProjectSelector projects={favoriteProjects} />
               )}
+            </ServerSideAwait>
+          </Suspense>
+
+          <Suspense>
+            <ServerSideAwait promise={getAdminUser()}>
+              {(admin) =>
+                admin ? (
+                  <Link href={Routes.ALBUM_SEARCH}>
+                    <HeartPlusIcon />
+                  </Link>
+                ) : null
+              }
             </ServerSideAwait>
           </Suspense>
         </div>
