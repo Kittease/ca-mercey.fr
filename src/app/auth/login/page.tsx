@@ -1,15 +1,14 @@
 "use client";
 
+import { authClient } from "@/lib/auth/client";
 import { Routes } from "@/lib/routes";
-import { createClient } from "@/lib/supabase/client";
 
 const LoginPage = () => {
   const handleGoogleLogin = async () => {
-    await createClient().auth.signInWithOAuth({
+    await authClient.signIn.social({
       provider: "google",
-      options: {
-        redirectTo: `${window.location.origin}${Routes.API_AUTH_CALLBACK}`,
-      },
+      callbackURL: Routes.HOME,
+      errorCallbackURL: Routes.LOGIN_ERROR,
     });
   };
 

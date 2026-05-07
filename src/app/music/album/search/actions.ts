@@ -7,9 +7,9 @@ import {
   removeFavoriteProject,
 } from "@/domain/music/services/favorite-projects";
 import { getAlbum, saveAlbum } from "@/domain/spotify/services/album";
+import { getAdminUser } from "@/lib/auth/admin";
 import { FetchTags } from "@/lib/cache/types";
 import { Routes } from "@/lib/routes";
-import { getAdminUser } from "@/lib/supabase/server";
 
 export const saveFavoriteAlbum = async (albumId: string) => {
   if (!(await getAdminUser())) {
