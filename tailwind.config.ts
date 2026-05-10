@@ -38,14 +38,6 @@ const config = {
     },
     extend: {
       keyframes: {
-        "accordion-down": {
-          from: { height: "0" },
-          to: { height: "var(--radix-accordion-content-height)" },
-        },
-        "accordion-up": {
-          from: { height: "var(--radix-accordion-content-height)" },
-          to: { height: "0" },
-        },
         "carousel-scroll": {
           from: { transform: "translateX(100%)" },
           to: { transform: "translateX(-100%)" },
@@ -64,8 +56,6 @@ const config = {
         },
       },
       animation: {
-        "accordion-down": "accordion-down 0.2s ease-out",
-        "accordion-up": "accordion-up 0.2s ease-out",
         "carousel-scroll": "carousel-scroll linear infinite",
         "carousel-scroll-continuous":
           "carousel-scroll-continuous linear infinite",

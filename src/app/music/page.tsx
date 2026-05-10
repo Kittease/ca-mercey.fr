@@ -13,12 +13,14 @@ const MusicPage = async () => {
   const favoriteProjectCovers = await getRandomCovers(40);
 
   return (
-    <div className="flex w-full flex-col gap-y-8 p-8 md:w-fit md:gap-y-16 md:px-0 md:py-24">
-      <h1 className="my-4 text-center text-4xl md:my-0 md:text-8xl">Musique</h1>
+    <div className="flex w-full flex-col gap-y-4 p-10 md:w-fit md:px-0 md:py-16">
+      <h1 className="mt-2 mb-8 text-center text-4xl md:mt-0 md:mb-12 md:text-8xl">
+        Musique
+      </h1>
 
       <LastMonthStats />
 
-      <div className="grid grid-cols-1 gap-x-16 gap-y-8 md:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <FavoriteProjectsButton covers={favoriteProjectCovers} />
 
         <YearlyRestrospectivesButton />

@@ -11,7 +11,7 @@ const RecentlyPlayedTracks = async () => {
 
       {recentlyPlayedTracks.map((recentlyPlayedTrack) => (
         <RecentlyPlayedTrack
-          key={recentlyPlayedTrack.id}
+          key={`${recentlyPlayedTrack.id}-${recentlyPlayedTrack.playEndTime}`}
           track={recentlyPlayedTrack}
         />
       ))}

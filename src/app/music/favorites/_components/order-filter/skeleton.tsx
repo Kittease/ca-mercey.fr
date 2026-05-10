@@ -1,7 +1,7 @@
-import * as SwitchPrimitives from "@radix-ui/react-switch";
+import { Switch as SwitchPrimitives } from "@base-ui/react/switch";
 import { CalendarArrowUp } from "lucide-react";
 
-import { Label } from "@/app/_components/ui/label";
+import Label from "@/app/_components/ui/label";
 import {
   Select,
   SelectTrigger,
@@ -17,20 +17,24 @@ const OrderFilterSkeleton = () => {
         </SelectTrigger>
       </Select>
 
-      <Label display="hidden" htmlFor="direction-skeleton">
+      <Label className="sr-only" htmlFor="direction-skeleton">
         Sens du tri
       </Label>
 
       <SwitchPrimitives.Root
         id="direction-skeleton"
         disabled
+        nativeButton
+        render={<button type="button" />}
         className="opacity-50"
       >
-        <SwitchPrimitives.Thumb asChild>
-          <span>
-            <CalendarArrowUp />
-          </span>
-        </SwitchPrimitives.Thumb>
+        <SwitchPrimitives.Thumb
+          render={
+            <span>
+              <CalendarArrowUp />
+            </span>
+          }
+        />
       </SwitchPrimitives.Root>
     </div>
   );

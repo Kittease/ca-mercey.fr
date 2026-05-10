@@ -12,6 +12,7 @@ const YearlyRestrospectivesButton = () => {
       }
       Icon={CalendarHeart}
       text={"Rétrospectives\nannuelles"}
+      className="opacity-25 cursor-default"
     />
   );
 };
