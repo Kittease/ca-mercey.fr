@@ -29,7 +29,7 @@ const AlbumSearch = async (props: AlbumSearchProps) => {
       className={cn(
         "flex flex-col",
         "w-full gap-y-12 p-12",
-        "sm:w-4/5 sm:gap-y-16 sm:px-32 sm:py-16"
+        "sm:w-4/5 sm:gap-y-16 sm:px-32 sm:py-16",
       )}
     >
       <SearchBar />

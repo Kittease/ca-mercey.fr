@@ -10,7 +10,7 @@ const LogoutButton = () => {
 
   const handleLogout = async () => {
     await authClient.signOut();
-    void router.push(Routes.HOME);
+    router.push(Routes.HOME);
   };
 
   return (

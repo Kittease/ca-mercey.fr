@@ -12,7 +12,7 @@ const OrderFilterSkeleton = () => {
   return (
     <div className="flex flex-row items-center gap-x-4">
       <Select disabled>
-        <SelectTrigger className="w-[160px] bg-stone-950/25 opacity-50">
+        <SelectTrigger className="w-[160px] bg-background/25 opacity-50">
           <SelectValue placeholder="Trier par" />
         </SelectTrigger>
       </Select>

@@ -1,5 +1,4 @@
 import plugin from "tailwindcss/plugin";
-import tailwindAnimate from "tailwindcss-animate";
 
 import type { Config } from "tailwindcss";
 
@@ -15,7 +14,7 @@ const animation = plugin((pluginApi) => {
       "animation-delay": `calc(${value}/-2)`,
     }),
     "animation-duration-carousel": (value) => ({
-      "animation-duration": `${value}`,
+      "animation-duration": value,
     }),
   });
 });
@@ -65,7 +64,7 @@ const config = {
       },
     },
   },
-  plugins: [tailwindAnimate, animation],
+  plugins: [animation],
 } satisfies Config;
 
 export default config;

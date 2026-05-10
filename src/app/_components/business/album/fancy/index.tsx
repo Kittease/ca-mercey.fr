@@ -8,11 +8,11 @@ interface AlbumFancyProps {
 }
 
 const AlbumFancy = ({ project }: AlbumFancyProps) => {
-  const coverUrl = project.coverUrl ? project.coverUrl : "/vinyl.png";
+  const coverUrl = project.coverUrl ?? "/vinyl.png";
 
   const totalTime = project.tracks.reduce(
     (acc, track) => acc + track.duration,
-    0
+    0,
   );
 
   const hours = Math.floor(totalTime / 3600000);
@@ -25,7 +25,7 @@ const AlbumFancy = ({ project }: AlbumFancyProps) => {
         <div
           className={cn(
             "absolute inset-0 z-0",
-            "after:absolute after:inset-0 after:backdrop-blur-xl"
+            "after:absolute after:inset-0 after:backdrop-blur-xl",
           )}
         >
           <Image
@@ -33,7 +33,7 @@ const AlbumFancy = ({ project }: AlbumFancyProps) => {
             alt=""
             className={cn(
               "size-64",
-              !project.coverUrl ? "bg-cyan-500" : undefined
+              !project.coverUrl ? "bg-cyan-500" : undefined,
             )}
             width={256}
             height={256}
@@ -45,7 +45,7 @@ const AlbumFancy = ({ project }: AlbumFancyProps) => {
           alt=""
           className={cn(
             "z-10 size-32 scale-100 drop-shadow-lg transition-all duration-300 ease-in-out group-hover:scale-105 group-hover:drop-shadow-xl",
-            !project.coverUrl ? "bg-cyan-500" : undefined
+            !project.coverUrl ? "bg-cyan-500" : undefined,
           )}
           width={128}
           height={128}
@@ -56,7 +56,7 @@ const AlbumFancy = ({ project }: AlbumFancyProps) => {
         <div
           className={cn(
             "absolute inset-0 z-0",
-            "after:absolute after:inset-0 after:bg-black/40 after:backdrop-blur-xl"
+            "after:absolute after:inset-0 after:bg-black/40 after:backdrop-blur-xl",
           )}
         >
           <Image
@@ -64,7 +64,7 @@ const AlbumFancy = ({ project }: AlbumFancyProps) => {
             alt=""
             className={cn(
               "size-64 -scale-100",
-              !project.coverUrl ? "bg-cyan-500" : undefined
+              !project.coverUrl ? "bg-cyan-500" : undefined,
             )}
             width={256}
             height={256}
@@ -72,11 +72,11 @@ const AlbumFancy = ({ project }: AlbumFancyProps) => {
         </div>
 
         <div className="z-10 max-w-full">
-          <p className="truncate text-stone-50/95" title={project.name}>
+          <p className="truncate text-foreground/95" title={project.name}>
             {project.name}
           </p>
 
-          <p className="flex flex-row gap-x-1 text-xs text-stone-50/65">
+          <p className="flex flex-row gap-x-1 text-xs text-foreground/65">
             <span
               className="shrink truncate"
               title={project.artists.map((artist) => artist.name).join(", ")}
@@ -95,7 +95,7 @@ const AlbumFancy = ({ project }: AlbumFancyProps) => {
             </span>
           </p>
 
-          <p className="flex flex-row gap-x-1 text-xs text-stone-50/65">
+          <p className="flex flex-row gap-x-1 text-xs text-foreground/65">
             <span>{project.tracks.length} tracks</span>
 
             <span>•</span>

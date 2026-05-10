@@ -2,17 +2,17 @@
 
 import { CalendarHeart } from "lucide-react";
 
-import PageButton from "..";
+import PageButton from "@/app/music/_components/page-button";
 
 const YearlyRestrospectivesButton = () => {
   return (
     <PageButton
-      onClick={() =>
-        alert("La page des rétrospectives annuelles arrive très bientôt !")
-      }
+      onClick={() => {
+        alert("La page des rétrospectives annuelles arrive très bientôt !");
+      }}
       Icon={CalendarHeart}
       text={"Rétrospectives\nannuelles"}
-      className="opacity-25 cursor-default"
+      className="cursor-default opacity-25"
     />
   );
 };

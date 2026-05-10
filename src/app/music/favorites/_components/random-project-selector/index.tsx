@@ -50,7 +50,7 @@ const RandomProjectSelector = ({ projects }: RandomProjectSelectorProps) => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={transition}
-            className="absolute inset-0 flex h-screen w-full items-center justify-center bg-stone-950/75"
+            className="absolute inset-0 flex h-screen w-full items-center justify-center bg-background/75"
             onClick={closeRandomProject}
           >
             <motion.div

@@ -15,10 +15,8 @@ export async function GET() {
     );
   }
 
-  const [rawArtists, rawTrack] = data
-    .replace("▶️ ", "")
-    .split(" -> ")[0]
-    .split(" - ");
+  const [head = ""] = data.replace("▶️ ", "").split(" -> ");
+  const [rawArtists = "", rawTrack = ""] = head.split(" - ");
   const artists = rawArtists.split(", ");
   const track = rawTrack.slice(1, -1);
 
@@ -26,7 +24,7 @@ export async function GET() {
     return new NextResponse(`"${track}" par ${artists[0]}`);
   }
 
-  const cleanArtists = `${artists.slice(0, -1).join(", ")} et ${artists[artists.length - 1]}`;
+  const cleanArtists = `${artists.slice(0, -1).join(", ")} et ${artists.at(-1) ?? ""}`;
 
   return new NextResponse(`"${track}" par ${cleanArtists}`);
 }

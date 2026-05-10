@@ -31,7 +31,9 @@ const SearchBar = () => {
         className="h-auto bg-stone-900 py-4 pr-[calc(3*(--spacing(6)))] pl-8 text-lg md:text-2xl"
         placeholder="Recherchez un album par nom, id, lien de partage..."
         defaultValue={searchParams.get("query") ?? ""}
-        onChange={(e) => handleSearch(e.target.value)}
+        onChange={(e) => {
+          handleSearch(e.target.value);
+        }}
       />
 
       <Search className="absolute inset-y-0 right-6 my-auto size-6" />

@@ -11,7 +11,7 @@ export type AlbumProps = HTMLAttributes<HTMLDivElement> & {
       }
     | {
         action: {
-          handler: VoidFunction;
+          handler: () => void | Promise<void>;
           state:
             | {
                 pending: false;

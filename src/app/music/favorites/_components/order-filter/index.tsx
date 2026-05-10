@@ -67,6 +67,7 @@ const OrderDirectionIcon = forwardRef<
     </span>
   );
 });
+OrderDirectionIcon.displayName = "OrderDirectionIcon";
 
 const OrderFilter = () => {
   const [orderBy, setOrderBy] = useQueryState<FavoriteProjectsOrderBy>(
@@ -126,7 +127,7 @@ const OrderFilter = () => {
         value={orderBy ?? ""}
         onValueChange={handleOrderByChange}
       >
-        <SelectTrigger className="w-[160px] bg-stone-950/25">
+        <SelectTrigger className="w-[160px] bg-background/25">
           <SelectValue placeholder="Trier par" />
         </SelectTrigger>
 

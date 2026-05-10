@@ -46,9 +46,10 @@ export const getRandomCovers = async (count: number) => {
   const initCovers = [...projectCovers];
 
   while (projectCovers.length < count) {
-    projectCovers.push(
-      projectCovers[Math.floor(Math.random() * initCovers.length)]
-    );
+    const cover = initCovers[Math.floor(Math.random() * initCovers.length)];
+    if (cover !== undefined) {
+      projectCovers.push(cover);
+    }
   }
 
   return projectCovers;

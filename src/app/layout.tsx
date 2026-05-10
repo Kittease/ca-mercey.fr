@@ -23,12 +23,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={cn("font-sans", inter.variable)}>
-      <body
-        className={cn(
-          "flex min-h-screen w-full justify-center bg-stone-950 font-sans text-stone-50 antialiased",
-          inter.variable,
-        )}
-      >
+      <body className="flex min-h-screen w-full justify-center bg-background text-foreground antialiased">
         <NuqsAdapter>{children}</NuqsAdapter>
 
         <Toaster richColors />

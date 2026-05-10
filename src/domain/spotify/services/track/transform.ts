@@ -9,17 +9,17 @@ export const transformRawSimplifiedTrackToSimplifiedTrack = ({
   track_number,
   preview_url,
   artists,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  // eslint-disable-next-line unused-imports/no-unused-vars
   type,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  // eslint-disable-next-line unused-imports/no-unused-vars
   available_markets,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  // eslint-disable-next-line unused-imports/no-unused-vars
   linked_from,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  // eslint-disable-next-line unused-imports/no-unused-vars
   restrictions,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  // eslint-disable-next-line unused-imports/no-unused-vars
   is_local,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  // eslint-disable-next-line unused-imports/no-unused-vars
   is_playable,
   ...rest
 }: RawSimplifiedTrack): SimplifiedTrack =>
@@ -29,16 +29,16 @@ export const transformRawSimplifiedTrackToSimplifiedTrack = ({
     trackNumber: track_number,
     previewUrl: preview_url,
     artists: artists.map((artist) =>
-      transformRawSimplifiedArtistToSimplifiedArtist(artist)
+      transformRawSimplifiedArtistToSimplifiedArtist(artist),
     ),
     ...rest,
   });
 
 export const transformRawTrackToTrack = ({
   album,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  // eslint-disable-next-line unused-imports/no-unused-vars
   popularity,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  // eslint-disable-next-line unused-imports/no-unused-vars
   external_ids,
   ...rest
 }: RawTrack): Track => ({

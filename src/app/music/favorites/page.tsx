@@ -9,9 +9,9 @@ import OrderFilter from "@/app/music/favorites/_components/order-filter";
 import OrderFilterSkeleton from "@/app/music/favorites/_components/order-filter/skeleton";
 import RandomProjectSelector from "@/app/music/favorites/_components/random-project-selector";
 import { getFavoriteProjects } from "@/domain/music/services/favorite-projects";
+import { getAdminUser } from "@/lib/auth/admin";
 import { Routes } from "@/lib/routes";
 import { cn } from "@/lib/tailwind";
-import { getAdminUser } from "@/lib/auth/admin";
 
 const FavoritePage = () => {
   const favoriteProjectsPromise = getFavoriteProjects();
@@ -20,7 +20,7 @@ const FavoritePage = () => {
     <>
       <div
         className={cn(
-          "fixed z-50 flex h-fit w-full flex-row items-center justify-between bg-stone-950/65 backdrop-blur-xl",
+          "fixed z-50 flex h-fit w-full flex-row items-center justify-between bg-background/65 backdrop-blur-xl",
           "p-8",
           "sm:px-[calc((100%-(--spacing(64)*2+(--spacing(8))))/2)] sm:py-4",
           "lg:px-[calc((100%-(--spacing(64)*3+(--spacing(8))*2))/2)]",

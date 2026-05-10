@@ -5,22 +5,20 @@ export const getAlbumReleaseDateObject = (
   date: RawSimplifiedAlbum["release_date"],
   datePrecision: RawSimplifiedAlbum["release_date_precision"],
 ) => {
-  const parts = date.split("-");
+  const [year = "", month, day] = date.split("-");
 
   return {
-    year: parts[0],
-    month: datePrecision !== "year" ? parts[1] : undefined,
-    day: datePrecision === "day" ? parts[2] : undefined,
+    year,
+    month: datePrecision !== "year" ? month : undefined,
+    day: datePrecision === "day" ? day : undefined,
   };
 };
 
 export const getHighestDefinitionSpotifyImage = (images: SpotifyImage[]) => {
-  if (images.length === 0) {
+  const [first, ...rest] = images;
+  if (!first) {
     return null;
   }
 
-  return images.reduce(
-    (acc, val) => (acc.width > val.width ? acc : val),
-    images[0],
-  );
+  return rest.reduce((acc, val) => (acc.width > val.width ? acc : val), first);
 };
