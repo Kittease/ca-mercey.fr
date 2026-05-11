@@ -30,15 +30,16 @@ const ClientPage = ({ favoriteProjects }: ClientPageProps) => {
     useQueryState("direction", {
       parse: (value) =>
         favoriteProjectsOrderDirection.includes(
-          value as FavoriteProjectsOrderDirection
+          value as FavoriteProjectsOrderDirection,
         )
           ? (value as FavoriteProjectsOrderDirection)
           : null,
     })[0] ?? undefined;
 
-  if (!orderBy) {
+  if (orderBy === undefined) {
     orderBy = "date";
-    if (!direction) {
+
+    if (direction === undefined) {
       direction = "desc";
     }
   }
@@ -47,7 +48,7 @@ const ClientPage = ({ favoriteProjects }: ClientPageProps) => {
     return sortAndGroupProjects(favoriteProjects, orderBy, direction);
   }, [favoriteProjects, orderBy, direction]);
 
-  if (groupedProjects.length === 1) {
+  if (groupedProjects.length === 1 && groupedProjects[0]) {
     return <AlbumGrid projects={groupedProjects[0].sortedProjects} />;
   }
 

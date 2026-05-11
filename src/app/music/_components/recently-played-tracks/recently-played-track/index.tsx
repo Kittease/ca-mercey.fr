@@ -23,12 +23,8 @@ const RecentlyPlayedTrack = ({ track }: RecentlyPlayedTrackProps) => {
         <div className="flex flex-col overflow-hidden">
           <p className="truncate text-lg md:text-2xl">{track.name}</p>
 
-          <p className="flex flex-row gap-x-1 truncate text-sm text-stone-400 md:gap-x-2 md:text-lg">
-            <span>{track.artist}</span>
-
-            <span>-</span>
-
-            <span>{track.album}</span>
+          <p className="truncate text-sm text-stone-400 md:text-lg">
+            {`${track.artist} - ${track.album}`}
           </p>
         </div>
 

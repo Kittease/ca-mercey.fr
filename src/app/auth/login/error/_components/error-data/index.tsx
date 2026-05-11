@@ -8,8 +8,8 @@ const ErrorData = () => {
     .slice(1)
     .split("&")
     .forEach((item) => {
-      const split = item.split("=");
-      data[split[0]] = split[1].replaceAll("+", " ");
+      const [key = "", value = ""] = item.split("=");
+      data[key] = value.replaceAll("+", " ");
     });
 
   return (

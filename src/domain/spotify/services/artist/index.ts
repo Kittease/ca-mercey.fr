@@ -11,7 +11,7 @@ export const getArtist = async (artistId: string): Promise<Artist> => {
   logger.info(`[ARTIST] Getting artist with id ${artistId}`);
 
   const response = await spotifyApiClientInstance.fetch<RawArtist>(
-    `/artists/${artistId}`
+    `/artists/${artistId}`,
   );
 
   if (response.kind === "error") {
@@ -67,7 +67,7 @@ export const createMissingArtists = async (artistIds: string[]) => {
   ).map(({ id }) => id);
 
   const artistIdsToCreate = artistIds.filter(
-    (id) => !existingArtistIds.includes(id)
+    (id) => !existingArtistIds.includes(id),
   );
 
   for (const id of artistIdsToCreate) {

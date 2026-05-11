@@ -1,0 +1,43 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  check:
+    name: Lint, format & type-check
+    runs-on: ubuntu-latest
+    env:
+      # prisma.config.ts resolves DIRECT_URL eagerly. `prisma generate` (run
+      # via postinstall) doesn't connect to the database, so a placeholder is
+      # sufficient to satisfy the config loader in CI.
+      DIRECT_URL: "postgres://user:pass@localhost:5432/db"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Lint
+        run: bun run lint
+
+      - name: Format check
+        run: bun run format.check
+
+      - name: Type check
+        run: bun run type-check

@@ -1,19 +1,23 @@
-import * as React from "react";
+import { useMemo, useSyncExternalStore } from "react";
 
 export function useMediaQuery(query: string) {
-  const [value, setValue] = React.useState(false);
+  const mediaQueryList = useMemo(
+    () => (typeof window === "undefined" ? null : window.matchMedia(query)),
+    [query],
+  );
 
-  React.useEffect(() => {
-    function onChange(event: MediaQueryListEvent) {
-      setValue(event.matches);
-    }
+  return useSyncExternalStore(
+    (callback) => {
+      if (!mediaQueryList) {
+        return () => undefined;
+      }
 
-    const result = matchMedia(query);
-    result.addEventListener("change", onChange);
-    setValue(result.matches);
-
-    return () => result.removeEventListener("change", onChange);
-  }, [query]);
-
-  return value;
+      mediaQueryList.addEventListener("change", callback);
+      return () => {
+        mediaQueryList.removeEventListener("change", callback);
+      };
+    },
+    () => mediaQueryList?.matches ?? false,
+    () => false,
+  );
 }

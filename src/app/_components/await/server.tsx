@@ -11,6 +11,7 @@ const ServerSideAwait = async <T,>({
   try {
     const result = await promise;
 
+    // eslint-disable-next-line @typescript-eslint/return-await
     return children(result);
   } catch {
     return null;

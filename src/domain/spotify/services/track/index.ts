@@ -10,7 +10,7 @@ export const getTrack = async (trackId: string): Promise<Track> => {
   logger.info(`[TRACK] Getting track with id ${trackId}`);
 
   const response = await spotifyApiClientInstance.fetch<RawTrack>(
-    `/tracks/${trackId}`
+    `/tracks/${trackId}`,
   );
 
   if (response.kind === "error") {

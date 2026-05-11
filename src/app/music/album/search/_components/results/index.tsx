@@ -61,7 +61,9 @@ const Results = ({ searchResults, searchTerms }: ResultsProps) => {
             "Cet album fait maintenant parti de votre liste de favoris !",
           action: {
             label: "Voir les favoris",
-            onClick: () => router.push(Routes.FAVORITE_PROJECTS),
+            onClick: () => {
+              router.push(Routes.FAVORITE_PROJECTS);
+            },
           },
         });
       } else {
@@ -70,7 +72,9 @@ const Results = ({ searchResults, searchTerms }: ResultsProps) => {
             "Cet album ne fait plus parti de votre liste de favoris.",
           action: {
             label: "Voir les favoris",
-            onClick: () => router.push(Routes.FAVORITE_PROJECTS),
+            onClick: () => {
+              router.push(Routes.FAVORITE_PROJECTS);
+            },
           },
         });
       }
@@ -78,7 +82,8 @@ const Results = ({ searchResults, searchTerms }: ResultsProps) => {
     state: actionState,
   });
 
-  if (searchResults.length === 0) {
+  const [topResult, ...otherResults] = searchResults;
+  if (!topResult) {
     return (
       <h1 className="text-2xl font-bold sm:text-4xl">
         Aucun résultat pour &quot;{searchTerms}&quot;.
@@ -92,12 +97,9 @@ const Results = ({ searchResults, searchTerms }: ResultsProps) => {
         <h1 className="text-2xl font-bold sm:text-4xl">Meilleur résultat</h1>
 
         <AlbumLarge
-          album={searchResults[0].album}
-          isFavorite={searchResults[0].isFavorite}
-          action={action(
-            searchResults[0].album.id,
-            searchResults[0].isFavorite,
-          )}
+          album={topResult.album}
+          isFavorite={topResult.isFavorite}
+          action={action(topResult.album.id, topResult.isFavorite)}
         />
       </div>
 
@@ -105,7 +107,7 @@ const Results = ({ searchResults, searchTerms }: ResultsProps) => {
         <h1 className="text-2xl font-bold sm:text-4xl">Autres albums</h1>
 
         <div className="flex flex-row gap-x-4 overflow-x-scroll">
-          {searchResults.slice(1).map(({ album, isFavorite }) => (
+          {otherResults.map(({ album, isFavorite }) => (
             <AlbumSmall
               key={album.id}
               album={album}

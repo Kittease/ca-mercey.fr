@@ -1,35 +1,25 @@
 "use client";
 
-import * as LabelPrimitive from "@radix-ui/react-label";
-import { cva, type VariantProps } from "class-variance-authority";
-import * as React from "react";
+import { ComponentProps } from "react";
 
 import { cn } from "@/lib/tailwind";
 
-const labelVariants = cva(undefined, {
-  variants: {
-    display: {
-      normal:
-        "text-sm leading-none font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70",
-      hidden: "sr-only",
-    },
-  },
-  defaultVariants: {
-    display: "normal",
-  },
-});
+interface LabelProps extends ComponentProps<"label"> {
+  htmlFor: NonNullable<ComponentProps<"label">["htmlFor"]>;
+}
 
-const Label = React.forwardRef<
-  React.ElementRef<typeof LabelPrimitive.Root>,
-  React.ComponentPropsWithoutRef<typeof LabelPrimitive.Root> &
-    VariantProps<typeof labelVariants>
->(({ className, display = "normal", ...props }, ref) => (
-  <LabelPrimitive.Root
-    ref={ref}
-    className={cn(labelVariants({ display }), className)}
-    {...props}
-  />
-));
-Label.displayName = LabelPrimitive.Root.displayName;
+const Label = ({ className, htmlFor, ...restProps }: LabelProps) => {
+  return (
+    <label
+      data-slot="label"
+      htmlFor={htmlFor}
+      className={cn(
+        "flex items-center gap-2 text-sm leading-none font-medium select-none group-data-[disabled=true]:pointer-events-none group-data-[disabled=true]:opacity-50 peer-disabled:cursor-not-allowed peer-disabled:opacity-50",
+        className,
+      )}
+      {...restProps}
+    />
+  );
+};
 
-export { Label };
+export default Label;

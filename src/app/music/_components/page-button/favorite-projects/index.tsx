@@ -23,7 +23,9 @@ const FavoriteProjectsButton = ({ covers }: FavoriteProjectsButtonProps) => {
 
   return (
     <PageButton
-      onClick={() => router.push(Routes.FAVORITE_PROJECTS)}
+      onClick={() => {
+        router.push(Routes.FAVORITE_PROJECTS);
+      }}
       Icon={StarIcon}
       text={"Mes projets\nfavoris"}
     >

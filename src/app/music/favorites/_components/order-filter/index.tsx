@@ -1,6 +1,6 @@
 "use client";
 
-import * as SwitchPrimitives from "@radix-ui/react-switch";
+import { Switch as SwitchPrimitives } from "@base-ui/react/switch";
 import {
   ArrowDownAZ,
   ArrowDownNarrowWide,
@@ -10,9 +10,9 @@ import {
   CalendarArrowUp,
 } from "lucide-react";
 import { useQueryState } from "nuqs";
-import { forwardRef } from "react";
+import { forwardRef, type ComponentPropsWithoutRef } from "react";
 
-import { Label } from "@/app/_components/ui/label";
+import Label from "@/app/_components/ui/label";
 import {
   Select,
   SelectContent,
@@ -34,9 +34,8 @@ interface OrderDirectionIconProps {
 }
 
 const OrderDirectionIcon = forwardRef<
-  React.ElementRef<typeof SwitchPrimitives.Thumb>,
-  React.ComponentPropsWithoutRef<typeof SwitchPrimitives.Thumb> &
-    OrderDirectionIconProps
+  HTMLSpanElement,
+  ComponentPropsWithoutRef<"span"> & OrderDirectionIconProps
 >(({ orderBy, direction, ...rest }, forwardedRef) => {
   return (
     <span {...rest} ref={forwardedRef}>
@@ -68,6 +67,7 @@ const OrderDirectionIcon = forwardRef<
     </span>
   );
 });
+OrderDirectionIcon.displayName = "OrderDirectionIcon";
 
 const OrderFilter = () => {
   const [orderBy, setOrderBy] = useQueryState<FavoriteProjectsOrderBy>(
@@ -78,7 +78,7 @@ const OrderFilter = () => {
         favoriteProjectsOrderBy.includes(value as FavoriteProjectsOrderBy)
           ? (value as FavoriteProjectsOrderBy)
           : null,
-    }
+    },
   );
 
   const [direction, setDirection] =
@@ -86,14 +86,16 @@ const OrderFilter = () => {
       shallow: true,
       parse: (value) =>
         favoriteProjectsOrderDirection.includes(
-          value as FavoriteProjectsOrderDirection
+          value as FavoriteProjectsOrderDirection,
         )
           ? (value as FavoriteProjectsOrderDirection)
           : null,
     });
 
-  const handleOrderByChange = (value: NonNullable<typeof orderBy>) => {
-    void setOrderBy(value);
+  const handleOrderByChange = (value: string | null) => {
+    if (favoriteProjectsOrderBy.includes(value as FavoriteProjectsOrderBy)) {
+      void setOrderBy(value as FavoriteProjectsOrderBy);
+    }
   };
 
   const handleDirectionChange = (checked: boolean) => {
@@ -110,44 +112,54 @@ const OrderFilter = () => {
     void setDirection(newDirection);
   };
 
+  const items = [
+    { value: "date", label: "Date de sortie" },
+    { value: "name", label: "Nom du projet" },
+    { value: "artist", label: "Nom de l'artiste" },
+    { value: "duration", label: "Durée du projet" },
+  ];
+
   return (
     <div className="flex flex-row items-center gap-x-4">
       <Select
         name="orderBy"
+        items={items}
         value={orderBy ?? ""}
         onValueChange={handleOrderByChange}
       >
-        <SelectTrigger className="w-[160px] bg-stone-950/25">
+        <SelectTrigger className="w-[160px] bg-background/25">
           <SelectValue placeholder="Trier par" />
         </SelectTrigger>
 
-        <SelectContent align="end">
-          <SelectItem value="date">Date de sortie</SelectItem>
-
-          <SelectItem value="name">Nom du projet</SelectItem>
-
-          <SelectItem value="artist">Nom de l&apos;artiste</SelectItem>
-
-          <SelectItem value="duration">Durée du projet</SelectItem>
+        <SelectContent>
+          {items.map((item) => (
+            <SelectItem key={item.value} value={item.value}>
+              {item.label}
+            </SelectItem>
+          ))}
         </SelectContent>
       </Select>
 
-      <Label display="hidden" htmlFor="direction">
+      <Label className="sr-only" htmlFor="direction">
         Sens du tri
       </Label>
 
       <SwitchPrimitives.Root
         id="direction"
         name="direction"
+        nativeButton
+        render={<button type="button" />}
         checked={direction === "asc"}
         onCheckedChange={handleDirectionChange}
       >
-        <SwitchPrimitives.Thumb asChild>
-          <OrderDirectionIcon
-            orderBy={orderBy ?? undefined}
-            direction={direction ?? undefined}
-          />
-        </SwitchPrimitives.Thumb>
+        <SwitchPrimitives.Thumb
+          render={
+            <OrderDirectionIcon
+              orderBy={orderBy ?? undefined}
+              direction={direction ?? undefined}
+            />
+          }
+        />
       </SwitchPrimitives.Root>
     </div>
   );

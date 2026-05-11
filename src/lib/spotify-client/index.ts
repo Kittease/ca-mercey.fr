@@ -9,7 +9,7 @@ class SpotifyApiClient {
 
   private accessToken: string | null;
 
-  private static instance: SpotifyApiClient;
+  private static instance: SpotifyApiClient | undefined;
 
   private constructor(clientId: string, clientSecret: string) {
     this.clientId = clientId;
@@ -19,9 +19,9 @@ class SpotifyApiClient {
 
   public static getInstance(
     clientId: string,
-    clientSecret: string
+    clientSecret: string,
   ): SpotifyApiClient {
-    if (!SpotifyApiClient.instance) {
+    if (SpotifyApiClient.instance === undefined) {
       SpotifyApiClient.instance = new SpotifyApiClient(clientId, clientSecret);
     }
 
@@ -46,18 +46,15 @@ class SpotifyApiClient {
   }
 
   private addAuthorizationHeader(options: RequestInit): RequestInit {
-    return {
-      ...options,
-      headers: {
-        ...options.headers,
-        Authorization: `Bearer ${this.accessToken}`,
-      },
-    };
+    const headers = new Headers(options.headers);
+    headers.set("Authorization", `Bearer ${this.accessToken ?? ""}`);
+
+    return { ...options, headers };
   }
 
   public async fetch<T>(
     endpoint: string,
-    options: RequestInit = {}
+    options: RequestInit = {},
   ): Promise<SpotifyApiResponse<T>> {
     const url = `https://api.spotify.com/v1${endpoint}`;
 
@@ -91,7 +88,7 @@ class SpotifyApiClient {
 
 const spotifyApiClientInstance = SpotifyApiClient.getInstance(
   config.spotifyApi.clientId,
-  config.spotifyApi.clientSecret
+  config.spotifyApi.clientSecret,
 );
 
 export default spotifyApiClientInstance;

@@ -11,23 +11,23 @@ export const transformRawSimplifiedAlbumToSimplifiedAlbum = ({
   total_tracks,
   release_date,
   release_date_precision,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  // eslint-disable-next-line unused-imports/no-unused-vars
   type,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  // eslint-disable-next-line unused-imports/no-unused-vars
   available_markets,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  // eslint-disable-next-line unused-imports/no-unused-vars
   restrictions,
   ...rest
 }: RawSimplifiedAlbum): SimplifiedAlbum => {
   const { year, month, day } = getAlbumReleaseDateObject(
     release_date,
-    release_date_precision
+    release_date_precision,
   );
 
   return transformRawSpotifyBaseObjectToSpotifyBaseObject({
     albumType: album_type,
     artists: artists.map((artist) =>
-      transformRawSimplifiedArtistToSimplifiedArtist(artist)
+      transformRawSimplifiedArtistToSimplifiedArtist(artist),
     ),
     totalTracks: total_tracks,
     releaseYear: year,
@@ -44,7 +44,7 @@ export const transformRawAlbumToAlbum = ({
   ...simplifiedAlbum
 }: RawAlbum): Album => ({
   tracks: tracks.items.map((track) =>
-    transformRawSimplifiedTrackToSimplifiedTrack(track)
+    transformRawSimplifiedTrackToSimplifiedTrack(track),
   ),
   genres,
   label,

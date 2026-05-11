@@ -62,26 +62,13 @@ const groupByDate = (
   projects: FavoriteProject[],
   direction?: FavoriteProjectsOrderDirection,
 ): ProjectGroup[] => {
-  const groupedProjects = projects.reduce<Record<string, FavoriteProject[]>>(
-    (acc, project) => {
-      const groupKey = formatDateGroupTitle(project);
-
-      if (!acc[groupKey]) {
-        acc[groupKey] = [];
-      }
-
-      acc[groupKey].push(project);
-
-      return acc;
-    },
-    {},
-  );
+  const groupedProjects = Object.groupBy(projects, formatDateGroupTitle);
 
   return Object.entries(groupedProjects)
     .map(
       ([groupTitle, projects]): ProjectGroup => ({
         groupTitle,
-        sortedProjects: sortProjectsInGroupByName(projects, direction),
+        sortedProjects: sortProjectsInGroupByName(projects ?? [], direction),
       }),
     )
     .sort((a, b) => {
@@ -98,7 +85,7 @@ const groupByDate = (
       if (aIsYearOnly) {
         const [, yearB] = b.groupTitle.split(" ");
         const yearAInt = parseInt(a.groupTitle);
-        const yearBInt = parseInt(yearB);
+        const yearBInt = parseInt(yearB ?? "");
         return yearAInt === yearBInt
           ? direction === "desc"
             ? 1
@@ -108,7 +95,7 @@ const groupByDate = (
 
       if (bIsYearOnly) {
         const [, yearA] = a.groupTitle.split(" ");
-        const yearAInt = parseInt(yearA);
+        const yearAInt = parseInt(yearA ?? "");
         const yearBInt = parseInt(b.groupTitle);
         return yearAInt === yearBInt
           ? direction === "desc"
@@ -128,30 +115,25 @@ const groupByDate = (
     });
 };
 
-// Helper function to group projects by artist
 const groupByArtist = (
   projects: FavoriteProject[],
   direction?: FavoriteProjectsOrderDirection,
 ): ProjectGroup[] => {
-  const groupedProjects = projects.reduce<Record<string, FavoriteProject[]>>(
-    (acc, project) => {
-      project.artists.forEach(({ name }) => {
-        if (!acc[name]) {
-          acc[name] = [];
-        }
-
-        acc[name].push(project);
-      });
-      return acc;
-    },
-    {},
+  // A project can belong to multiple artists, so flatten to (artist, project)
+  // pairs before grouping
+  const pairs = projects.flatMap((project) =>
+    project.artists.map((artist) => ({ artistName: artist.name, project })),
   );
+  const groupedPairs = Object.groupBy(pairs, ({ artistName }) => artistName);
 
-  return Object.entries(groupedProjects)
+  return Object.entries(groupedPairs)
     .map(
-      ([groupTitle, projects]): ProjectGroup => ({
+      ([groupTitle, pairs]): ProjectGroup => ({
         groupTitle,
-        sortedProjects: sortProjectsInGroupByDate(projects, direction),
+        sortedProjects: sortProjectsInGroupByDate(
+          (pairs ?? []).map(({ project }) => project),
+          direction,
+        ),
       }),
     )
     .sort(
@@ -166,31 +148,18 @@ const groupByName = (
   projects: FavoriteProject[],
   direction?: FavoriteProjectsOrderDirection,
 ): ProjectGroup[] => {
-  const groupedProjects = projects.reduce<Record<string, FavoriteProject[]>>(
-    (acc, project) => {
-      const name = project.name.normalize("NFD");
-      const firstAlphaNumMatch = name.match(/[A-Za-z0-9]/);
+  const groupedProjects = Object.groupBy(projects, (project) => {
+    const name = project.name.normalize("NFD");
+    const firstAlphaNumMatch = /[A-Za-z0-9]/.exec(name);
 
-      const groupKey = firstAlphaNumMatch
-        ? firstAlphaNumMatch[0].toUpperCase()
-        : "-";
-
-      if (!acc[groupKey]) {
-        acc[groupKey] = [];
-      }
-
-      acc[groupKey].push(project);
-
-      return acc;
-    },
-    {},
-  );
+    return firstAlphaNumMatch ? firstAlphaNumMatch[0].toUpperCase() : "-";
+  });
 
   return Object.entries(groupedProjects)
     .map(
       ([groupTitle, projects]): ProjectGroup => ({
         groupTitle,
-        sortedProjects: sortProjectsInGroupByName(projects, direction),
+        sortedProjects: sortProjectsInGroupByName(projects ?? [], direction),
       }),
     )
     .sort((a, b) => {
@@ -231,17 +200,17 @@ const groupByDuration = (
   projects: FavoriteProject[],
   direction?: FavoriteProjectsOrderDirection,
 ): ProjectGroup[] => {
-  const projectDurations: Record<string, number> = {};
+  const projectDurations = new Map<string, number>();
   projects.forEach(({ id, tracks }) => {
-    projectDurations[id] = tracks.reduce(
-      (acc, { duration }) => acc + duration,
-      0,
+    projectDurations.set(
+      id,
+      tracks.reduce((acc, { duration }) => acc + duration, 0),
     );
   });
 
   const sortedProjects = [...projects].sort(
     (a, b) =>
-      (projectDurations[a.id] - projectDurations[b.id]) *
+      ((projectDurations.get(a.id) ?? 0) - (projectDurations.get(b.id) ?? 0)) *
       (direction === "desc" ? -1 : 1),
   );
 
