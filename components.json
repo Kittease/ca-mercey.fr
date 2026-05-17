@@ -14,6 +14,7 @@
   "rtl": false,
   "aliases": {
     "components": "@/app/_components",
+    "hooks": "@/hooks",
     "utils": "@/lib/tailwind"
   },
   "menuColor": "default-translucent",
