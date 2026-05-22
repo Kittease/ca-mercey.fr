@@ -12,6 +12,7 @@ export const serverSideSchema = z.object({
   DIRECT_URL: z.string(),
   FILEN_EMAIL: z.string(),
   FILEN_PASSWORD: z.string(),
+  FILEN_ROOT_DIRECTORY: z.string(),
   BETTER_AUTH_SECRET: z.string(),
   BETTER_AUTH_URL: z.string(),
   GOOGLE_CLIENT_ID: z.string(),

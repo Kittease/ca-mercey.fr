@@ -56,14 +56,16 @@ export const uploadFile = async ({
     buffer = fileBody;
   }
 
+  const path = `${config.filen.rootDirectory}${directoryPath}`;
+
   try {
-    await client.fs().mkdir({ path: directoryPath });
+    await client.fs().mkdir({ path });
   } catch {
     /* empty */
   }
 
   await client.fs().writeFile({
-    path: `${directoryPath}/${fileName}`,
+    path: `${path}/${fileName}`,
     content: buffer,
   });
 };
@@ -73,14 +75,18 @@ export const readFile = async (filePath: string) => {
 
   const client = await getFilenClient();
 
-  return client.fs().readFile({ path: filePath });
+  return client.fs().readFile({
+    path: `${config.filen.rootDirectory}${filePath}`,
+  });
 };
 
 export const deleteFile = async (filePath: string) => {
   const client = await getFilenClient();
 
   try {
-    await client.fs().unlink({ path: filePath });
+    await client.fs().unlink({
+      path: `${config.filen.rootDirectory}${filePath}`,
+    });
   } catch {
     /* empty */
   }

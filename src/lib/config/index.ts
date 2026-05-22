@@ -24,6 +24,7 @@ const loadConfig = () => {
     filen: {
       email: env.FILEN_EMAIL,
       password: env.FILEN_PASSWORD,
+      rootDirectory: env.FILEN_ROOT_DIRECTORY,
     },
     auth: {
       secret: env.BETTER_AUTH_SECRET,

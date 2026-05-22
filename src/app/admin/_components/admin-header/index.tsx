@@ -1,3 +1,5 @@
+"use client";
+
 import { XIcon } from "lucide-react";
 
 import { Button } from "@/app/_components/ui/button";
@@ -7,6 +9,7 @@ import { cn } from "@/lib/tailwind";
 
 const AdminHeader = () => {
   const { clearSelection, selectedPhotoCount } = usePhotoSelection();
+
   const title =
     selectedPhotoCount > 0
       ? `${selectedPhotoCount} photos selected`
