@@ -21,6 +21,10 @@ const loadConfig = () => {
       url: env.DATABASE_URL,
       directUrl: env.DIRECT_URL,
     },
+    filen: {
+      email: env.FILEN_EMAIL,
+      password: env.FILEN_PASSWORD,
+    },
     auth: {
       secret: env.BETTER_AUTH_SECRET,
       url: env.BETTER_AUTH_URL,
