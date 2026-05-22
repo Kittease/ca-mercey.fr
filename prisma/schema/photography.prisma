@@ -1,0 +1,85 @@
+model Photos {
+  id         String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  shortId    String @unique @map("short_id")
+  storageKey String @unique @map("storage_key")
+  width      Int
+  height     Int
+
+  camera                  String?
+  lens                    String?
+  focalLength             Float?                                @map("focal_length")
+  aperture                Float?
+  exposureTimeNumerator   Int?                                  @map("exposure_time_numerator")
+  exposureTimeDenominator Int?                                  @map("exposure_time_denominator")
+  iso                     Int?
+  locationName            String?                               @map("location_name")
+  locationCoordinates     Unsupported("geometry(Point, 4326)")? @map("location_coordinates")
+  captureTime             DateTime?                             @map("capture_time") @db.Timestamptz()
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz()
+
+  galleryEntry GalleryPhoto?
+  albums       AlbumPhoto[]
+  coverOf      Albums[]      @relation("AlbumCoverPhoto")
+
+  @@index([captureTime(sort: Desc)])
+  @@index([locationCoordinates], type: Gist)
+  @@map("photos")
+  @@schema("photography")
+}
+
+enum AlbumPrivacy {
+  PUBLIC
+  UNLISTED
+  PRIVATE
+
+  @@map("album_privacy")
+  @@schema("photography")
+}
+
+model Albums {
+  id          String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  shortId     String  @unique @map("short_id")
+  name        String
+  description String?
+  coverPhoto  String? @map("cover_photo") @db.Uuid
+
+  privacy AlbumPrivacy @default(PRIVATE)
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz()
+
+  photos AlbumPhoto[]
+  cover  Photos?      @relation("AlbumCoverPhoto", fields: [coverPhoto], references: [id], onDelete: SetNull)
+
+  @@index([privacy, createdAt(sort: Desc)])
+  @@map("albums")
+  @@schema("photography")
+}
+
+model AlbumPhoto {
+  albumId  String   @map("album_id") @db.Uuid
+  photoId  String   @map("photo_id") @db.Uuid
+  position Int
+  addedOn  DateTime @default(now()) @map("added_on") @db.Timestamptz()
+
+  album Albums @relation(fields: [albumId], references: [id], onDelete: Cascade)
+  photo Photos @relation(fields: [photoId], references: [id], onDelete: Cascade)
+
+  @@id([albumId, photoId])
+  @@unique([albumId, position])
+  @@index([photoId])
+  @@map("album_photo")
+  @@schema("photography")
+}
+
+model GalleryPhoto {
+  photoId String   @id @map("photo_id") @db.Uuid
+  addedOn DateTime @default(now()) @map("added_on") @db.Timestamptz()
+
+  photo Photos @relation(fields: [photoId], references: [id], onDelete: Cascade)
+
+  @@map("gallery_photo")
+  @@schema("photography")
+}
