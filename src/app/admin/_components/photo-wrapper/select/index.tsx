@@ -1,8 +1,9 @@
 "use client";
 
 import { CheckIcon } from "lucide-react";
-import { KeyboardEvent, PropsWithChildren } from "react";
+import { KeyboardEvent, MouseEvent, PropsWithChildren } from "react";
 
+import { useUpload } from "@/app/admin/_components/upload/context";
 import { cn } from "@/lib/tailwind";
 
 import { usePhotoSelection } from "./context";
@@ -17,13 +18,27 @@ const PhotoWrapper = ({
   children,
   photo,
 }: PropsWithChildren<PhotoWrapperProps>) => {
-  const { isPhotoSelected, togglePhoto, selectedPhotoCount } =
+  const { isPhotoSelected, togglePhoto, selectRange, selectedPhotoCount } =
     usePhotoSelection();
+  const { photos } = useUpload();
 
-  const handlePhotoClick = () => {
-    if (selectedPhotoCount > 0) {
-      togglePhoto(photo);
+  const handlePhotoClick = (
+    event: MouseEvent<HTMLElement> | KeyboardEvent<HTMLElement>,
+  ) => {
+    if (selectedPhotoCount === 0) {
+      return;
     }
+
+    if (event.shiftKey) {
+      selectRange(
+        photos.map(({ id }) => id),
+        photo.id,
+      );
+
+      return;
+    }
+
+    togglePhoto(photo);
   };
 
   const handlePhotoButtonClick = () => {
@@ -38,7 +53,7 @@ const PhotoWrapper = ({
     }
 
     event.preventDefault();
-    handlePhotoClick();
+    handlePhotoClick(event);
   };
 
   return (
@@ -47,12 +62,12 @@ const PhotoWrapper = ({
       tabIndex={selectedPhotoCount > 0 ? 0 : -1}
       data-selection={selectedPhotoCount > 0}
       data-selected={isPhotoSelected(photo.id)}
-      onClick={handlePhotoClick}
+      onClick={(event) => handlePhotoClick(event)}
       onKeyDown={handlePhotoButtonKeyDown}
       className={cn(
         "group/photo",
         "[--selected-pad:--spacing(3)]",
-        "absolute inset-0 cursor-pointer bg-foreground/15 transition-all hover:bg-foreground/20",
+        "absolute inset-0 cursor-pointer bg-foreground/15 transition-all select-none hover:bg-foreground/20",
         "[&_img]:transition-all data-[selected=false]:[&_img]:inset-0 data-[selected=false]:[&_img]:size-full data-[selected=true]:[&_img]:inset-(--selected-pad) data-[selected=true]:[&_img]:size-[calc(100%-2*var(--selected-pad))]",
         "after:absolute after:inset-0 after:z-10 after:h-24 after:bg-gradient-to-b after:from-background/50 after:to-background/0",
         "after:opacity-0 after:transition-all hover:data-[selected=false]:after:opacity-100",
@@ -64,7 +79,7 @@ const PhotoWrapper = ({
         onClick={(event) => {
           event.stopPropagation();
           if (selectedPhotoCount > 0) {
-            handlePhotoClick();
+            handlePhotoClick(event);
             return;
           }
 
@@ -78,7 +93,7 @@ const PhotoWrapper = ({
             "absolute top-0 left-0 rounded-full transition-all",
             "text-foreground/0 group-hover/photo:group-data-[selected=false]/photo:text-foreground/50 group-data-[selected=false]/photo:hover:text-foreground/100",
             "border-foreground/50 group-hover/photo:border-0! group-data-[selection=true]/photo:group-data-[selected=false]/photo:border-2",
-            "group-data-[selected=true]/photo:text-green-600",
+            "group-data-[selected=true]/photo:text-success",
           )}
         >
           <mask id="check-icon-mask" maskUnits="userSpaceOnUse">
