@@ -1,10 +1,11 @@
-import { Photos } from "@prisma/client";
+import { GalleryPhoto, Photos } from "@prisma/client";
 
 export type RawPhoto = Photos & {
   locationCoordinates?: {
     latitude: number;
     longitude: number;
   };
+  galleryEntry?: GalleryPhoto | null;
 };
 
 export type Photo = {
@@ -14,6 +15,7 @@ export type Photo = {
   thumbnailSrc: string;
   width: number;
   height: number;
+  inGallery: boolean;
   metadata: {
     camera?: string;
     lens?: string;

@@ -19,6 +19,7 @@ export const getThumbnailPath = (id: string) => {
 export const getAllPhotos = async () => {
   const photos = await prisma.photos.findMany({
     orderBy: { createdAt: "desc" },
+    include: { galleryEntry: true },
   });
 
   return photos.map(transformRawPhotoToPhoto);
@@ -71,4 +72,15 @@ export const createPhoto = async (data: NewPhotoData) => {
 
 export const deletePhoto = async (id: string) => {
   await prisma.photos.delete({ where: { id } });
+};
+
+export const addPhotosToGallery = async (ids: string[]) => {
+  await prisma.galleryPhoto.createMany({
+    data: ids.map((photoId) => ({ photoId })),
+    skipDuplicates: true,
+  });
+};
+
+export const removePhotosFromGallery = async (ids: string[]) => {
+  await prisma.galleryPhoto.deleteMany({ where: { photoId: { in: ids } } });
 };

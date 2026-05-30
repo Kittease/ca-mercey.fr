@@ -8,6 +8,7 @@ export const transformRawPhotoToPhoto = (rawPhoto: RawPhoto): Photo => {
     thumbnailSrc: `/photos/${rawPhoto.id}/thumbnail`,
     width: rawPhoto.width,
     height: rawPhoto.height,
+    inGallery: Boolean(rawPhoto.galleryEntry),
     metadata: {
       camera: rawPhoto.camera ?? undefined,
       lens: rawPhoto.lens ?? undefined,

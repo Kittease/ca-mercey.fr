@@ -1,6 +1,6 @@
 "use client";
 
-import { CheckIcon } from "lucide-react";
+import { CheckIcon, ImagesIcon } from "lucide-react";
 import { KeyboardEvent, MouseEvent, PropsWithChildren } from "react";
 
 import { useUpload } from "@/app/admin/_components/upload/context";
@@ -21,6 +21,9 @@ const PhotoWrapper = ({
   const { isPhotoSelected, togglePhoto, selectRange, selectedPhotoCount } =
     usePhotoSelection();
   const { photos } = useUpload();
+
+  const inGallery =
+    photos.find(({ id }) => id === photo.id)?.inGallery ?? false;
 
   const handlePhotoClick = (
     event: MouseEvent<HTMLElement> | KeyboardEvent<HTMLElement>,
@@ -118,6 +121,16 @@ const PhotoWrapper = ({
           />
         </svg>
       </button>
+
+      {inGallery ? (
+        <>
+          <div className="pointer-events-none absolute bottom-0 left-0 z-10 size-20 bg-radial-[at_bottom_left] from-background/50 to-transparent to-75%" />
+
+          <div className="absolute bottom-2 left-2 z-20 rounded-full bg-foreground/50 p-1.5 backdrop-blur-sm">
+            <ImagesIcon className="size-4 text-background" />
+          </div>
+        </>
+      ) : null}
 
       {children}
     </div>

@@ -30,6 +30,7 @@ interface UploadContextValue {
   retryUpload: (uploadId: string) => void;
   dismissUpload: (uploadId: string) => void;
   removePhotos: (ids: string[]) => void;
+  setPhotosGalleryStatus: (ids: string[], inGallery: boolean) => void;
 }
 
 const UploadContext = createContext<UploadContextValue | null>(null);
@@ -265,6 +266,19 @@ export const UploadProvider = ({
     setPhotos((current) => current.filter((photo) => !removed.has(photo.id)));
   }, []);
 
+  const setPhotosGalleryStatus = useCallback(
+    (ids: string[], inGallery: boolean) => {
+      const affected = new Set(ids);
+
+      setPhotos((current) =>
+        current.map((photo) =>
+          affected.has(photo.id) ? { ...photo, inGallery } : photo,
+        ),
+      );
+    },
+    [],
+  );
+
   const setSheetOpen = useCallback(
     (open: boolean) => {
       setSheetOpenState(open);
@@ -338,6 +352,7 @@ export const UploadProvider = ({
       retryUpload,
       dismissUpload,
       removePhotos,
+      setPhotosGalleryStatus,
     }),
     [
       addFiles,
@@ -346,6 +361,7 @@ export const UploadProvider = ({
       photos,
       removePhotos,
       retryUpload,
+      setPhotosGalleryStatus,
       setSheetOpen,
       sheetOpen,
       uploads,
