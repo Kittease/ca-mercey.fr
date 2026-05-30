@@ -71,8 +71,6 @@ export const uploadFile = async ({
 };
 
 export const readFile = async (filePath: string) => {
-  "use cache";
-
   const client = await getFilenClient();
 
   return client.fs().readFile({

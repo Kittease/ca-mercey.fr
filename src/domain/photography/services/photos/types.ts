@@ -19,10 +19,7 @@ export type Photo = {
     lens?: string;
     focalLength?: number;
     aperture?: number;
-    exposureTime?: {
-      numerator: number;
-      denominator: number;
-    };
+    exposureTime?: number;
     iso?: number;
     locationName?: string;
     locationCoordinates?: {
@@ -33,15 +30,14 @@ export type Photo = {
 };
 
 export type NewPhotoData = {
-  name: string;
+  id: string;
   width: number;
   height: number;
   camera?: string;
   lens?: string;
   focalLength?: number;
   aperture?: number;
-  exposureTimeNumerator?: number;
-  exposureTimeDenominator?: number;
+  exposureTime?: number;
   iso?: number;
   locationCoordinates?: { latitude: number; longitude: number };
   captureTime?: Date;

@@ -12,6 +12,7 @@ import {
 
 type Photo = {
   src: string;
+  thumbnailSrc: string;
   width: number;
   height: number;
 };
@@ -75,6 +76,7 @@ const PhotoLayout = ({
 
         return {
           src: photo.src,
+          thumbnailSrc: photo.thumbnailSrc,
           top,
           left,
           width,
@@ -102,7 +104,7 @@ const PhotoLayout = ({
           }}
         >
           <PhotoWrapper photo={photo}>
-            <img src={photo.src} alt="" className="absolute inset-0" />
+            <img src={photo.thumbnailSrc} alt="" className="absolute inset-0" />
           </PhotoWrapper>
         </div>
       ))}

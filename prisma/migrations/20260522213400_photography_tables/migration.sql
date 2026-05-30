@@ -13,15 +13,13 @@ CREATE TYPE "photography"."album_privacy" AS ENUM ('PUBLIC', 'UNLISTED', 'PRIVAT
 CREATE TABLE "photography"."photos" (
     "id" UUID NOT NULL DEFAULT gen_random_uuid(),
     "short_id" TEXT NOT NULL,
-    "storage_key" TEXT NOT NULL,
     "width" INTEGER NOT NULL,
     "height" INTEGER NOT NULL,
     "camera" TEXT,
     "lens" TEXT,
     "focal_length" DOUBLE PRECISION,
     "aperture" DOUBLE PRECISION,
-    "exposure_time_numerator" INTEGER,
-    "exposure_time_denominator" INTEGER,
+    "exposure_time" DOUBLE PRECISION,
     "iso" INTEGER,
     "location_name" TEXT,
     "location_coordinates" geometry(Point, 4326),
@@ -66,9 +64,6 @@ CREATE TABLE "photography"."gallery_photo" (
 
 -- CreateIndex
 CREATE UNIQUE INDEX "photos_short_id_key" ON "photography"."photos"("short_id");
-
--- CreateIndex
-CREATE UNIQUE INDEX "photos_storage_key_key" ON "photography"."photos"("storage_key");
 
 -- CreateIndex
 CREATE INDEX "photos_capture_time_idx" ON "photography"."photos"("capture_time" DESC);

@@ -13,13 +13,7 @@ export const transformRawPhotoToPhoto = (rawPhoto: RawPhoto): Photo => {
       lens: rawPhoto.lens ?? undefined,
       focalLength: rawPhoto.focalLength ?? undefined,
       aperture: rawPhoto.aperture ?? undefined,
-      exposureTime:
-        rawPhoto.exposureTimeNumerator && rawPhoto.exposureTimeDenominator
-          ? {
-              numerator: rawPhoto.exposureTimeNumerator,
-              denominator: rawPhoto.exposureTimeDenominator,
-            }
-          : undefined,
+      exposureTime: rawPhoto.exposureTime ?? undefined,
       iso: rawPhoto.iso ?? undefined,
       locationName: rawPhoto.locationName ?? undefined,
       locationCoordinates: rawPhoto.locationCoordinates ?? undefined,

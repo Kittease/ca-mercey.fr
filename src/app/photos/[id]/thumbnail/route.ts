@@ -1,6 +1,6 @@
 import {
   getAllPhotos,
-  getPhotoPath,
+  getThumbnailPath,
 } from "@/domain/photography/services/photos";
 import { readFile } from "@/lib/storage";
 
@@ -11,12 +11,12 @@ export async function generateStaticParams() {
 
 export async function GET(
   _request: Request,
-  context: RouteContext<"/photos/[id]">,
+  context: RouteContext<"/photos/[id]/thumbnail">,
 ): Promise<Response> {
   const { id } = await context.params;
 
   try {
-    const buffer = await readFile(getPhotoPath(id));
+    const buffer = await readFile(getThumbnailPath(id));
     const body = new Uint8Array(buffer);
 
     return new Response(body, {

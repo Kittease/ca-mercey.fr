@@ -1,16 +1,14 @@
 model Photos {
-  id         String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  shortId    String @unique @map("short_id")
-  storageKey String @unique @map("storage_key")
-  width      Int
-  height     Int
+  id      String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  shortId String @unique @map("short_id")
+  width   Int
+  height  Int
 
   camera                  String?
   lens                    String?
   focalLength             Float?                                @map("focal_length")
   aperture                Float?
-  exposureTimeNumerator   Int?                                  @map("exposure_time_numerator")
-  exposureTimeDenominator Int?                                  @map("exposure_time_denominator")
+  exposureTime            Float?                                @map("exposure_time")
   iso                     Int?
   locationName            String?                               @map("location_name")
   locationCoordinates     Unsupported("geometry(Point, 4326)")? @map("location_coordinates")

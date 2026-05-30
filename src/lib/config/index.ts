@@ -40,6 +40,10 @@ const loadConfig = () => {
       clientSecret: env.SPOTIFY_API_CLIENT_SECRET,
     },
     spotifyNowPlayingUrl: env.SPOTIFY_NOW_PLAYING_URL,
+    blob: {
+      readWriteToken: env.BLOB_READ_WRITE_TOKEN,
+    },
+    cronSecret: env.CRON_SECRET,
   };
 };
 

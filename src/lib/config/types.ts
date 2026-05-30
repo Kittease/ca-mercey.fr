@@ -21,4 +21,6 @@ export const serverSideSchema = z.object({
   SPOTIFY_API_CLIENT_ID: z.string(),
   SPOTIFY_API_CLIENT_SECRET: z.string(),
   SPOTIFY_NOW_PLAYING_URL: z.string(),
+  BLOB_READ_WRITE_TOKEN: z.string(),
+  CRON_SECRET: z.string(),
 });
