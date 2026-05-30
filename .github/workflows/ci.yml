@@ -39,5 +39,10 @@ jobs:
       - name: Format check
         run: bun run format.check
 
+      # Generates Next.js route types (.next/types) so the type-check can
+      # resolve generated names like `RouteContext` on a fresh checkout.
+      - name: Generate Next.js types
+        run: bunx --bun next typegen
+
       - name: Type check
         run: bun run type-check
