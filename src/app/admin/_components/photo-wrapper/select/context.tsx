@@ -10,14 +10,14 @@ import {
 } from "react";
 
 interface PhotoSelectionItem {
-  src: string;
+  id: string;
 }
 
 interface PhotoSelectionContextValue {
   selectedPhotos: PhotoSelectionItem[];
   selectedPhotoCount: number;
   clearSelection: () => void;
-  isPhotoSelected: (src: string) => boolean;
+  isPhotoSelected: (id: string) => boolean;
   togglePhoto: (photo: PhotoSelectionItem) => void;
 }
 
@@ -31,14 +31,14 @@ const PhotoSelectionProvider = ({ children }: PropsWithChildren) => {
   );
 
   const isPhotoSelected = useCallback(
-    (src: string) => selectedPhotos.some((photo) => photo.src === src),
+    (id: string) => selectedPhotos.some((photo) => photo.id === id),
     [selectedPhotos],
   );
 
   const togglePhoto = useCallback((photo: PhotoSelectionItem) => {
     setSelectedPhotos((currentPhotos) => {
-      if (currentPhotos.some(({ src }) => src === photo.src)) {
-        return currentPhotos.filter(({ src }) => src !== photo.src);
+      if (currentPhotos.some(({ id }) => id === photo.id)) {
+        return currentPhotos.filter(({ id }) => id !== photo.id);
       }
 
       return [...currentPhotos, photo];

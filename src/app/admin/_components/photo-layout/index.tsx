@@ -11,6 +11,7 @@ import {
 } from "react";
 
 type Photo = {
+  id: string;
   src: string;
   thumbnailSrc: string;
   width: number;
@@ -75,6 +76,7 @@ const PhotoLayout = ({
         }
 
         return {
+          id: photo.id,
           src: photo.src,
           thumbnailSrc: photo.thumbnailSrc,
           top,
@@ -94,7 +96,7 @@ const PhotoLayout = ({
     >
       {layout.photos.map((photo) => (
         <div
-          key={photo.src}
+          key={photo.id}
           className="absolute"
           style={{
             top: `${photo.top}px`,

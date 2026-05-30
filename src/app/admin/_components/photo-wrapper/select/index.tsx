@@ -9,7 +9,7 @@ import { usePhotoSelection } from "./context";
 
 interface PhotoWrapperProps {
   photo: {
-    src: string;
+    id: string;
   };
 }
 
@@ -46,7 +46,7 @@ const PhotoWrapper = ({
       role="button"
       tabIndex={selectedPhotoCount > 0 ? 0 : -1}
       data-selection={selectedPhotoCount > 0}
-      data-selected={isPhotoSelected(photo.src)}
+      data-selected={isPhotoSelected(photo.id)}
       onClick={handlePhotoClick}
       onKeyDown={handlePhotoButtonKeyDown}
       className={cn(
@@ -60,7 +60,7 @@ const PhotoWrapper = ({
     >
       <button
         type="button"
-        aria-pressed={isPhotoSelected(photo.src)}
+        aria-pressed={isPhotoSelected(photo.id)}
         onClick={(event) => {
           event.stopPropagation();
           if (selectedPhotoCount > 0) {

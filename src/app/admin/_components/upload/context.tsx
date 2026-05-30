@@ -29,6 +29,7 @@ interface UploadContextValue {
   addFiles: (files: FileList | File[]) => void;
   retryUpload: (uploadId: string) => void;
   dismissUpload: (uploadId: string) => void;
+  removePhotos: (ids: string[]) => void;
 }
 
 const UploadContext = createContext<UploadContextValue | null>(null);
@@ -52,7 +53,7 @@ export const UploadProvider = ({
   const [photos, setPhotos] = useState<Photo[]>(initialPhotos);
   const [uploads, setUploads] = useState<UploadItem[]>([]);
 
-  const [sheetOpen, setSheetOpen] = useState(false);
+  const [sheetOpen, setSheetOpenState] = useState(false);
 
   const filesRef = useRef(new Map<string, File>());
   const inFlightRef = useRef(0);
@@ -230,7 +231,7 @@ export const UploadProvider = ({
 
       setUploads((current) => [...accepted, ...current]);
 
-      setSheetOpen(true);
+      setSheetOpenState(true);
 
       for (const item of accepted) {
         enqueue(item.id);
@@ -256,6 +257,35 @@ export const UploadProvider = ({
       enqueue(uploadId);
     },
     [enqueue, updateUpload],
+  );
+
+  const removePhotos = useCallback((ids: string[]) => {
+    const removed = new Set(ids);
+
+    setPhotos((current) => current.filter((photo) => !removed.has(photo.id)));
+  }, []);
+
+  const setSheetOpen = useCallback(
+    (open: boolean) => {
+      setSheetOpenState(open);
+
+      if (
+        open ||
+        uploads.length === 0 ||
+        uploads.some((item) => item.status !== "done")
+      ) {
+        return;
+      }
+
+      for (const item of uploads) {
+        URL.revokeObjectURL(item.previewUrl);
+      }
+
+      filesRef.current.clear();
+
+      setUploads([]);
+    },
+    [uploads],
   );
 
   const dismissUpload = useCallback((uploadId: string) => {
@@ -307,13 +337,16 @@ export const UploadProvider = ({
       addFiles,
       retryUpload,
       dismissUpload,
+      removePhotos,
     }),
     [
       addFiles,
       dismissUpload,
       hasActiveUploads,
       photos,
+      removePhotos,
       retryUpload,
+      setSheetOpen,
       sheetOpen,
       uploads,
     ],

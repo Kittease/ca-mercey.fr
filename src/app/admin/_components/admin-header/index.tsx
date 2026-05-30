@@ -4,6 +4,7 @@ import { XIcon } from "lucide-react";
 
 import { Button } from "@/app/_components/ui/button";
 import { SidebarTrigger } from "@/app/_components/ui/sidebar";
+import DeletePhotos from "@/app/admin/_components/delete-photos";
 import { usePhotoSelection } from "@/app/admin/_components/photo-wrapper/select/context";
 import UploadButton from "@/app/admin/_components/upload/upload-button";
 import { UploadSheetTrigger } from "@/app/admin/_components/upload/upload-sheet";
@@ -44,8 +45,14 @@ const AdminHeader = () => {
       <h1 className="text-lg">{title}</h1>
 
       <div className="flex items-center gap-2">
-        <UploadSheetTrigger />
-        <UploadButton />
+        {selectedPhotoCount > 0 ? (
+          <DeletePhotos />
+        ) : (
+          <>
+            <UploadSheetTrigger />
+            <UploadButton />
+          </>
+        )}
       </div>
     </header>
   );
