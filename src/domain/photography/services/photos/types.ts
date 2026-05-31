@@ -6,6 +6,7 @@ export type RawPhoto = Photos & {
     longitude: number;
   };
   galleryEntry?: GalleryPhoto | null;
+  albums?: { albumId: string }[];
 };
 
 export type Photo = {
@@ -16,6 +17,7 @@ export type Photo = {
   width: number;
   height: number;
   inGallery: boolean;
+  albumIds: string[];
   metadata: {
     camera?: string;
     lens?: string;

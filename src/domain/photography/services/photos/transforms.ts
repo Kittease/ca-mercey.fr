@@ -9,6 +9,7 @@ export const transformRawPhotoToPhoto = (rawPhoto: RawPhoto): Photo => {
     width: rawPhoto.width,
     height: rawPhoto.height,
     inGallery: Boolean(rawPhoto.galleryEntry),
+    albumIds: (rawPhoto.albums ?? []).map((album) => album.albumId),
     metadata: {
       camera: rawPhoto.camera ?? undefined,
       lens: rawPhoto.lens ?? undefined,

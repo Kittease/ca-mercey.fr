@@ -4,6 +4,7 @@ import { XIcon } from "lucide-react";
 
 import { Button } from "@/app/_components/ui/button";
 import { SidebarTrigger } from "@/app/_components/ui/sidebar";
+import AlbumPhotos from "@/app/admin/_components/album-photos";
 import DeletePhotos from "@/app/admin/_components/delete-photos";
 import GalleryPhotos from "@/app/admin/_components/gallery-photos";
 import { usePhotoSelection } from "@/app/admin/_components/photo-wrapper/select/context";
@@ -49,6 +50,7 @@ const AdminHeader = () => {
         {selectedPhotoCount > 0 ? (
           <>
             <GalleryPhotos />
+            <AlbumPhotos />
             <DeletePhotos />
           </>
         ) : (

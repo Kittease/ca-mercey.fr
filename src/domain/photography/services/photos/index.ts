@@ -19,7 +19,7 @@ export const getThumbnailPath = (id: string) => {
 export const getAllPhotos = async () => {
   const photos = await prisma.photos.findMany({
     orderBy: { createdAt: "desc" },
-    include: { galleryEntry: true },
+    include: { galleryEntry: true, albums: { select: { albumId: true } } },
   });
 
   return photos.map(transformRawPhotoToPhoto);
