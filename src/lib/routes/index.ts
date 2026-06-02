@@ -11,6 +11,8 @@ export const Routes = {
   ALBUM_SEARCH: "/music/album/search",
 
   ADMIN: "/admin",
+  ADMIN_PHOTO: "/admin/photo",
+  ADMIN_ALBUMS: "/admin/albums",
 } satisfies Record<string, Route>;
 
 export const PROTECTED_ROUTES: Route[] = [

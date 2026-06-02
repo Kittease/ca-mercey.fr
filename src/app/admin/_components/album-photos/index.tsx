@@ -3,9 +3,6 @@
 import {
   BookImageIcon,
   CheckIcon,
-  EyeIcon,
-  EyeOffIcon,
-  HatGlassesIcon,
   Loader2Icon,
   MinusIcon,
   PlusIcon,
@@ -24,57 +21,22 @@ import {
   ComboboxSeparator,
   ComboboxTrigger,
 } from "@/app/_components/ui/combobox";
-import { Input } from "@/app/_components/ui/input";
-import { RadioGroup, RadioGroupItem } from "@/app/_components/ui/radio-group";
-import { Textarea } from "@/app/_components/ui/textarea";
 import {
   addToAlbum,
-  createAlbumAction,
   removeFromAlbum,
 } from "@/app/admin/_components/album-photos/actions";
+import AlbumRow from "@/app/admin/_components/album-picker/album-row";
+import CreateAlbumForm from "@/app/admin/_components/album-picker/create-album-form";
 import { useAlbums } from "@/app/admin/_components/albums/context";
 import { usePhotoSelection } from "@/app/admin/_components/photo-wrapper/select/context";
 import { useUpload } from "@/app/admin/_components/upload/context";
 import { Album } from "@/domain/photography/services/albums/types";
 import { cn } from "@/lib/tailwind";
 
-import type { AlbumPrivacy } from "@prisma/client";
-
 type Membership = "all" | "some" | "none";
-
-const PRIVACY_OPTIONS: {
-  value: AlbumPrivacy;
-  label: string;
-  Icon: typeof EyeIcon;
-}[] = [
-  { value: "PUBLIC", label: "Public", Icon: EyeIcon },
-  { value: "UNLISTED", label: "Unlisted", Icon: EyeOffIcon },
-  { value: "PRIVATE", label: "Private", Icon: HatGlassesIcon },
-];
 
 const pluralize = (count: number, word: string) =>
   count === 1 ? word : `${word}s`;
-
-const AlbumCover = ({ album }: { album: Album }) => {
-  if (album.coverThumbnailSrc) {
-    return (
-      // eslint-disable-next-line @next/next/no-img-element
-      <img
-        src={album.coverThumbnailSrc}
-        alt=""
-        width={40}
-        height={40}
-        className="size-10 shrink-0 rounded object-cover"
-      />
-    );
-  }
-
-  return (
-    <span className="flex size-10 shrink-0 items-center justify-center rounded bg-muted text-muted-foreground">
-      <BookImageIcon className="size-4" />
-    </span>
-  );
-};
 
 const MembershipIndicator = ({
   state,
@@ -114,10 +76,6 @@ const AlbumPhotos = () => {
   const selectionRef = useRef<Album[]>([]);
 
   const [creating, setCreating] = useState(false);
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [privacy, setPrivacy] = useState<AlbumPrivacy>("PRIVATE");
-  const [createPending, setCreatePending] = useState(false);
 
   const selectedFull = useMemo(() => {
     const selectedIds = new Set(selectedPhotos.map(({ id }) => id));
@@ -221,51 +179,22 @@ const AlbumPhotos = () => {
     }
   };
 
-  const openCreate = () => {
-    setName(query.trim());
-    setDescription("");
-    setPrivacy("PRIVATE");
-    setCreating(true);
-  };
-
-  const handleCreate = () => {
-    const trimmedName = name.trim();
-
-    if (!trimmedName) {
-      return;
-    }
+  const handleAlbumCreated = async (album: Album) => {
+    addAlbum(album);
 
     const targetIds = selectedFull.map((photo) => photo.id);
     const noun = pluralize(targetIds.length, "photo");
 
-    setCreatePending(true);
+    if (targetIds.length > 0) {
+      await addToAlbum(album.id, targetIds);
+      setPhotosAlbumMembership(targetIds, album.id, true);
+    }
 
-    void (async () => {
-      try {
-        const album = await createAlbumAction({
-          name: trimmedName,
-          description: description.trim() || undefined,
-          privacy,
-        });
+    toast.success(
+      `Created “${album.name}” and added ${targetIds.length} ${noun}`,
+    );
 
-        addAlbum(album);
-
-        if (targetIds.length > 0) {
-          await addToAlbum(album.id, targetIds);
-          setPhotosAlbumMembership(targetIds, album.id, true);
-        }
-
-        toast.success(
-          `Created “${album.name}” and added ${targetIds.length} ${noun}`,
-        );
-
-        setCreating(false);
-      } catch {
-        toast.error("Failed to create the album");
-      } finally {
-        setCreatePending(false);
-      }
-    })();
+    setCreating(false);
   };
 
   const handleOpenChange = (open: boolean) => {
@@ -302,92 +231,12 @@ const AlbumPhotos = () => {
 
       <ComboboxContent>
         {creating ? (
-          <div className="flex flex-col gap-y-3 p-3">
-            <div className="flex flex-col gap-y-1.5">
-              <label
-                htmlFor="album-name"
-                className="text-xs font-medium text-muted-foreground"
-              >
-                Name
-              </label>
-
-              <Input
-                id="album-name"
-                value={name}
-                // Returning focus to the name field is expected when the create
-                // form replaces the search input.
-                // eslint-disable-next-line jsx-a11y/no-autofocus
-                autoFocus
-                onChange={(event) => setName(event.target.value)}
-                placeholder="Album name"
-              />
-            </div>
-
-            <div className="flex flex-col gap-y-1.5">
-              <label
-                htmlFor="album-description"
-                className="text-xs font-medium text-muted-foreground"
-              >
-                Description{" "}
-                <span className="font-normal text-muted-foreground/70">
-                  (optional)
-                </span>
-              </label>
-
-              <Textarea
-                id="album-description"
-                value={description}
-                onChange={(event) => setDescription(event.target.value)}
-                placeholder="What's in this album?"
-                rows={2}
-                className="resize-none"
-              />
-            </div>
-
-            <div className="flex flex-col gap-y-1.5">
-              <span className="text-xs font-medium text-muted-foreground">
-                Privacy
-              </span>
-
-              <RadioGroup
-                value={privacy}
-                onValueChange={(value) => setPrivacy(value as AlbumPrivacy)}
-                className="grid-cols-3"
-              >
-                {PRIVACY_OPTIONS.map(({ value, label, Icon }) => (
-                  <RadioGroupItem key={value} value={value}>
-                    <Icon />
-
-                    {label}
-                  </RadioGroupItem>
-                ))}
-              </RadioGroup>
-            </div>
-
-            <div className="flex justify-end gap-2 pt-1">
-              <Button
-                type="button"
-                variant="ghost"
-                disabled={createPending}
-                onClick={() => setCreating(false)}
-              >
-                Cancel
-              </Button>
-
-              <Button
-                type="button"
-                disabled={createPending || !name.trim()}
-                onClick={handleCreate}
-              >
-                {createPending ? (
-                  <Loader2Icon className="animate-spin" />
-                ) : (
-                  <PlusIcon />
-                )}
-                Create
-              </Button>
-            </div>
-          </div>
+          <CreateAlbumForm
+            defaultName={query.trim()}
+            onCreated={handleAlbumCreated}
+            onCancel={() => setCreating(false)}
+            className="p-3"
+          />
         ) : (
           <>
             {/* The search field is meant to take focus as soon as the popup opens. */}
@@ -400,17 +249,7 @@ const AlbumPhotos = () => {
 
                 return (
                   <ComboboxItem key={album.id} value={album}>
-                    <AlbumCover album={album} />
-
-                    <div className="min-w-0 flex-1">
-                      <p className="truncate font-medium">{album.name}</p>
-
-                      {album.description ? (
-                        <p className="truncate text-xs text-muted-foreground">
-                          {album.description}
-                        </p>
-                      ) : null}
-                    </div>
+                    <AlbumRow album={album} />
 
                     <MembershipIndicator
                       state={state}
@@ -426,7 +265,7 @@ const AlbumPhotos = () => {
                 type="button"
                 variant="ghost"
                 className="w-full justify-start"
-                onClick={openCreate}
+                onClick={() => setCreating(true)}
               >
                 <PlusIcon />
 
@@ -442,7 +281,7 @@ const AlbumPhotos = () => {
                   type="button"
                   variant="ghost"
                   className="w-full justify-start"
-                  onClick={openCreate}
+                  onClick={() => setCreating(true)}
                 >
                   <PlusIcon />
                   Create new album

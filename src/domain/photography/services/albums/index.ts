@@ -5,7 +5,10 @@ import { nolookalikes } from "nanoid-dictionary";
 
 import prisma from "@/lib/prisma";
 
-import { transformRawAlbumToAlbum } from "./transforms";
+import {
+  transformRawAlbumToAlbum,
+  transformRawAlbumWithPhotosToAlbumWithPhotos,
+} from "./transforms";
 import { NewAlbumData } from "./types";
 
 export const getAllAlbums = async () => {
@@ -14,6 +17,15 @@ export const getAllAlbums = async () => {
   });
 
   return albums.map(transformRawAlbumToAlbum);
+};
+
+export const getAlbumByShortID = async (shortId: string) => {
+  const album = await prisma.albums.findUnique({
+    include: { photos: { include: { photo: true } } },
+    where: { shortId },
+  });
+
+  return album ? transformRawAlbumWithPhotosToAlbumWithPhotos(album) : null;
 };
 
 export const createAlbum = async (data: NewAlbumData) => {

@@ -23,12 +23,27 @@ interface PhotoLayoutProps {
   PhotoWrapper?: ComponentType<PropsWithChildren<{ photo: Photo }>>;
 }
 
+type JustifiedPhoto = {
+  id: string;
+  src: string;
+  thumbnailSrc: string;
+  top: number;
+  left: number;
+  width: number;
+  height: number;
+};
+
+type Layout =
+  | { mode: "initializing" }
+  | { mode: "stack"; photos: Photo[] }
+  | { mode: "justified"; photos: JustifiedPhoto[]; height: number };
+
 const PhotoLayout = ({
   photos,
   PhotoWrapper = ({ children }) => children,
 }: PhotoLayoutProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [containerWidth, setContainerWidth] = useState(0);
+  const [containerWidth, setContainerWidth] = useState<number | null>(null);
 
   useEffect(() => {
     const el = containerRef.current;
@@ -51,8 +66,19 @@ const PhotoLayout = ({
     };
   }, []);
 
-  const layout = useMemo(() => {
-    const gap = containerWidth > 400 ? containerWidth * 0.01 : 16;
+  const layout = useMemo((): Layout => {
+    if (containerWidth === null) {
+      return { mode: "initializing" };
+    }
+
+    if (containerWidth <= 640) {
+      return {
+        mode: "stack",
+        photos,
+      };
+    }
+
+    const gap = Math.round(containerWidth * 0.01);
 
     const result = justifiedLayout(
       photos.map(({ width, height }) => ({ width, height })),
@@ -60,13 +86,13 @@ const PhotoLayout = ({
         containerWidth,
         boxSpacing: gap,
         containerPadding: gap,
-        targetRowHeight:
-          containerWidth > 400 ? Math.round(containerWidth * 0.2) : 400,
-        targetRowHeightTolerance: containerWidth > 400 ? 0.25 : 1,
+        targetRowHeight: Math.round(containerWidth * 0.2),
+        targetRowHeightTolerance: 0.25,
       },
     );
 
     return {
+      mode: "justified",
       height: result.containerHeight,
       photos: result.boxes.flatMap(({ top, left, width, height }, i) => {
         const photo = photos.at(i);
@@ -88,10 +114,36 @@ const PhotoLayout = ({
     };
   }, [containerWidth, photos]);
 
+  if (layout.mode === "initializing") {
+    return <div ref={containerRef} className="w-full" />;
+  }
+
+  if (layout.mode === "stack") {
+    return (
+      <div ref={containerRef} className="flex flex-col gap-y-4 p-4">
+        {layout.photos.map((photo) => (
+          <div
+            key={photo.id}
+            className="relative w-full overflow-hidden"
+            style={{ aspectRatio: `${photo.width} / ${photo.height}` }}
+          >
+            <PhotoWrapper photo={photo}>
+              <img
+                src={photo.thumbnailSrc}
+                alt=""
+                className="absolute inset-0 size-full"
+              />
+            </PhotoWrapper>
+          </div>
+        ))}
+      </div>
+    );
+  }
+
   return (
     <div
       ref={containerRef}
-      className="relative"
+      className="relative w-full"
       style={{ height: `${layout.height}px` }}
     >
       {layout.photos.map((photo) => (
@@ -106,7 +158,11 @@ const PhotoLayout = ({
           }}
         >
           <PhotoWrapper photo={photo}>
-            <img src={photo.thumbnailSrc} alt="" className="absolute inset-0" />
+            <img
+              src={photo.thumbnailSrc}
+              alt=""
+              className="absolute inset-0 size-full"
+            />
           </PhotoWrapper>
         </div>
       ))}

@@ -30,6 +30,7 @@ export type Photo = {
       latitude: number;
       longitude: number;
     };
+    captureTime?: Date;
   };
 };
 

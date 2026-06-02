@@ -19,6 +19,7 @@ export const transformRawPhotoToPhoto = (rawPhoto: RawPhoto): Photo => {
       iso: rawPhoto.iso ?? undefined,
       locationName: rawPhoto.locationName ?? undefined,
       locationCoordinates: rawPhoto.locationCoordinates ?? undefined,
+      captureTime: rawPhoto.captureTime ?? undefined,
     },
   };
 };

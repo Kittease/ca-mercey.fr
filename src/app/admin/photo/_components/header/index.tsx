@@ -12,7 +12,7 @@ import UploadButton from "@/app/admin/_components/upload/upload-button";
 import { UploadSheetTrigger } from "@/app/admin/_components/upload/upload-sheet";
 import { cn } from "@/lib/tailwind";
 
-const AdminHeader = () => {
+const AdminPhotoHeader = () => {
   const { clearSelection, selectedPhotoCount } = usePhotoSelection();
 
   const title =
@@ -24,7 +24,7 @@ const AdminHeader = () => {
     <header
       className={cn(
         "[--header-pad-x:--spacing(8)]",
-        "sticky top-0 z-40 flex w-full flex-row items-center justify-between bg-card py-6 pr-(--header-pad-x) pl-[calc(2*var(--header-pad-x)+--spacing(10))]",
+        "sticky top-0 z-40 flex w-full flex-row items-center justify-between bg-card py-6 pr-(--header-pad-x) pl-[calc(2*var(--header-pad-x)+(--spacing(10)))]",
       )}
     >
       <div className="absolute top-1/2 left-(--header-pad-x) -translate-y-1/2">
@@ -64,4 +64,4 @@ const AdminHeader = () => {
   );
 };
 
-export default AdminHeader;
+export default AdminPhotoHeader;
