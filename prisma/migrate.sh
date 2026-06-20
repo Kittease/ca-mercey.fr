@@ -41,7 +41,7 @@ elif [ $exitCode -eq 1 ]; then
   echo -e "Something went wrong, aborting."
   exit 1
 elif [ $exitCode -eq 2 ]; then
-  echo -e "Down migration generated!"
+  echo -e "Up migration generated!"
 fi
 
 newMigrationFolder="${migrationsFolder}/$(date +"%Y%m%d%H%M%S")_${migrationName}"

@@ -129,21 +129,16 @@ export default tseslint.config(
     },
   },
 
-  // TypeScript-specific: strict + stylistic type-checked rules scoped to TS files
+  // TypeScript-specific: strict + stylistic rules (non-type-checked).
+  // Type safety itself is enforced by `tsc --noEmit` (see the `type-check`
+  // script and CI workflow), so the typed-ESLint variants are intentionally
+  // omitted to keep editor saves fast — loading the TS program for every
+  // lint pass was too slow on save.
   {
     files: ["**/*.{ts,tsx}"],
-    extends: [
-      tseslint.configs.strictTypeChecked,
-      tseslint.configs.stylisticTypeChecked,
-    ],
+    extends: [tseslint.configs.strict, tseslint.configs.stylistic],
     plugins: {
       "@typescript-eslint": tseslint.plugin,
-    },
-    languageOptions: {
-      parserOptions: {
-        projectService: true,
-        tsconfigRootDir: import.meta.dirname,
-      },
     },
     rules: {
       // Handled by unused-imports/no-unused-vars (which is auto-fixable for imports)
@@ -156,33 +151,8 @@ export default tseslint.config(
           allowTaggedTemplates: false,
         },
       ],
-      // Allow passing async functions to JSX event handler attributes
-      "@typescript-eslint/no-misused-promises": [
-        "error",
-        { checksVoidReturn: { attributes: false } },
-      ],
-      // Numbers and booleans in `${x}` are everyday patterns — disallowing them is noise
-      "@typescript-eslint/restrict-template-expressions": [
-        "error",
-        { allowNumber: true, allowBoolean: true },
-      ],
       // `type` and `interface` are both fine — choice should be local, not enforced
       "@typescript-eslint/consistent-type-definitions": "off",
-      // Enforce `??` in place of `||` / ternaries, but not the `??=` if-statement rewrite
-      "@typescript-eslint/prefer-nullish-coalescing": [
-        "error",
-        { ignoreIfStatements: true },
-      ],
-    },
-  },
-
-  // Untyped external API boundaries — response payloads are `any`
-  {
-    files: ["src/lib/spotify-client/**", "src/lib/statsfm-client/**"],
-    rules: {
-      "@typescript-eslint/no-unsafe-assignment": "off",
-      "@typescript-eslint/no-unsafe-member-access": "off",
-      "@typescript-eslint/no-unsafe-return": "off",
     },
   },
 

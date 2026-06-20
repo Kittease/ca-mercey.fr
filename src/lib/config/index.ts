@@ -21,6 +21,11 @@ const loadConfig = () => {
       url: env.DATABASE_URL,
       directUrl: env.DIRECT_URL,
     },
+    filen: {
+      email: env.FILEN_EMAIL,
+      password: env.FILEN_PASSWORD,
+      rootDirectory: env.FILEN_ROOT_DIRECTORY,
+    },
     auth: {
       secret: env.BETTER_AUTH_SECRET,
       url: env.BETTER_AUTH_URL,
@@ -35,6 +40,10 @@ const loadConfig = () => {
       clientSecret: env.SPOTIFY_API_CLIENT_SECRET,
     },
     spotifyNowPlayingUrl: env.SPOTIFY_NOW_PLAYING_URL,
+    blob: {
+      readWriteToken: env.BLOB_READ_WRITE_TOKEN,
+    },
+    cronSecret: env.CRON_SECRET,
   };
 };
 
