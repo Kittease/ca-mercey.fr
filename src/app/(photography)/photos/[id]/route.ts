@@ -1,13 +1,7 @@
-import {
-  getAllPhotos,
-  getPhotoPath,
-} from "@/domain/photography/services/photos";
+import { getPhotoPath } from "@/domain/photography/services/photos";
 import { readFile } from "@/lib/storage";
 
-export async function generateStaticParams() {
-  const photos = await getAllPhotos();
-  return photos.map(({ id }) => ({ id }));
-}
+export const dynamic = "force-dynamic";
 
 export async function GET(
   _request: Request,
@@ -23,7 +17,12 @@ export async function GET(
       headers: {
         "Content-Type": "image/jpeg",
         "Content-Length": buffer.byteLength.toString(),
-        "Cache-Control": "public, max-age=31536000, immutable",
+        "Cache-Control": [
+          "public",
+          "max-age=31536000",
+          "s-maxage=31536000",
+          "immutable",
+        ].join(", "),
       },
     });
   } catch {
