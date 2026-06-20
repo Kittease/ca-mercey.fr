@@ -39,8 +39,19 @@ type JustifiedPhoto = {
 
 type Layout =
   | { mode: "initializing" }
-  | { mode: "stack"; photos: Photo[] }
   | { mode: "justified"; photos: JustifiedPhoto[]; height: number };
+
+const getTargetRowHeightRatio = (width: number) => {
+  if (width <= 640) {
+    return 0.6;
+  }
+
+  if (width >= 1024) {
+    return 0.2;
+  }
+
+  return 0.6 - 0.4 * ((width - 640) / 384);
+};
 
 const PhotoLayout = ({
   photos,
@@ -75,13 +86,6 @@ const PhotoLayout = ({
       return { mode: "initializing" };
     }
 
-    if (containerWidth <= 640) {
-      return {
-        mode: "stack",
-        photos,
-      };
-    }
-
     const gap = Math.round(containerWidth * 0.01);
 
     const result = justifiedLayout(
@@ -90,7 +94,9 @@ const PhotoLayout = ({
         containerWidth,
         boxSpacing: gap,
         containerPadding: gap,
-        targetRowHeight: Math.round(containerWidth * 0.2),
+        targetRowHeight: Math.round(
+          containerWidth * getTargetRowHeightRatio(containerWidth),
+        ),
         targetRowHeightTolerance: 0.25,
       },
     );
@@ -121,27 +127,6 @@ const PhotoLayout = ({
 
   if (layout.mode === "initializing") {
     return <div ref={containerRef} className="w-full" />;
-  }
-
-  if (layout.mode === "stack") {
-    return (
-      <div ref={containerRef} className="flex flex-col gap-y-4 p-4">
-        {layout.photos.map((photo) => (
-          <div
-            key={photo.id}
-            className="relative w-full overflow-hidden"
-            style={{ aspectRatio: `${photo.width} / ${photo.height}` }}
-          >
-            <PhotoWrapper photo={photo}>
-              <ProgressiveImage
-                placeholder={photo.placeholderUrl}
-                src={photo.thumbnailSrc}
-              />
-            </PhotoWrapper>
-          </div>
-        ))}
-      </div>
-    );
   }
 
   return (
