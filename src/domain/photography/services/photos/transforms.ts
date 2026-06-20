@@ -1,3 +1,5 @@
+import { thumbhashToDataUrl } from "@/lib/thumbhash/decode";
+
 import { RawPhoto, Photo } from "./types";
 
 export const transformRawPhotoToPhoto = (rawPhoto: RawPhoto): Photo => {
@@ -8,6 +10,7 @@ export const transformRawPhotoToPhoto = (rawPhoto: RawPhoto): Photo => {
     thumbnailSrc: `/photos/${rawPhoto.id}/thumbnail`,
     width: rawPhoto.width,
     height: rawPhoto.height,
+    placeholderUrl: thumbhashToDataUrl(rawPhoto.thumbhash),
     inGallery: Boolean(rawPhoto.galleryEntry),
     albumIds: (rawPhoto.albums ?? []).map((album) => album.albumId),
     metadata: {

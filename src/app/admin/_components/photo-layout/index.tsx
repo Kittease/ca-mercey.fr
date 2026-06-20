@@ -10,10 +10,13 @@ import {
   useState,
 } from "react";
 
+import ProgressiveImage from "@/app/_components/ui/progressive-image";
+
 type Photo = {
   id: string;
   src: string;
   thumbnailSrc: string;
+  placeholderUrl: string | null;
   width: number;
   height: number;
 };
@@ -27,6 +30,7 @@ type JustifiedPhoto = {
   id: string;
   src: string;
   thumbnailSrc: string;
+  placeholderUrl: string | null;
   top: number;
   left: number;
   width: number;
@@ -105,6 +109,7 @@ const PhotoLayout = ({
           id: photo.id,
           src: photo.src,
           thumbnailSrc: photo.thumbnailSrc,
+          placeholderUrl: photo.placeholderUrl,
           top,
           left,
           width,
@@ -128,10 +133,9 @@ const PhotoLayout = ({
             style={{ aspectRatio: `${photo.width} / ${photo.height}` }}
           >
             <PhotoWrapper photo={photo}>
-              <img
+              <ProgressiveImage
+                placeholder={photo.placeholderUrl}
                 src={photo.thumbnailSrc}
-                alt=""
-                className="absolute inset-0 size-full"
               />
             </PhotoWrapper>
           </div>
@@ -158,10 +162,9 @@ const PhotoLayout = ({
           }}
         >
           <PhotoWrapper photo={photo}>
-            <img
+            <ProgressiveImage
+              placeholder={photo.placeholderUrl}
               src={photo.thumbnailSrc}
-              alt=""
-              className="absolute inset-0 size-full"
             />
           </PhotoWrapper>
         </div>

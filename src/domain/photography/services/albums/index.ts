@@ -13,6 +13,7 @@ import { NewAlbumData } from "./types";
 
 export const getAllAlbums = async () => {
   const albums = await prisma.albums.findMany({
+    include: { cover: true },
     orderBy: { createdAt: "desc" },
   });
 
@@ -21,7 +22,7 @@ export const getAllAlbums = async () => {
 
 export const getAlbumByShortID = async (shortId: string) => {
   const album = await prisma.albums.findUnique({
-    include: { photos: { include: { photo: true } } },
+    include: { cover: true, photos: { include: { photo: true } } },
     where: { shortId },
   });
 

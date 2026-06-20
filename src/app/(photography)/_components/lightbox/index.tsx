@@ -25,6 +25,7 @@ import {
 
 import Badge from "@/app/_components/ui/badge";
 import { Button } from "@/app/_components/ui/button";
+import ProgressiveImage from "@/app/_components/ui/progressive-image";
 import { Photo } from "@/domain/photography/services/photos/types";
 import { cn } from "@/lib/tailwind";
 import { useMediaQuery } from "@/lib/tailwind/hooks";
@@ -38,11 +39,11 @@ const LightboxImage = ({ photo }: { photo: Photo }) => {
 
   return (
     <>
-      <img
+      <ProgressiveImage
+        placeholder={photo.placeholderUrl}
         src={photo.thumbnailSrc}
-        alt=""
         draggable={false}
-        className="absolute inset-0 size-full object-contain"
+        className="object-contain"
       />
 
       <img

@@ -9,6 +9,7 @@ import {
 import { notFound, unauthorized } from "next/navigation";
 
 import GalleryLayout from "@/app/(photography)/_components/gallery-layout";
+import ProgressiveImage from "@/app/_components/ui/progressive-image";
 import { getAlbumByShortID } from "@/domain/photography/services/albums";
 import { getAdminUser } from "@/lib/auth/admin";
 import { cn } from "@/lib/tailwind";
@@ -69,10 +70,10 @@ const AlbumPage = async ({ params }: PageProps<"/albums/[shortId]">) => {
               "sm:after:from-background/75",
             )}
           >
-            <img
+            <ProgressiveImage
+              placeholder={album.coverPlaceholderUrl}
               src={album.coverThumbnailSrc}
-              alt=""
-              className="relative size-full object-cover blur-sm"
+              className="object-cover blur-sm"
             />
           </div>
         ) : null}

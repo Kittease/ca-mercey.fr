@@ -15,6 +15,7 @@ import { NewPhotoData } from "@/domain/photography/services/photos/types";
 import { getAdminUser } from "@/lib/auth/admin";
 import logger from "@/lib/logger";
 import { uploadFile } from "@/lib/storage";
+import { computeThumbhash } from "@/lib/thumbhash/compute";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -160,6 +161,8 @@ export async function POST(request: Request): Promise<Response> {
           .jpeg({ quality: 100 })
           .toBuffer();
 
+        const thumbhash = await computeThumbhash(thumbnailBuffer);
+
         emit({ step: "parsing-exif" });
 
         const exif = (await exifr
@@ -190,6 +193,7 @@ export async function POST(request: Request): Promise<Response> {
           id,
           width,
           height,
+          thumbhash,
           ...mapExif(exif),
         });
 

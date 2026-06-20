@@ -1,4 +1,5 @@
 import { transformRawPhotoToPhoto } from "@/domain/photography/services/photos/transforms";
+import { thumbhashToDataUrl } from "@/lib/thumbhash/decode";
 
 import { Album, AlbumWithPhotos, RawAlbum, RawAlbumWithPhotos } from "./types";
 
@@ -12,6 +13,7 @@ export const transformRawAlbumToAlbum = (rawAlbum: RawAlbum): Album => {
     coverThumbnailSrc: rawAlbum.coverPhoto
       ? `/photos/${rawAlbum.coverPhoto}/thumbnail`
       : null,
+    coverPlaceholderUrl: thumbhashToDataUrl(rawAlbum.cover?.thumbhash),
   };
 };
 

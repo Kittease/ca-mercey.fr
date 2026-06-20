@@ -35,6 +35,7 @@ export const createPhoto = async (data: NewPhotoData) => {
   const photoFields = {
     width: data.width,
     height: data.height,
+    thumbhash: data.thumbhash,
     camera: data.camera,
     lens: data.lens,
     focalLength: data.focalLength,

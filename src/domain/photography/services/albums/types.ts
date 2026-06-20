@@ -2,7 +2,9 @@ import { AlbumPhoto, AlbumPrivacy, Albums, Photos } from "@prisma/client";
 
 import { Photo } from "@/domain/photography/services/photos/types";
 
-export type RawAlbum = Albums;
+export type RawAlbum = Albums & {
+  cover?: Photos | null;
+};
 
 export type Album = {
   id: string;
@@ -11,6 +13,7 @@ export type Album = {
   description: string | null;
   privacy: AlbumPrivacy;
   coverThumbnailSrc: string | null;
+  coverPlaceholderUrl: string | null;
 };
 
 export type RawAlbumWithPhotos = RawAlbum & {

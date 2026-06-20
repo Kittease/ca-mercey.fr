@@ -16,6 +16,7 @@ export type Photo = {
   thumbnailSrc: string;
   width: number;
   height: number;
+  placeholderUrl: string | null;
   inGallery: boolean;
   albumIds: string[];
   metadata: {
@@ -38,6 +39,7 @@ export type NewPhotoData = {
   id: string;
   width: number;
   height: number;
+  thumbhash?: string;
   camera?: string;
   lens?: string;
   focalLength?: number;

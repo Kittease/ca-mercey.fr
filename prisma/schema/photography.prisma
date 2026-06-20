@@ -4,6 +4,8 @@ model Photos {
   width   Int
   height  Int
 
+  thumbhash String?
+
   camera                  String?
   lens                    String?
   focalLength             Float?                                @map("focal_length")
