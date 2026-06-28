@@ -6,6 +6,7 @@ export const Routes = {
   LOGOUT: "/auth/logout",
 
   HOME: "/",
+  GALLERY: "/gallery",
   MUSIC: "/music",
   FAVORITE_PROJECTS: "/music/favorites",
   ALBUM_SEARCH: "/music/album/search",

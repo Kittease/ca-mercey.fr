@@ -25,6 +25,19 @@ export const getAllPhotos = async () => {
   return photos.map(transformRawPhotoToPhoto);
 };
 
+export const getGalleryPhotos = async () => {
+  const photos = await prisma.photos.findMany({
+    where: { galleryEntry: { isNot: null } },
+    orderBy: [
+      { captureTime: { sort: "desc", nulls: "last" } },
+      { createdAt: "desc" },
+    ],
+    include: { galleryEntry: true, albums: { select: { albumId: true } } },
+  });
+
+  return photos.map(transformRawPhotoToPhoto);
+};
+
 export const getPhoto = async (id: string) => {
   const photo = await prisma.photos.findUnique({ where: { id } });
 
