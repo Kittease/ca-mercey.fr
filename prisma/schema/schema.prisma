@@ -1,8 +1,10 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
 }
 
 datasource db {
-  provider = "postgresql"
-  schemas  = ["public", "authentication", "music"]
+  provider   = "postgresql"
+  schemas    = ["public", "authentication", "music", "photography"]
+  extensions = [postgis]
 }

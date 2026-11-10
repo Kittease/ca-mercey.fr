@@ -1,0 +1,31 @@
+import { getThumbnailPath } from "@/domain/photography/services/photos";
+import { readFile } from "@/lib/storage";
+
+export const dynamic = "force-dynamic";
+
+export async function GET(
+  _request: Request,
+  context: RouteContext<"/photos/[id]/thumbnail">,
+): Promise<Response> {
+  const { id } = await context.params;
+
+  try {
+    const buffer = await readFile(getThumbnailPath(id));
+    const body = new Uint8Array(buffer);
+
+    return new Response(body, {
+      headers: {
+        "Content-Type": "image/jpeg",
+        "Content-Length": buffer.byteLength.toString(),
+        "Cache-Control": [
+          "public",
+          "max-age=31536000",
+          "s-maxage=31536000",
+          "immutable",
+        ].join(", "),
+      },
+    });
+  } catch {
+    return new Response("Image not found", { status: 404 });
+  }
+}

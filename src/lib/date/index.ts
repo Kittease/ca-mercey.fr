@@ -29,7 +29,7 @@ export const formatRelativeTime = (date: Date): string => {
   }
 
   if (diff < WEEK) {
-    const days = Math.round(diff / WEEK);
+    const days = Math.round(diff / DAY);
 
     if (days < 2) {
       return "il y a un jour";
