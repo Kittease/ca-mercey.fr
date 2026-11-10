@@ -1,3 +1,5 @@
+import { Routes } from "@/lib/routes";
+import { generatePath } from "@/lib/routes/utils";
 import { thumbhashToDataUrl } from "@/lib/thumbhash/decode";
 
 import { RawPhoto, Photo } from "./types";
@@ -6,8 +8,8 @@ export const transformRawPhotoToPhoto = (rawPhoto: RawPhoto): Photo => {
   return {
     id: rawPhoto.id,
     shortId: rawPhoto.shortId,
-    src: `/photos/${rawPhoto.id}`,
-    thumbnailSrc: `/photos/${rawPhoto.id}/thumbnail`,
+    src: generatePath(Routes.PHOTO, { id: rawPhoto.id }),
+    thumbnailSrc: generatePath(Routes.PHOTO_THUMBNAIL, { id: rawPhoto.id }),
     width: rawPhoto.width,
     height: rawPhoto.height,
     placeholderUrl: thumbhashToDataUrl(rawPhoto.thumbhash),

@@ -14,9 +14,15 @@ type OpenState = {
 
 interface GalleryLayoutProps {
   photos: Photo[];
+  worldviewPath?: string;
+  disableTopPadding?: boolean;
 }
 
-const GalleryLayout = ({ photos }: GalleryLayoutProps) => {
+const GalleryLayout = ({
+  photos,
+  worldviewPath,
+  disableTopPadding,
+}: GalleryLayoutProps) => {
   const [open, setOpen] = useState<OpenState | null>(null);
 
   const PhotoWrapper = useCallback(
@@ -41,7 +47,11 @@ const GalleryLayout = ({ photos }: GalleryLayoutProps) => {
 
   return (
     <>
-      <PhotoLayout photos={photos} PhotoWrapper={PhotoWrapper} />
+      <PhotoLayout
+        photos={photos}
+        PhotoWrapper={PhotoWrapper}
+        disableTopPadding={disableTopPadding}
+      />
 
       {open !== null && openPhoto ? (
         <Lightbox
@@ -53,6 +63,7 @@ const GalleryLayout = ({ photos }: GalleryLayoutProps) => {
           onNavigate={(index) =>
             setOpen((current) => (current ? { ...current, index } : current))
           }
+          worldviewPath={worldviewPath}
         />
       ) : null}
     </>

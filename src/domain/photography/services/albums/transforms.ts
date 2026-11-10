@@ -1,4 +1,6 @@
 import { transformRawPhotoToPhoto } from "@/domain/photography/services/photos/transforms";
+import { Routes } from "@/lib/routes";
+import { generatePath } from "@/lib/routes/utils";
 import { thumbhashToDataUrl } from "@/lib/thumbhash/decode";
 
 import { Album, AlbumWithPhotos, RawAlbum, RawAlbumWithPhotos } from "./types";
@@ -11,7 +13,7 @@ export const transformRawAlbumToAlbum = (rawAlbum: RawAlbum): Album => {
     description: rawAlbum.description,
     privacy: rawAlbum.privacy,
     coverThumbnailSrc: rawAlbum.coverPhoto
-      ? `/photos/${rawAlbum.coverPhoto}/thumbnail`
+      ? generatePath(Routes.PHOTO_THUMBNAIL, { id: rawAlbum.coverPhoto })
       : null,
     coverPlaceholderUrl: thumbhashToDataUrl(rawAlbum.cover?.thumbhash),
   };

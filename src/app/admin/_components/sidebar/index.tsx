@@ -35,6 +35,7 @@ import AlbumRow from "@/app/admin/_components/album-picker/album-row";
 import CreateAlbumForm from "@/app/admin/_components/album-picker/create-album-form";
 import { Album } from "@/domain/photography/services/albums/types";
 import { Routes } from "@/lib/routes";
+import { generatePath } from "@/lib/routes/utils";
 
 interface AdminSidebarProps {
   albums: Album[];
@@ -121,7 +122,11 @@ const AdminSidebar = ({ albums }: AdminSidebarProps) => {
                         <DropdownMenuItem
                           key={album.id}
                           render={
-                            <a href={`${Routes.ADMIN_ALBUMS}/${album.shortId}`}>
+                            <a
+                              href={generatePath(Routes.ADMIN_ALBUM, {
+                                shortId: album.shortId,
+                              })}
+                            >
                               <AlbumRow album={album} />
                             </a>
                           }

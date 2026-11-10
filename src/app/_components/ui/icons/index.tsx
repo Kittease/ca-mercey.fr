@@ -3,6 +3,7 @@ import CalendarIcon from "./calendar";
 import CameraIcon from "./camera";
 import ClockIcon from "./clock";
 import FocalLengthIcon from "./focal-length";
+import GlobeLinkIcon from "./globe-link";
 import HeightIcon from "./height";
 import ISOIcon from "./iso";
 import LensIcon from "./lens";
@@ -18,6 +19,7 @@ export {
   CameraIcon,
   ClockIcon,
   FocalLengthIcon,
+  GlobeLinkIcon,
   HeightIcon,
   ISOIcon,
   LensIcon,

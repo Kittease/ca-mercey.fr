@@ -90,6 +90,8 @@ interface LightboxProps {
   origin: DOMRect;
   onClose: () => void;
   onNavigate: (index: number) => void;
+  roundTargetOnClose?: boolean;
+  worldviewPath?: string;
 }
 
 const Lightbox = ({
@@ -99,6 +101,8 @@ const Lightbox = ({
   origin,
   onClose,
   onNavigate,
+  roundTargetOnClose = false,
+  worldviewPath,
 }: LightboxProps) => {
   const canHover = useMediaQuery("(hover: hover)");
   const reduce = useReducedMotion();
@@ -209,8 +213,22 @@ const Lightbox = ({
 
     void animate(bgOpacity, 0, morph);
 
-    void animate(stage, { x, y, scale }, { ...morph, onComplete: onClose });
-  }, [photo.id, onClose, animate, bgOpacity, morph]);
+    if (roundTargetOnClose) {
+      const side = Math.min(dest.width, dest.height);
+      stage.style.overflow = "hidden";
+      stage
+        .querySelectorAll("img")
+        .forEach((image) => (image.style.objectFit = "cover"));
+
+      void animate(
+        stage,
+        { x, y, width: side, height: side, borderRadius: ["0%", "50%"] },
+        { ...morph, onComplete: onClose },
+      );
+    } else {
+      void animate(stage, { x, y, scale }, { ...morph, onComplete: onClose });
+    }
+  }, [photo.id, onClose, animate, bgOpacity, morph, roundTargetOnClose]);
 
   const snapBack = useCallback(() => {
     const surface = dragRef.current;
@@ -409,6 +427,7 @@ const Lightbox = ({
         photo={photo}
         open={showMetadata}
         onToggle={() => setShowMetadata((value) => !value)}
+        worldviewPath={worldviewPath}
       />
     </div>
   );

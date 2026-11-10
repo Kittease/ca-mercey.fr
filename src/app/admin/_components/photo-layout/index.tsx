@@ -24,6 +24,7 @@ type Photo = {
 interface PhotoLayoutProps {
   photos: Photo[];
   PhotoWrapper?: ComponentType<PropsWithChildren<{ photo: Photo }>>;
+  disableTopPadding?: boolean;
 }
 
 type JustifiedPhoto = {
@@ -56,6 +57,7 @@ const getTargetRowHeightRatio = (width: number) => {
 const PhotoLayout = ({
   photos,
   PhotoWrapper = ({ children }) => children,
+  disableTopPadding = false,
 }: PhotoLayoutProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [containerWidth, setContainerWidth] = useState<number | null>(null);
@@ -93,7 +95,12 @@ const PhotoLayout = ({
       {
         containerWidth,
         boxSpacing: gap,
-        containerPadding: gap,
+        containerPadding: {
+          top: disableTopPadding ? 0 : gap,
+          right: gap,
+          bottom: gap,
+          left: gap,
+        },
         targetRowHeight: Math.round(
           containerWidth * getTargetRowHeightRatio(containerWidth),
         ),
@@ -123,7 +130,7 @@ const PhotoLayout = ({
         };
       }),
     };
-  }, [containerWidth, photos]);
+  }, [containerWidth, photos, disableTopPadding]);
 
   if (layout.mode === "initializing") {
     return <div ref={containerRef} className="w-full" />;

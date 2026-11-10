@@ -3,6 +3,7 @@
 import { format } from "date-fns";
 import { InfoIcon } from "lucide-react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import Link from "next/link";
 import { ReactNode } from "react";
 
 import { Button } from "@/app/_components/ui/button";
@@ -12,6 +13,7 @@ import {
   CameraIcon,
   ClockIcon,
   FocalLengthIcon,
+  GlobeLinkIcon,
   HeightIcon,
   ISOIcon,
   LensIcon,
@@ -23,6 +25,8 @@ import {
 import Separator from "@/app/_components/ui/separator";
 import { Photo } from "@/domain/photography/services/photos/types";
 import { cn } from "@/lib/tailwind";
+
+import type { Route } from "next";
 
 const EASE_OUT: [number, number, number, number] = [0.25, 0.46, 0.45, 0.94];
 
@@ -54,9 +58,15 @@ interface MetadataPanelProps {
   photo: Photo;
   open: boolean;
   onToggle: () => void;
+  worldviewPath?: string;
 }
 
-const MetadataPanel = ({ photo, open, onToggle }: MetadataPanelProps) => {
+const MetadataPanel = ({
+  photo,
+  open,
+  onToggle,
+  worldviewPath,
+}: MetadataPanelProps) => {
   const reduce = useReducedMotion();
 
   const { metadata, width, height } = photo;
@@ -129,7 +139,30 @@ const MetadataPanel = ({ photo, open, onToggle }: MetadataPanelProps) => {
                       className="col-span-2"
                       icon={<LocationIcon />}
                       label="Lieu"
-                      value={metadata.locationName}
+                      value={
+                        worldviewPath && metadata.locationCoordinates ? (
+                          <span className="flex items-center gap-1.5">
+                            <span className="truncate">
+                              {metadata.locationName}
+                            </span>
+
+                            <Link
+                              href={
+                                `${worldviewPath}?photo=${photo.shortId}` as Route
+                              }
+                              aria-label="Voir sur la carte"
+                              className={cn(
+                                "shrink-0 transition-colors [&>svg]:size-3.5",
+                                "text-muted-foreground hover:text-popover-foreground",
+                              )}
+                            >
+                              <GlobeLinkIcon />
+                            </Link>
+                          </span>
+                        ) : (
+                          metadata.locationName
+                        )
+                      }
                     />
                   ) : null}
                 </div>

@@ -14,7 +14,7 @@ const getFilenClient = (): Promise<FilenSDK> => {
     return filenClientPromise;
   }
 
-  const filen = new FilenSDK({ metadataCache: true, connectToSocket: true });
+  const filen = new FilenSDK({ metadataCache: true, connectToSocket: false });
 
   filenClientPromise = filen
     .login({

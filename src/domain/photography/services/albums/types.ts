@@ -1,6 +1,6 @@
 import { AlbumPhoto, AlbumPrivacy, Albums, Photos } from "@prisma/client";
 
-import { Photo } from "@/domain/photography/services/photos/types";
+import { Photo, RawPhoto } from "@/domain/photography/services/photos/types";
 
 export type RawAlbum = Albums & {
   cover?: Photos | null;
@@ -17,7 +17,7 @@ export type Album = {
 };
 
 export type RawAlbumWithPhotos = RawAlbum & {
-  photos: (AlbumPhoto & { photo: Photos })[];
+  photos: (AlbumPhoto & { photo: RawPhoto })[];
 };
 
 export type AlbumWithPhotos = Album & {

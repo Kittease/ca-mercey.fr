@@ -2,7 +2,9 @@ import "server-only";
 
 import { customAlphabet } from "nanoid";
 import { nolookalikes } from "nanoid-dictionary";
+import { cache } from "react";
 
+import { attachCoordinates } from "@/domain/photography/services/photos";
 import prisma from "@/lib/prisma";
 
 import {
@@ -20,14 +22,34 @@ export const getAllAlbums = async () => {
   return albums.map(transformRawAlbumToAlbum);
 };
 
-export const getAlbumByShortID = async (shortId: string) => {
+export const getAlbumByShortID = cache(async (shortId: string) => {
   const album = await prisma.albums.findUnique({
-    include: { cover: true, photos: { include: { photo: true } } },
+    include: {
+      cover: true,
+      photos: {
+        include: { photo: true },
+        orderBy: { position: "asc" },
+      },
+    },
     where: { shortId },
   });
 
-  return album ? transformRawAlbumWithPhotosToAlbumWithPhotos(album) : null;
-};
+  if (!album) {
+    return null;
+  }
+
+  const photos = await attachCoordinates(
+    album.photos.map(({ photo }) => photo),
+  );
+
+  return transformRawAlbumWithPhotosToAlbumWithPhotos({
+    ...album,
+    photos: album.photos.map((albumPhoto, index) => ({
+      ...albumPhoto,
+      photo: photos[index] ?? albumPhoto.photo,
+    })),
+  });
+});
 
 export const createAlbum = async (data: NewAlbumData) => {
   const album = await prisma.albums.create({
